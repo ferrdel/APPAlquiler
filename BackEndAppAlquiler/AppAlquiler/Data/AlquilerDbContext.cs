@@ -13,12 +13,12 @@ namespace AppAlquiler_DataAccessLayer.Data
         //constructor
         public AlquilerDbContext(DbContextOptions<AlquilerDbContext> options) : base(options) { }
 
-        public DbSet<Vehiculo> Vehiculos { get;set; }
+        public DbSet<Vehicle> Vehiculos { get;set; }
         public DbSet<Car> Cars { get; set; } //autos
         public DbSet<Motorcycle> Motorcycles { get; set; } //motos
         public DbSet<Bike> Bikes { get; set; } //bicicletas
         public DbSet<Boat> Boats { get; set; } //Lanchas
-        public DbSet<Brand> Brand { get;set; } //marcas
+        public DbSet<Brand> Brands { get;set; } //marcas
         public DbSet<Model> Models { get;set; }//modelos
         public DbSet<TypeMotorcycle> TypeMotorcycles { get; set; }//tipos de motocicletas
     }

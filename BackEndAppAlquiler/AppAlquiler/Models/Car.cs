@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppAlquiler_DataAccessLayer.Models
 {
-    public class Car : Vehiculo
+    public class Car : Vehicle
     {
         public int NumberDoors { get; set; } //cantidad puertas
         public bool AirConditioning { get; set; } //Aire acondicionado

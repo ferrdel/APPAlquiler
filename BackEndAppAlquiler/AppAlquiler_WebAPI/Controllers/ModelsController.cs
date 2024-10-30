@@ -20,20 +20,20 @@ namespace AppAlquiler_WebAPI.Controllers
 
         //GET: api/Modelos
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllModels()
         {
-            var modelos= _context.Models.ToListAsync();
-            return Ok(modelos);
+            var model= _context.Models.ToListAsync();
+            return Ok(model);
         }
 
-        [HttpGet("{id}", Name = "GetModelo")]
+        [HttpGet("{id}", Name = "GetModel")]
         public async Task<IActionResult> GetModel(int id)
         {
             var model=await _context.Models.FindAsync(id);
 
             if(model == null)
             {
-                return NotFound("Modelo not found");
+                return NotFound("Model not found");
             }
             else
             {
@@ -43,14 +43,14 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostModelos([FromBody] ModelDto modeloDto) 
+        public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
         {
             if (ModelState.IsValid)
             {
                 var model = new Model
                 {
-                    Name = modeloDto.Name,
-                    State = modeloDto.State
+                    Name = modelDto.Name,
+                    State = modelDto.State
                 };
 
                 _context.Models.Add(model);
@@ -61,28 +61,31 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         //DELETE: api/action/2
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteModelo(int id) 
-        {
-            var modelo = await _context.Models.FindAsync(id);
 
-            if(modelo != null)
+        //(No se si es la forma correcta  de realizar el delete)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteModel(int id) 
+        {
+            var model = await _context.Models.FindAsync(id);
+
+            if(model != null)
             {
-                modelo.State = true;
+                model.State = true;
                 await _context.SaveChangesAsync();
             }
 
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task RestoreModelo(int id)
+        //Metodo de delete modificando el estado
+        [HttpPut("{id}", Name = "DeleteModel")]
+        public async Task RestoreModel(int id)
         {
-            var producto = await _context.Models.FindAsync(id);
+            var model = await _context.Models.FindAsync(id);
 
-            if (producto != null && producto.State)
+            if (model != null && model.State)
             {
-                producto.State = false;
+                model.State = false;
                 await _context.SaveChangesAsync();
             }
         }

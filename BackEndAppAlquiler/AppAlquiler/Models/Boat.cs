@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_DataAccessLayer.Models
 {
-    public class Boat : Vehiculo
+    public class Boat : Vehicle
     {
         public string Dimension { get; set; }//Tamaño,
         public string Engine { get; set; }//Motor(fuera de borda, intraborda. ENUM),

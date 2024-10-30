@@ -8,7 +8,7 @@ namespace AppAlquiler_DataAccessLayer.Models
 {
     public class Model
     {
-        public int IdModel { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public bool State { get; set; }

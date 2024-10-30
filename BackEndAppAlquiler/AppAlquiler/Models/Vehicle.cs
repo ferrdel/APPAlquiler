@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_DataAccessLayer.Models
 {
-    public class Vehiculo
+    public class Vehicle
     {
         //(codVehiculo, descripcion, marca, modelo, consumo, combustible(nafta, gasoil, eléctrico, ninguno),
         //capacidad de equipaje(En Litros), capacidad de pasajeros, disponible(boolean), precioPorDia
@@ -22,10 +22,10 @@ namespace AppAlquiler_DataAccessLayer.Models
 
         //RelationShips
 
-        public Model IdModel { get; set; }
+        public int ModelID { get; set; }
         public Model Model { get; set; }
         //definicion de la marca
-        public Brand IdBrand { get; set; }
+        public int BrandId { get; set; }
         public Brand Brand { get; set; }
     }
 }

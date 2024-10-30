@@ -2,7 +2,7 @@
 
 namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class BikeDto : VehiculoDto
+    public class BikeDto : VehicleDto
     {
         public int Whell { get; set; }// Rodado,
         public int FrameSize { get; set; }// tamaño_cuadro,

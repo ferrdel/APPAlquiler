@@ -2,7 +2,7 @@
 
 namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class VehiculoDto
+    public class VehicleDto
     {
         public string Description { get; set; }
         public string GasolineConsumption { get; set; }//cantidad de litros de nafta
