@@ -1,6 +1,18 @@
+using AppAlquiler_DataAccessLayer.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Uso del DbContext
+builder.Services.AddDbContext<AlquilerDbContext>
+    (
+        options=>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnectio")
+                )    
+    );
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
