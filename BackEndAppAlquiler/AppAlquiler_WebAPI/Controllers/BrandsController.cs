@@ -39,7 +39,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 _context.Brands.Add(brand);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetBrand", new { id = brand.IdBrand }, brand);
+                return CreatedAtAction("GetBrand", new { id = brand.Id }, brand);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -60,7 +60,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         private bool ModelExists(int id)
         {
-            return _context.Brands.Any(m => m.IdBrand == id);
+            return _context.Brands.Any(m => m.Id == id);
         }
 
     }

@@ -16,8 +16,8 @@ namespace AppAlquiler_DataAccessLayer.Models
         public string LuggageCapacity {  get; set; }//capacidad de equipaje(En Litros)
         public int PassengerCapacity { get; set; } //Cantiadad de pasajeros
         //definicion combustible
-        public int? Fuel { get; set; } //tipo combustible
-        public string State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public string? Fuel { get; set; } //tipo combustible
+        public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public  float Price {  get; set; }
 
         //RelationShips

@@ -55,7 +55,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 _context.Models.Add(model);
                 await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetModelo",new {id= model.IdModel},model);
+                return CreatedAtAction("GetModelo",new {id= model.Id},model);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -93,7 +93,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         private bool ModelExists(int id)
         {
-            return _context.Models.Any(m => m.IdModel == id);
+            return _context.Models.Any(m => m.Id == id);
         }
     }
 }

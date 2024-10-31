@@ -6,16 +6,16 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
     {
         public string Description { get; set; }
         public string GasolineConsumption { get; set; }//cantidad de litros de nafta
-        public int LuggageCapacity { get; set; }//capacidad de equipaje(En Litros)
+        public string LuggageCapacity { get; set; }//capacidad de equipaje(En Litros)
         public int PassengerCapacity { get; set; } //Cantiadad de pasajeros
         //definicion combustible
-        public string Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
-        public string State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public string? Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
+        public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public float Price { get; set; }
 
         //RelationShips
-        public Model IdModel { get; set; }
+        public int ModelId { get; set; }
         //definicion de la marca
-        public Brand IdBrand { get; set; }
+        public int BrandId { get; set; }
     }
 }
