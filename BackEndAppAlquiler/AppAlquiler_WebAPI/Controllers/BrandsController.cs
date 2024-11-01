@@ -44,6 +44,36 @@ namespace AppAlquiler_WebAPI.Controllers
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
+        //modificar brand
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBike(int id, [FromBody] Brand brand)
+        {
+            if (id != brand.Id)
+            {
+                return BadRequest("Id mismatch");
+            }
+
+            _context.Entry(brand).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!BrandExists(id))
+                {
+                    return NotFound("Brand not found");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return NoContent();
+        }
+
         //Metodo eliminar, cambiando a false el estado de la marca
 
         [HttpDelete("{id}", Name = "DeleteBrand")]
@@ -58,7 +88,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
         }
 
-        private bool ModelExists(int id)
+        private bool BrandExists(int id)
         {
             return _context.Brands.Any(m => m.Id == id);
         }

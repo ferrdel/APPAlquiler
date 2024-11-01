@@ -12,8 +12,6 @@ namespace AppAlquiler_DataAccessLayer.Data
     {
         //constructor
         public AlquilerDbContext(DbContextOptions<AlquilerDbContext> options) : base(options) { }
-
-        public DbSet<Vehicle> Vehicles { get;set; }
         public DbSet<Car> Cars { get; set; } //autos
         public DbSet<Motorcycle> Motorcycles { get; set; } //motos
         public DbSet<Bike> Bikes { get; set; } //bicicletas

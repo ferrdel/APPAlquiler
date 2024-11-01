@@ -77,8 +77,8 @@ namespace AppAlquiler_WebAPI.Controllers
             return NoContent();
         }
 
-        //Metodo de delete modificando el estado
-        [HttpPut("{id}", Name = "DeleteModel")]
+        //Metodo de Activar el modelo modificando el estado
+        [HttpPut("{id}")]
         public async Task RestoreModel(int id)
         {
             var model = await _context.Models.FindAsync(id);
@@ -90,6 +90,34 @@ namespace AppAlquiler_WebAPI.Controllers
             }
         }
 
+        [HttpPut("{id}", Name ="PutModel")]
+        public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest("Id mismatch");
+            }
+
+            _context.Entry(model).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!ModelExists(id))
+                {
+                    return NotFound("Model not found");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return NoContent();
+        }
 
         private bool ModelExists(int id)
         {

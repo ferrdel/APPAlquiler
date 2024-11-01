@@ -44,13 +44,12 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         // PUT: api/Boats/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBoat(int id, Boat boat)
         {
             if (id != boat.Id)
             {
-                return BadRequest();
+                return BadRequest("Id mismatch");
             }
 
             _context.Entry(boat).State = EntityState.Modified;
@@ -59,15 +58,15 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!BoatExists(id))
                 {
-                    return NotFound();
+                    return NotFound("boat not found");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex.Message);
                 }
             }
 
@@ -120,8 +119,9 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound();
             }
+            boat.State=true; //cambia el estado a true para que quede como eliminado
 
-            _context.Boats.Remove(boat);
+            _context.Boats.Update(boat);
             await _context.SaveChangesAsync();
 
             return NoContent();

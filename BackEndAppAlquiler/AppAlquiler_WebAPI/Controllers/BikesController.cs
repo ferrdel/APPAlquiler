@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -24,33 +25,34 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Bikes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bike>>> GetBikes()
+        public async Task<IActionResult> GetBikes()
         {
-            return await _context.Bikes.ToListAsync();
+            var bikes = _context.Bikes.ToListAsync();
+            return Ok(bikes);
         }
 
         // GET: api/Bikes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Bike>> GetBike(int id)
+        [HttpGet("{id}", Name = "GetBike")]
+        public async Task<IActionResult> GetBike(int id)
         {
             var bike = await _context.Bikes.FindAsync(id);
 
             if (bike == null)
             {
-                return NotFound();
+                return NotFound("Bike not found");
             }
 
-            return bike;
+            return Ok(bike);
         }
 
         // PUT: api/Bikes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBike(int id, Bike bike)
+        public async Task<IActionResult> PutBike(int id,[FromBody] Bike bike)
         {
             if (id != bike.Id)
             {
-                return BadRequest();
+                return BadRequest("Id mismatch");
             }
 
             _context.Entry(bike).State = EntityState.Modified;
@@ -59,15 +61,15 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!BikeExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Bike not found");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex.Message);
                 }
             }
 
@@ -99,7 +101,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 _context.Bikes.Add(bike);
                 await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetBike", new { Id = bike.Id }, bike);
+                return CreatedAtAction("GetBike", new { Id = bike.Id }, bike); //redirigir la accion a un get
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -114,7 +116,10 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound();
             }
 
-            _context.Bikes.Remove(bike);
+            bike.State = true; //cambia el estado a true para que quede como eliminado
+
+
+            _context.Bikes.Update(bike);
             await _context.SaveChangesAsync();
 
             return NoContent();

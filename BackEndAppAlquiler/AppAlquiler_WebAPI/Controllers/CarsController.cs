@@ -50,7 +50,7 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (id != car.Id)
             {
-                return BadRequest();
+                return BadRequest("Id mismatch");
             }
 
             _context.Entry(car).State = EntityState.Modified;
@@ -59,15 +59,15 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!CarExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Car not found");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex.Message);
                 }
             }
 
@@ -119,7 +119,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound();
             }
 
-            _context.Cars.Remove(car);
+            car.State = true;
+            _context.Cars.Update(car);
             await _context.SaveChangesAsync();
 
             return NoContent();

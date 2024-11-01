@@ -51,7 +51,7 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (id != motorcycle.Id)
             {
-                return BadRequest();
+                return BadRequest("Id mismatch");
             }
 
             _context.Entry(motorcycle).State = EntityState.Modified;
@@ -60,15 +60,15 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!MotorcycleExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Motorcycle not found");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(ex.Message);
                 }
             }
 
@@ -115,8 +115,9 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound();
             }
+            motorcycle.State = true; //modifica el state a true para poder eliminarlo
 
-            _context.Motorcycles.Remove(motorcycle);
+            _context.Motorcycles.Update(motorcycle);
             await _context.SaveChangesAsync();
 
             return NoContent();
