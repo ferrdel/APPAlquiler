@@ -8,6 +8,6 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public int cilindrada { get; set; }//cilindrada(en cc)
 
         //RelationShips
-        public TypeMotorcycle Id { get; set; }
+        public int TypeId { get; set; }
     }
 }

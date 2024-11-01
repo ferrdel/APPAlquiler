@@ -58,7 +58,36 @@ namespace AppAlquiler_WebAPI.Controllers
             }
         }
 
-        private bool ModelExists(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutType(int id, [FromBody] TypeMotorcycle typeM)
+        {
+            if (id != typeM.Id)
+            {
+                return BadRequest("Id mismatch");
+            }
+
+            _context.Entry(typeM).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!TypeMExists(id))
+                {
+                    return NotFound("TypeMotorcycle not found");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool TypeMExists(int id)
         {
             return _context.TypeMotorcycles.Any(m => m.Id == id);
         }

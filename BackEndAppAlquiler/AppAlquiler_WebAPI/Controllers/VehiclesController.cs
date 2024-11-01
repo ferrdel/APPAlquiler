@@ -26,7 +26,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVehicles()
         {
-            var vehicles= _context.Vehicles.ToListAsync();
+            var vehicles= _context.Boats.ToListAsync();
             return Ok(vehicles);
         }
 
@@ -34,7 +34,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicleID(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Boats.FindAsync(id);
 
             if (vehicle == null)
             {
@@ -82,7 +82,7 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vehicle = new Vehicle
+                var vehicle = new Boat
                 {
                     Description = vehicleDto.Description,
                     GasolineConsumption = vehicleDto.GasolineConsumption,
@@ -95,7 +95,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     BrandId = vehicleDto.BrandId
                 };
 
-                _context.Vehicles.Add(vehicle);
+                _context.Boats.Add(vehicle);
                 await _context.SaveChangesAsync(); //guarda los cambios
                 return CreatedAtAction("GetModelo", new { Id = vehicle.Id }, vehicle);
             }
@@ -106,7 +106,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Boats.FindAsync(id);
 
             if (vehicle != null && vehicle.State)
             {
@@ -120,7 +120,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         private bool VehicleExists(int id)
         {
-            return _context.Vehicles.Any(e => e.Id == id);
+            return _context.Boats.Any(e => e.Id == id);
         }
     }
 }

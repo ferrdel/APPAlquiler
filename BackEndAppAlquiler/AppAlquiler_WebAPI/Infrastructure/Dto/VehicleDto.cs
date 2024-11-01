@@ -12,6 +12,7 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public string? Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
         public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public float Price { get; set; }
+        //public string TypeVehicle { get; set; }
 
         //RelationShips
         public int ModelId { get; set; }

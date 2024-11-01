@@ -19,6 +19,7 @@ namespace AppAlquiler_DataAccessLayer.Models
         public string? Fuel { get; set; } //tipo combustible
         public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public  float Price {  get; set; }
+       // public string TypeVehicle { get; set; } //defino tipo para poder instanciarlo en el controller (bike,boat,car,motorcycle)
 
         //RelationShips
 
