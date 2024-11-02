@@ -88,6 +88,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = boatDto.PassengerCapacity,
                     Fuel = boatDto.Fuel,
                     State = boatDto.State,
+                    Active = boatDto.Active,
                     Price = boatDto.Price,
                     ModelID = boatDto.ModelId,
                     BrandId = boatDto.BrandId,
@@ -119,7 +120,7 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound();
             }
-            boat.State=true; //cambia el estado a true para que quede como eliminado
+            boat.Active =false; //cambia el estado a true para que quede como eliminado
 
             _context.Boats.Update(boat);
             await _context.SaveChangesAsync();

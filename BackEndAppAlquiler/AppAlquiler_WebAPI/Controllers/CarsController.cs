@@ -89,6 +89,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = carDto.PassengerCapacity,
                     Fuel = carDto.Fuel,
                     State = carDto.State,
+                    Active = carDto.Active,
                     Price = carDto.Price,
                     ModelID = carDto.ModelId,
                     BrandId = carDto.BrandId,
@@ -119,13 +120,14 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound();
             }
 
-            car.State = true;
+            car.Active = false;
             _context.Cars.Update(car);
+                                                        //_context.Cars.Remove(car);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
+        
         private bool CarExists(int id)
         {
             return _context.Cars.Any(e => e.Id == id);

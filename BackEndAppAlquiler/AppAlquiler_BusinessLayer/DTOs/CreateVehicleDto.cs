@@ -1,8 +1,13 @@
 ﻿using AppAlquiler_DataAccessLayer.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AppAlquiler_WebAPI.Infrastructure.Dto
+namespace AppAlquiler_BusinessLayer.DTOs
 {
-    public class VehicleDto
+    public class CreateVehicleDto
     {
         public string Description { get; set; }
         public string GasolineConsumption { get; set; }//cantidad de litros de nafta

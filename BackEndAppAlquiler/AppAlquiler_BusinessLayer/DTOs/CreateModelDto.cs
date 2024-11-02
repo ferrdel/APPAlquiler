@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppAlquiler_DataAccessLayer.Models
+namespace AppAlquiler_BusinessLayer.DTOs
 {
-    public class TypeMotorcycle
+    public class CreateModelDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public bool Active { get; set; } //Baja logica
+        public bool Active { get; set; }
     }
 }

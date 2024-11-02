@@ -34,7 +34,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 var brand = new Brand
                 {
                     Name = brandDto.Name,
-                    State = brandDto.State
+                    Active = brandDto.Active
                 };
 
                 _context.Brands.Add(brand);
@@ -81,9 +81,9 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             var brand = await _context.Brands.FindAsync(id);
 
-            if (brand != null && brand.State)
+            if (brand != null && brand.Active)
             {
-                brand.State = false;
+                brand.Active = false;
                 await _context.SaveChangesAsync();
             }
         }

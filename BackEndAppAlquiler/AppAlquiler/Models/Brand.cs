@@ -10,7 +10,7 @@ namespace AppAlquiler_DataAccessLayer.Models
     {
         public int Id { get; set; }
         public string Name{ get; set; }
-        public bool State { get; set; }
+        public bool Active { get; set; } //Baja logica
 
         public Brand() { }
     }

@@ -10,7 +10,7 @@ builder.Services.AddDbContext<AlquilerDbContext>
     (
         options=>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnectio")
+                builder.Configuration.GetConnectionString("DefaultConnection")
                 )    
     );
 

@@ -90,6 +90,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = motorcycleDto.PassengerCapacity,
                     Fuel = motorcycleDto.Fuel,
                     State = motorcycleDto.State,
+                    Active = motorcycleDto.Active,
                     Price = motorcycleDto.Price,
                     ModelID = motorcycleDto.ModelId,
                     BrandId = motorcycleDto.BrandId,
@@ -115,7 +116,7 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound();
             }
-            motorcycle.State = true; //modifica el state a true para poder eliminarlo
+            motorcycle.Active = false; //modifica el state a true para poder eliminarlo
 
             _context.Motorcycles.Update(motorcycle);
             await _context.SaveChangesAsync();

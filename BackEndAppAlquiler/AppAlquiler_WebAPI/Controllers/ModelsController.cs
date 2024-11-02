@@ -50,7 +50,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 var model = new Model
                 {
                     Name = modelDto.Name,
-                    State = modelDto.State
+                    Active = modelDto.Active
                 };
 
                 _context.Models.Add(model);
@@ -70,7 +70,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             if(model != null)
             {
-                model.State = true;
+                model.Active = false;
                 await _context.SaveChangesAsync();
             }
 
@@ -78,6 +78,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         //Metodo de Activar el modelo modificando el estado
+        /*
         [HttpPut("{id}")]
         public async Task RestoreModel(int id)
         {
@@ -89,7 +90,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 await _context.SaveChangesAsync();
             }
         }
-
+        */
         [HttpPut("{id}", Name ="PutModel")]
         public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
         {

@@ -27,7 +27,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBikes()
         {
-            var bikes = _context.Bikes.ToListAsync();
+            var bikes = await _context.Bikes.ToListAsync();
             return Ok(bikes);
         }
 
@@ -91,6 +91,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = bikeDto.PassengerCapacity,
                     Fuel = bikeDto.Fuel,
                     State = bikeDto.State,
+                    Active = bikeDto.Active,
                     Price = bikeDto.Price,
                     ModelID = bikeDto.ModelId,
                     BrandId = bikeDto.BrandId,
@@ -116,10 +117,11 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound();
             }
 
-            bike.State = true; //cambia el estado a true para que quede como eliminado
+            bike.Active = false; //cambia el estado a true para que quede como eliminado
 
 
             _context.Bikes.Update(bike);
+            //_context.Bikes.Remove(bike);
             await _context.SaveChangesAsync();
 
             return NoContent();

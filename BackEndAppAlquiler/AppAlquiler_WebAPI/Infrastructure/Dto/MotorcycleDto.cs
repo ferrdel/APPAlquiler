@@ -1,6 +1,4 @@
-﻿using AppAlquiler_DataAccessLayer.Models;
-
-namespace AppAlquiler_WebAPI.Infrastructure.Dto
+﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
     public class MotorcycleDto : VehicleDto
     {

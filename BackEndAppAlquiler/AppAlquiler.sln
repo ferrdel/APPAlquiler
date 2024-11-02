@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppAlquiler_DataAccessLayer", "AppAlquiler\AppAlquiler_DataAccessLayer.csproj", "{AD917858-9711-4C56-B5ED-69035B6FDB90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAlquiler_DataAccessLayer", "AppAlquiler\AppAlquiler_DataAccessLayer.csproj", "{AD917858-9711-4C56-B5ED-69035B6FDB90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{4589E7A1-38D1-475C-A8FA-959048D81419}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BL", "BL", "{5F8178F5-FB2E-4713-B1A7-9E587A8722E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppAlquiler_BusinessLayer", "AppAlquiler_BusinessLayer\AppAlquiler_BusinessLayer.csproj", "{B062715F-37EF-469F-B8D8-936A16D8D3D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAlquiler_BusinessLayer", "AppAlquiler_BusinessLayer\AppAlquiler_BusinessLayer.csproj", "{B062715F-37EF-469F-B8D8-936A16D8D3D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PL", "PL", "{5DFEC7D7-D17E-49D6-9332-8371DD5E1290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppAlquiler_WebAPI", "AppAlquiler_WebAPI\AppAlquiler_WebAPI.csproj", "{842619D7-5BB5-4C39-89DF-BCF8C8F3EFFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAlquiler_WebAPI", "AppAlquiler_WebAPI\AppAlquiler_WebAPI.csproj", "{842619D7-5BB5-4C39-89DF-BCF8C8F3EFFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

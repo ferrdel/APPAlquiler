@@ -34,7 +34,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 var typeMot = new TypeMotorcycle
                 {
                     Name = typeMotorcycleDto.Name,
-                    State = typeMotorcycleDto.State
+                    Active = typeMotorcycleDto.Active
                 };
 
                 _context.TypeMotorcycles.Add(typeMot);
@@ -51,9 +51,9 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             var typeMot = await _context.TypeMotorcycles.FindAsync(id);
 
-            if (typeMot != null && typeMot.State)
+            if (typeMot != null && typeMot.Active)
             {
-                typeMot.State = false;
+                typeMot.Active = false;
                 await _context.SaveChangesAsync();
             }
         }
