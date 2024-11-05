@@ -22,7 +22,20 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllBrand() //obtener todas las marcas
         {
-            var brand = _context.Brands.ToListAsync();
+            var brand = await _context.Brands.ToListAsync();
+            return Ok(brand);
+        }
+
+        [HttpGet("{id}", Name = "GetBrand")]
+        public async Task<IActionResult> GetBrand(int id)
+        {
+            var brand = await _context.Brands.FindAsync(id);
+
+            if (brand == null)
+            {
+                return NotFound("Brand not found");
+            }
+
             return Ok(brand);
         }
 
@@ -39,14 +52,14 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 _context.Brands.Add(brand);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetBrand", new { id = brand.Id }, brand);
+                return Ok();
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
         //modificar brand
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBike(int id, [FromBody] Brand brand)
+        public async Task<IActionResult> PutBrand(int id, [FromBody] Brand brand)
         {
             if (id != brand.Id)
             {

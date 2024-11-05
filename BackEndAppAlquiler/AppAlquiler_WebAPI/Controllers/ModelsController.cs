@@ -22,7 +22,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllModels()
         {
-            var model= _context.Models.ToListAsync();
+            var model= await _context.Models.ToListAsync();
             return Ok(model);
         }
 
@@ -55,7 +55,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 _context.Models.Add(model);
                 await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetModelo",new {id= model.Id},model);
+                return CreatedAtAction("GetModel",new {id= model.Id},model);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }

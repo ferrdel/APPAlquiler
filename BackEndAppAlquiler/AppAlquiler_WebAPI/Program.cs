@@ -1,4 +1,8 @@
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
 using AppAlquiler_DataAccessLayer.Data;
+using AppAlquiler_DataAccessLayer.Interfaces;
+using AppAlquiler_DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,10 @@ builder.Services.AddDbContext<AlquilerDbContext>
                 builder.Configuration.GetConnectionString("DefaultConnection")
                 )    
     );
+
+builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

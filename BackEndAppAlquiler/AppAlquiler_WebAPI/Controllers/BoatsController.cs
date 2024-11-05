@@ -80,6 +80,22 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Verificacion de que existe la marca
+                var brandExists = await _context.Brands.AnyAsync(b => b.Id == boatDto.BrandId);
+                if (!brandExists)
+                {
+                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
+                //Verificacion de que existe el modelo
+                var modelExists = await _context.Models.AnyAsync(b => b.Id == boatDto.ModelId);
+                if (!modelExists)
+                {
+                    ModelState.AddModelError("ModelId", "Model Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
                 var boat = new Boat
                 {
                     Description = boatDto.Description,
