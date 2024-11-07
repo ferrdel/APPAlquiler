@@ -180,8 +180,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Abs = table.Column<bool>(type: "bit", nullable: false),
-                    cilindrada = table.Column<int>(type: "int", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
+                    Cilindrada = table.Column<int>(type: "int", nullable: false),
                     TypeMotorcycleId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GasolineConsumption = table.Column<string>(type: "nvarchar(max)", nullable: false),

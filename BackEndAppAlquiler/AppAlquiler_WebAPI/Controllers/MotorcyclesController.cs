@@ -10,6 +10,8 @@ using AppAlquiler_DataAccessLayer.Models;
 using System.Runtime.ConstrainedExecution;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
+using System.Drawing.Drawing2D;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -99,7 +101,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 }
 
                 //Verificacion de que existe el tipo de motocicleta
-                if (!TypeExists(motorcycleDto.TypeId))
+                if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
                 {
                     ModelState.AddModelError("TypeId", "Type Id Not found.");
                     return BadRequest(ModelState);
@@ -119,13 +121,15 @@ namespace AppAlquiler_WebAPI.Controllers
                     BrandId = motorcycleDto.BrandId,
                     
                     Abs=motorcycleDto.Abs,
-                    cilindrada=motorcycleDto.cilindrada,
-                    TypeId=motorcycleDto.TypeId
+                    Cilindrada=motorcycleDto.Cilindrada,
+                    TypeMotorcycleId=motorcycleDto.TypeMotorcycleId
                 };
 
                 var succeeded = await _motorcycleService.AddMotorcycleAsync(motorcycle);
                 if (succeeded)
                     return CreatedAtAction("GetMotorcycle", new { Id = motorcycle.Id }, motorcycle);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -135,13 +139,11 @@ namespace AppAlquiler_WebAPI.Controllers
         public async Task<IActionResult> DeleteMotorcycle(int id)
         {
             var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
-            if (motorcycle == null)
+            if (motorcycle == null && motorcycle.Active)
             {
-                return NotFound();
+                motorcycle.Active = false;
+                await _motorcycleService.UpdateMotorcycleAsync(motorcycle);    //Cambia el estado Active a falso (baja logica).
             }
-            motorcycle.Active = false; //modifica el state a true para poder eliminarlo
-
-            await _motorcycleService.DeleteMotorcycleAsync(motorcycle.Id);
 
             return NoContent();
         }
@@ -158,9 +160,9 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             return _motorcycleService.GetModelByIdAsync(id) != null;
         }
-        private bool TypeExists(int id)
+        private bool TypeMotorcycleExists(int id)
         {
-            return _motorcycleService.GetTypeMotorcycleAsync(id) != null;
+            return _motorcycleService.GetTypeMotorcycleByIdAsync(id) != null;
         }
     }
 }

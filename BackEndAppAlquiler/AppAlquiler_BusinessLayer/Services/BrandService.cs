@@ -1,6 +1,9 @@
 ﻿using AppAlquiler_BusinessLayer.DTOs;
+using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Data;
+using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using AppAlquiler_DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,38 +12,66 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_BusinessLayer.Services
 {
-    public class BrandService
+    public class BrandService : IBrandService
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IBrandRepository _brandRepository;
 
-        public BrandService(AlquilerDbContext context)
+        public BrandService(IBrandRepository brandRepository)
         {
-            _context = context;
+            _brandRepository = brandRepository;
         }
 
-        public async Task<bool> PlaceBrand(CreateBrandDto brandDto)
+        public async Task<IEnumerable<Brand>> GetAllBrandAsync()
         {
-            var transaction = _context.Database.BeginTransaction();
+            return await _brandRepository.GetAllAsync();
+        }
 
+        public async Task<Brand> GetBrandAsync(int id)
+        {
+            return await _brandRepository.GetByIdAsync(id);
+        }
+
+        public async Task<bool> AddBrandAsync(Brand brand)
+        {
             try
             {
-                var brand = new Brand
-                {
-                    Name = brandDto.Name,
-                    Active = brandDto.Active
-                };
-
-                _context.Brands.Add(brand);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
+                await _brandRepository.AddAsync(brand);
+                await _brandRepository.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                transaction.Rollback();
-                return false;           //Se puede encadenar con una exepcion customizada
+                return false;
             }
         }
+
+        public async Task<bool> UpdateBrandAsync(Brand brand)
+        {
+            try
+            {
+                await _brandRepository.UpdateAsync(brand);
+                await _brandRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteBrandAsync(int id)
+        {
+            try
+            {
+                await _brandRepository.DeleteAsync(await _brandRepository.GetByIdAsync(id));
+                await _brandRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

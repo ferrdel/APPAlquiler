@@ -1,4 +1,6 @@
-﻿using AppAlquiler_DataAccessLayer.Data;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
+using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.AspNetCore.Http;
@@ -11,25 +13,26 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
 
-        public BrandsController(AlquilerDbContext context)
+        private readonly IBrandService _brandService;
+
+        public BrandsController(IBrandService brandService)
         {
-            _context = context;
+            _brandService = brandService;
         }
 
         //GET: api/Brand
         [HttpGet]
         public async Task<IActionResult> GetAllBrand() //obtener todas las marcas
         {
-            var brand = await _context.Brands.ToListAsync();
+            var brand = await _brandService.GetAllBrandAsync();
             return Ok(brand);
         }
 
         [HttpGet("{id}", Name = "GetBrand")]
         public async Task<IActionResult> GetBrand(int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
+            var brand = await _brandService.GetBrandAsync(id);
 
             if (brand == null)
             {
@@ -50,9 +53,12 @@ namespace AppAlquiler_WebAPI.Controllers
                     Active = brandDto.Active
                 };
 
-                _context.Brands.Add(brand);
-                await _context.SaveChangesAsync();
-                return Ok();
+                var succeeded = await _brandService.AddBrandAsync(brand);
+                if (succeeded)
+                    return CreatedAtAction("GetBrand", new { Id = brand.Id }, brand);
+                else
+                    return BadRequest(ModelState);
+
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -65,12 +71,13 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
-
-            _context.Entry(brand).State = EntityState.Modified;
+            //_context.Entry(brand).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _brandService.UpdateBrandAsync(brand);
+                if (succeeded)
+                    return NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -92,18 +99,19 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}", Name = "DeleteBrand")]
         public async Task DeleteBrand(int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
+            var brand = await _brandService.GetBrandAsync(id);
 
             if (brand != null && brand.Active)
             {
                 brand.Active = false;
-                await _context.SaveChangesAsync();
+                await _brandService.UpdateBrandAsync(brand);    //Cambia el estado Active a falso (baja logica).
             }
+
         }
 
         private bool BrandExists(int id)
         {
-            return _context.Brands.Any(m => m.Id == id);
+            return _brandService.GetBrandAsync(id) != null;
         }
 
     }

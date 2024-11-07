@@ -37,7 +37,7 @@ namespace AppAlquiler_BusinessLayer.Services
                 await _motorcycleRepository.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -51,7 +51,7 @@ namespace AppAlquiler_BusinessLayer.Services
                 await _motorcycleRepository.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -65,7 +65,7 @@ namespace AppAlquiler_BusinessLayer.Services
                 await _motorcycleRepository.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -76,17 +76,17 @@ namespace AppAlquiler_BusinessLayer.Services
             throw new NotImplementedException();
         }*/
 
-        public async Task<TypeMotorcycle> GetTypeMotorcycleAsync(int id)
+        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
-            return await _motorcycleRepository.GetTypeMotorcycleAsync(id);
+            return await _motorcycleRepository.GetTypeMotorcycleByIdAsync(id);
         }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
+        public async Task<Motorcycle> GetBrandByIdAsync(int id)
         {
             return await _motorcycleRepository.GetBrandByIdAsync(id);
         }
 
-        public async Task<Model> GetModelByIdAsync(int id)
+        public async Task<Motorcycle> GetModelByIdAsync(int id)
         {
             return await _motorcycleRepository.GetModelByIdAsync(id);
         }

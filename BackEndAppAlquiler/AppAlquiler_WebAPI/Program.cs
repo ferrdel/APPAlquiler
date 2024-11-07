@@ -18,8 +18,26 @@ builder.Services.AddDbContext<AlquilerDbContext>
                 )    
     );
 
+builder.Services.AddScoped<IBikeRepository, BikeRepository>();
+builder.Services.AddScoped<IBikeService, BikeService>();
+
+builder.Services.AddScoped<IBoatRepository, BoatRepository>();
+builder.Services.AddScoped<IBoatService, BoatService>();
+
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
+
+builder.Services.AddScoped<IModelRepository, ModelRepository>();
+builder.Services.AddScoped<IModelService, ModelService>();
+
 builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+
+builder.Services.AddScoped<ITypeMotorcycleRepository, TypeMotorcycleRepository>();
+builder.Services.AddScoped<ITypeMotorcycleService, TypeMotorcycleService>();
 
 
 builder.Services.AddControllers();

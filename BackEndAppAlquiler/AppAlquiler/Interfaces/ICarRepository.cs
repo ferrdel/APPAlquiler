@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_DataAccessLayer.Interfaces
 {
-    public interface IVehicleRepository
+    public interface ICarRepository: IRepository<Car>
     {
-        Task<Brand> GetBrandByIdAsync(int id);
-        Task<Model> GetModelByIdAsync(int id);
-
+        Task<Car> GetBrandByIdAsync(int id);
+        Task<Car> GetModelByIdAsync(int id);
     }
 }

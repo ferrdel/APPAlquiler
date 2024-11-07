@@ -35,7 +35,7 @@ namespace AppAlquiler_DataAccessLayer.Repositories
                 await _context.Set<T>().AddAsync(entity);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -48,7 +48,7 @@ namespace AppAlquiler_DataAccessLayer.Repositories
                 _context.Set<T>().Update(entity);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -61,7 +61,7 @@ namespace AppAlquiler_DataAccessLayer.Repositories
                 _context.Set<T>().Remove(entity);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

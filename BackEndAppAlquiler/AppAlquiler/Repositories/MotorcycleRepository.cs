@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_DataAccessLayer.Repositories
 {
-    public class MotorcycleRepository : Repository<Motorcycle>, IMotorcycleRepository, IVehicleRepository
+    public class MotorcycleRepository : Repository<Motorcycle>, IMotorcycleRepository
     {
         public MotorcycleRepository(AlquilerDbContext context) : base(context) { }
 
@@ -23,19 +23,19 @@ namespace AppAlquiler_DataAccessLayer.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<TypeMotorcycle> GetTypeMotorcycleAsync(int id)
+        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
-            return await _context.Set<TypeMotorcycle>().FindAsync(id);
+            return await _context.Set<Motorcycle>().FindAsync(id);
         }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
+        public async Task<Motorcycle> GetBrandByIdAsync(int id)
         {
-            return await _context.Set<Brand>().FindAsync(id);
+            return await _context.Set<Motorcycle>().FindAsync(id);
         }
 
-        public async Task<Model> GetModelByIdAsync(int id)
+        public async Task<Motorcycle> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Model>().FindAsync(id);
+            return await _context.Set<Motorcycle>().FindAsync(id);
         }
     }
 }

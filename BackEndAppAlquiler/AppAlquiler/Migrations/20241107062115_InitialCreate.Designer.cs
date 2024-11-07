@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppAlquiler_DataAccessLayer.Migrations
 {
     [DbContext(typeof(AlquilerDbContext))]
-    [Migration("20241102205846_InitialCreate")]
+    [Migration("20241107062115_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -299,6 +299,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Cilindrada")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -326,13 +329,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TypeMotorcycleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("cilindrada")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

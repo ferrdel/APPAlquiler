@@ -1,9 +1,12 @@
-﻿using AppAlquiler_DataAccessLayer.Data;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
+using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Drawing2D;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -11,25 +14,25 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class ModelsController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IModelService _modelService;
 
-        public ModelsController(AlquilerDbContext context)
+        public ModelsController(IModelService modelService)
         {
-            _context = context;
+            _modelService = modelService;
         }
 
         //GET: api/Modelos
         [HttpGet]
         public async Task<IActionResult> GetAllModels()
         {
-            var model= await _context.Models.ToListAsync();
+            var model= await _modelService.GetAllModelAsync();
             return Ok(model);
         }
 
         [HttpGet("{id}", Name = "GetModel")]
         public async Task<IActionResult> GetModel(int id)
         {
-            var model=await _context.Models.FindAsync(id);
+            var model=await _modelService.GetModelAsync(id);
 
             if(model == null)
             {
@@ -53,11 +56,45 @@ namespace AppAlquiler_WebAPI.Controllers
                     Active = modelDto.Active
                 };
 
-                _context.Models.Add(model);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetModel",new {id= model.Id},model);
+                var succeeded = await _modelService.AddModelAsync(model);
+                if (succeeded)
+                    return CreatedAtAction("GetModel", new { Id = model.Id }, model);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
+        }
+
+
+        [HttpPut("{id}", Name = "PutModel")]
+        public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest("Id mismatch");
+            }
+
+            //_context.Entry(model).State = EntityState.Modified;
+
+            try
+            {
+                var succeeded = await _modelService.UpdateModelAsync(model);
+                if (succeeded)
+                    return NoContent();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!ModelExists(id))
+                {
+                    return NotFound("Model not found");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return NoContent();
         }
 
         //DELETE: api/action/2
@@ -66,12 +103,12 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModel(int id) 
         {
-            var model = await _context.Models.FindAsync(id);
+            var model = await _modelService.GetModelAsync(id);
 
-            if(model != null)
+            if(model != null && model.Active)
             {
                 model.Active = false;
-                await _context.SaveChangesAsync();
+                await _modelService.UpdateModelAsync(model);    //Cambia el estado Active a falso (baja logica).
             }
 
             return NoContent();
@@ -91,38 +128,10 @@ namespace AppAlquiler_WebAPI.Controllers
             }
         }
         */
-        [HttpPut("{id}", Name ="PutModel")]
-        public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
-        {
-            if (id != model.Id)
-            {
-                return BadRequest("Id mismatch");
-            }
-
-            _context.Entry(model).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!ModelExists(id))
-                {
-                    return NotFound("Model not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-
-            return NoContent();
-        }
 
         private bool ModelExists(int id)
         {
-            return _context.Models.Any(m => m.Id == id);
+            return _modelService.GetModelAsync(id) != null;
         }
     }
 }

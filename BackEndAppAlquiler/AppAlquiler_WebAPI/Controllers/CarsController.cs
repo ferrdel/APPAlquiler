@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -15,25 +17,26 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class CarsController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly ICarService _carService;
 
-        public CarsController(AlquilerDbContext context)
+        public CarsController(ICarService carService)
         {
-            _context = context;
+            _carService = carService;
         }
 
         // GET: api/Cars
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
-            return await _context.Cars.ToListAsync();
+            var succeded = await _carService.GetAllCarAsync();
+            return Ok(succeded);
         }
 
         // GET: api/Cars/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _carService.GetCarAsync(id);
 
             if (car == null)
             {
@@ -53,11 +56,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            _context.Entry(car).State = EntityState.Modified;
+            //_context.Entry(car).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _carService.UpdateCarAsync(car);
+                if (succeeded) NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -82,16 +86,14 @@ namespace AppAlquiler_WebAPI.Controllers
             if (ModelState.IsValid)
             {
                 //Verificacion de que existe la marca
-                var brandExists = await _context.Brands.AnyAsync(b => b.Id == carDto.BrandId);
-                if (!brandExists)
+                if (!BrandExists(carDto.BrandId))
                 {
                     ModelState.AddModelError("BrandId", "Brand Id Not found.");
                     return BadRequest(ModelState);
                 }
 
                 //Verificacion de que existe el modelo
-                var modelExists = await _context.Models.AnyAsync(b => b.Id == carDto.ModelId);
-                if (!modelExists)
+                if (!ModelExists(carDto.ModelId))
                 {
                     ModelState.AddModelError("ModelId", "Model Id Not found.");
                     return BadRequest(ModelState);
@@ -119,9 +121,11 @@ namespace AppAlquiler_WebAPI.Controllers
                     EngineLiters=carDto.EngineLiters
                 };
 
-                _context.Cars.Add(car);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetCar", new { Id = car.Id }, car);
+                var succeeded = await _carService.AddCarAsync(car);
+                if (succeeded)
+                    return CreatedAtAction("GetCar", new { Id = car.Id }, car);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -130,23 +134,28 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
+            var car = await _carService.GetCarAsync(id);
+            if (car == null && car.Active)
             {
-                return NotFound();
+                car.Active = false;
+                await _carService.UpdateCarAsync(car);
             }
-
-            car.Active = false;
-            _context.Cars.Update(car);
-                                                        //_context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
         
         private bool CarExists(int id)
         {
-            return _context.Cars.Any(e => e.Id == id);
+            return _carService.GetCarAsync(id) != null;
+        }
+
+        private bool BrandExists(int id)
+        {
+            return _carService.GetBrandByIdAsync(id) != null;
+        }
+        private bool ModelExists(int id)
+        {
+            return _carService.GetModelByIdAsync(id) != null;
         }
     }
 }
