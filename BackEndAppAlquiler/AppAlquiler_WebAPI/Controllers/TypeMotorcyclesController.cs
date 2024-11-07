@@ -22,8 +22,21 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllType() //obtener todas las marcas
         {
-            var typeMot = _context.TypeMotorcycles.ToListAsync();
+            var typeMot = await _context.TypeMotorcycles.ToListAsync();
             return Ok(typeMot);
+        }
+
+        [HttpGet("{id}", Name = "GetTypeMotorcycle")]
+        public async Task<IActionResult> GetTypeMotorcycle(int id)
+        {
+            var typeMotorcycle = await _context.TypeMotorcycles.FindAsync(id);
+
+            if (typeMotorcycle == null)
+            {
+                return NotFound("Type of Motorcycle not found");
+            }
+
+            return Ok(typeMotorcycle);
         }
 
         [HttpPost]
@@ -34,12 +47,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 var typeMot = new TypeMotorcycle
                 {
                     Name = typeMotorcycleDto.Name,
-                    State = typeMotorcycleDto.State
+                    Active = typeMotorcycleDto.Active
                 };
 
                 _context.TypeMotorcycles.Add(typeMot);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetTypeMotorcycle", new { id = typeMot.Id }, typeMot);
+                return Ok();
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -51,9 +64,9 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             var typeMot = await _context.TypeMotorcycles.FindAsync(id);
 
-            if (typeMot != null && typeMot.State)
+            if (typeMot != null && typeMot.Active)
             {
-                typeMot.State = false;
+                typeMot.Active = false;
                 await _context.SaveChangesAsync();
             }
         }

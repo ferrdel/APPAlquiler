@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -15,25 +17,26 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class BoatsController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IBoatService _boatService;
 
-        public BoatsController(AlquilerDbContext context)
+        public BoatsController(IBoatService boatService)
         {
-            _context = context;
+            _boatService = boatService;
         }
 
         // GET: api/Boats
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Boat>>> GetBoats()
         {
-            return await _context.Boats.ToListAsync();
+            var succeeded = await _boatService.GetAllBoatAsync();
+            return Ok(succeeded);
         }
 
         // GET: api/Boats/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Boat>> GetBoat(int id)
         {
-            var boat = await _context.Boats.FindAsync(id);
+            var boat = await _boatService.GetBoatAsync(id);
 
             if (boat == null)
             {
@@ -52,11 +55,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            _context.Entry(boat).State = EntityState.Modified;
+            //_context.Entry(boat).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _boatService.UpdateBoatAsync(boat);
+                if (succeeded) NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -80,6 +84,20 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Verificacion de que existe la marca
+                if (!BrandExists(boatDto.BrandId))
+                {
+                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
+                //Verificacion de que existe el modelo
+                if (!ModelExists(boatDto.ModelId))
+                {
+                    ModelState.AddModelError("ModelId", "Model Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
                 var boat = new Boat
                 {
                     Description = boatDto.Description,
@@ -88,6 +106,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = boatDto.PassengerCapacity,
                     Fuel = boatDto.Fuel,
                     State = boatDto.State,
+                    Active = boatDto.Active,
                     Price = boatDto.Price,
                     ModelID = boatDto.ModelId,
                     BrandId = boatDto.BrandId,
@@ -103,9 +122,11 @@ namespace AppAlquiler_WebAPI.Controllers
                     Propulsion = boatDto.Propulsion
                 };
 
-                _context.Boats.Add(boat);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetBoat", new { Id = boat.Id }, boat);
+                var succeeded = await _boatService.AddBoatAsync(boat);
+                if (succeeded)
+                    return CreatedAtAction("GetBoat", new { Id = boat.Id }, boat);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -114,22 +135,28 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBoat(int id)
         {
-            var boat = await _context.Boats.FindAsync(id);
+            var boat = await _boatService.GetBoatAsync(id);
             if (boat == null)
             {
-                return NotFound();
+                boat.Active = false; //cambia el estado a true para que quede como eliminado
+                await _boatService.UpdateBoatAsync(boat);
             }
-            boat.State=true; //cambia el estado a true para que quede como eliminado
-
-            _context.Boats.Update(boat);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool BoatExists(int id)
         {
-            return _context.Boats.Any(e => e.Id == id);
+            return _boatService.GetBoatAsync(id) != null;
+        }
+
+        private bool BrandExists(int id)
+        {
+            return _boatService.GetBrandByIdAsync(id) != null;
+        }
+        private bool ModelExists(int id)
+        {
+            return _boatService.GetModelByIdAsync(id) != null;
         }
     }
 }

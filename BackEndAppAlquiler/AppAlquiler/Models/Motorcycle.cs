@@ -9,12 +9,12 @@ namespace AppAlquiler_DataAccessLayer.Models
     public class Motorcycle : Vehicle
     {
         public bool Abs { get; set; }//Abs(boleano),
-        public int cilindrada { get; set; }//cilindrada(en cc)
+        public int Cilindrada { get; set; }//cilindrada(en cc)
 
         //Tipo_motocicleta(Cruiser, sport, touring, naked, dual-sport, ENUM.),
         
         //RelationShips
-        public int TypeId { get; set; }
+        public int TypeMotorcycleId { get; set; }
         public TypeMotorcycle TypeMotorcycle { get; set; }
     }
 }

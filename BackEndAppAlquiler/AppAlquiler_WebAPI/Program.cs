@@ -1,4 +1,8 @@
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
 using AppAlquiler_DataAccessLayer.Data;
+using AppAlquiler_DataAccessLayer.Interfaces;
+using AppAlquiler_DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +14,31 @@ builder.Services.AddDbContext<AlquilerDbContext>
     (
         options=>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnectio")
+                builder.Configuration.GetConnectionString("DefaultConnection")
                 )    
     );
+
+builder.Services.AddScoped<IBikeRepository, BikeRepository>();
+builder.Services.AddScoped<IBikeService, BikeService>();
+
+builder.Services.AddScoped<IBoatRepository, BoatRepository>();
+builder.Services.AddScoped<IBoatService, BoatService>();
+
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
+
+builder.Services.AddScoped<IModelRepository, ModelRepository>();
+builder.Services.AddScoped<IModelService, ModelService>();
+
+builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+
+builder.Services.AddScoped<ITypeMotorcycleRepository, TypeMotorcycleRepository>();
+builder.Services.AddScoped<ITypeMotorcycleService, TypeMotorcycleService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

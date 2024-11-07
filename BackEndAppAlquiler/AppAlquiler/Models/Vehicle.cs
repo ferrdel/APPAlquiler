@@ -5,7 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AppAlquiler_DataAccessLayer.Models
-{
+{   
+    public enum State
+    {
+        Alquilado,
+        Disponible,
+        EnMantenimiento
+    }
     public class Vehicle
     {
         //(codVehiculo, descripcion, marca, modelo, consumo, combustible(nafta, gasoil, eléctrico, ninguno),
@@ -17,7 +23,8 @@ namespace AppAlquiler_DataAccessLayer.Models
         public int PassengerCapacity { get; set; } //Cantiadad de pasajeros
         //definicion combustible
         public string? Fuel { get; set; } //tipo combustible
-        public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public State State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public bool Active { get; set; } //Baja logica
         public  float Price {  get; set; }
        // public string TypeVehicle { get; set; } //defino tipo para poder instanciarlo en el controller (bike,boat,car,motorcycle)
 

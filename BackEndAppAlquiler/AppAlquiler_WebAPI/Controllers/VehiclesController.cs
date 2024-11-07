@@ -90,6 +90,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = vehicleDto.PassengerCapacity,
                     Fuel = vehicleDto.Fuel,
                     State = vehicleDto.State,
+                    Active = vehicleDto.Active,
                     Price = vehicleDto.Price,
                     ModelID = vehicleDto.ModelId,
                     BrandId = vehicleDto.BrandId
@@ -108,9 +109,9 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             var vehicle = await _context.Boats.FindAsync(id);
 
-            if (vehicle != null && vehicle.State)
+            if (vehicle != null && vehicle.Active)
             {
-                vehicle.State = false;
+                vehicle.Active = false;
                 await _context.SaveChangesAsync();
             }
 

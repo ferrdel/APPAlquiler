@@ -9,6 +9,8 @@ using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -16,18 +18,18 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class BikesController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IBikeService _bikeService;
 
-        public BikesController(AlquilerDbContext context)
+        public BikesController(IBikeService bikeService)
         {
-            _context = context;
+            _bikeService = bikeService;
         }
 
         // GET: api/Bikes
         [HttpGet]
         public async Task<IActionResult> GetBikes()
         {
-            var bikes = _context.Bikes.ToListAsync();
+            var bikes = await _bikeService.GetAllBikeAsync();
             return Ok(bikes);
         }
 
@@ -35,7 +37,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet("{id}", Name = "GetBike")]
         public async Task<IActionResult> GetBike(int id)
         {
-            var bike = await _context.Bikes.FindAsync(id);
+            var bike = await _bikeService.GetBikeAsync(id);
 
             if (bike == null)
             {
@@ -55,11 +57,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            _context.Entry(bike).State = EntityState.Modified;
+            //_context.Entry(bike).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _bikeService.UpdateBikeAsync(bike);
+                if (succeeded) NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -83,6 +86,20 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Verificacion de que existe la marca
+                if (!BrandExists(bikeDto.BrandId))
+                {
+                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
+                //Verificacion de que existe el modelo
+                if (!ModelExists(bikeDto.ModelId))
+                {
+                    ModelState.AddModelError("ModelId", "Model Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
                 var bike = new Bike
                 {
                     Description = bikeDto.Description,
@@ -91,6 +108,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = bikeDto.PassengerCapacity,
                     Fuel = bikeDto.Fuel,
                     State = bikeDto.State,
+                    Active = bikeDto.Active,
                     Price = bikeDto.Price,
                     ModelID = bikeDto.ModelId,
                     BrandId = bikeDto.BrandId,
@@ -99,9 +117,11 @@ namespace AppAlquiler_WebAPI.Controllers
                     NumberSpeeds = bikeDto.NumberSpeeds
                 };
 
-                _context.Bikes.Add(bike);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetBike", new { Id = bike.Id }, bike); //redirigir la accion a un get
+                var succeeded = await _bikeService.AddBikeAsync(bike);
+                if (succeeded)
+                    return CreatedAtAction("GetBike", new { Id = bike.Id }, bike);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -110,24 +130,28 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBike(int id)
         {
-            var bike = await _context.Bikes.FindAsync(id);
-            if (bike == null)
+            var bike = await _bikeService.GetBikeAsync(id);
+            if (bike == null && bike.Active)
             {
-                return NotFound();
+                bike.Active = false; //cambia el estado a true para que quede como eliminado
+                await _bikeService.UpdateBikeAsync(bike);
             }
-
-            bike.State = true; //cambia el estado a true para que quede como eliminado
-
-
-            _context.Bikes.Update(bike);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool BikeExists(int id)
         {
-            return _context.Bikes.Any(e => e.Id == id);
+            return _bikeService.GetBikeAsync(id) != null;
+        }
+
+        private bool BrandExists(int id)
+        {
+            return _bikeService.GetBrandByIdAsync(id) != null;
+        }
+        private bool ModelExists(int id)
+        {
+            return _bikeService.GetModelByIdAsync(id) != null;
         }
     }
 }

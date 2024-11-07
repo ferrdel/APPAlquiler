@@ -9,6 +9,9 @@ using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using System.Runtime.ConstrainedExecution;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
+using System.Drawing.Drawing2D;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -16,25 +19,26 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class MotorcyclesController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IMotorcycleService _motorcycleService;
 
-        public MotorcyclesController(AlquilerDbContext context)
+        public MotorcyclesController(IMotorcycleService motorcycleService)
         {
-            _context = context;
+            _motorcycleService = motorcycleService;
         }
 
         // GET: api/Motorcycles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Motorcycle>>> GetMotorcycles()
         {
-            return await _context.Motorcycles.ToListAsync();
+            var motorcycle = await _motorcycleService.GetAllMotorcycleAsync();
+            return Ok(motorcycle);
         }
 
         // GET: api/Motorcycles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Motorcycle>> GetMotorcycle(int id)
         {
-            var motorcycle = await _context.Motorcycles.FindAsync(id);
+            var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
 
             if (motorcycle == null)
             {
@@ -54,11 +58,11 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            _context.Entry(motorcycle).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _motorcycleService.UpdateMotorcycleAsync(motorcycle);
+                if (succeeded)
+                    return NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -82,6 +86,27 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Verificacion de que existe la marca
+                if (!BrandExists(motorcycleDto.BrandId))
+                {
+                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
+                //Verificacion de que existe el modelo
+                if (!ModelExists(motorcycleDto.ModelId))
+                {
+                    ModelState.AddModelError("ModelId", "Model Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
+                //Verificacion de que existe el tipo de motocicleta
+                if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
+                {
+                    ModelState.AddModelError("TypeId", "Type Id Not found.");
+                    return BadRequest(ModelState);
+                }
+
                 var motorcycle = new Motorcycle
                 {
                     Description = motorcycleDto.Description,
@@ -90,18 +115,21 @@ namespace AppAlquiler_WebAPI.Controllers
                     PassengerCapacity = motorcycleDto.PassengerCapacity,
                     Fuel = motorcycleDto.Fuel,
                     State = motorcycleDto.State,
+                    Active = motorcycleDto.Active,
                     Price = motorcycleDto.Price,
                     ModelID = motorcycleDto.ModelId,
                     BrandId = motorcycleDto.BrandId,
                     
                     Abs=motorcycleDto.Abs,
-                    cilindrada=motorcycleDto.cilindrada,
-                    TypeId=motorcycleDto.TypeId
+                    Cilindrada=motorcycleDto.Cilindrada,
+                    TypeMotorcycleId=motorcycleDto.TypeMotorcycleId
                 };
 
-                _context.Motorcycles.Add(motorcycle);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetMotorcycle", new { Id = motorcycle.Id }, motorcycle);
+                var succeeded = await _motorcycleService.AddMotorcycleAsync(motorcycle);
+                if (succeeded)
+                    return CreatedAtAction("GetMotorcycle", new { Id = motorcycle.Id }, motorcycle);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
@@ -110,22 +138,31 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMotorcycle(int id)
         {
-            var motorcycle = await _context.Motorcycles.FindAsync(id);
-            if (motorcycle == null)
+            var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
+            if (motorcycle == null && motorcycle.Active)
             {
-                return NotFound();
+                motorcycle.Active = false;
+                await _motorcycleService.UpdateMotorcycleAsync(motorcycle);    //Cambia el estado Active a falso (baja logica).
             }
-            motorcycle.State = true; //modifica el state a true para poder eliminarlo
-
-            _context.Motorcycles.Update(motorcycle);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool MotorcycleExists(int id)
         {
-            return _context.Motorcycles.Any(e => e.Id == id);
+            return _motorcycleService.GetMotorcycleAsync(id) != null;
+        }
+        private bool BrandExists(int id)
+        {
+            return _motorcycleService.GetBrandByIdAsync(id) != null;
+        }
+        private bool ModelExists(int id)
+        {
+            return _motorcycleService.GetModelByIdAsync(id) != null;
+        }
+        private bool TypeMotorcycleExists(int id)
+        {
+            return _motorcycleService.GetTypeMotorcycleByIdAsync(id) != null;
         }
     }
 }

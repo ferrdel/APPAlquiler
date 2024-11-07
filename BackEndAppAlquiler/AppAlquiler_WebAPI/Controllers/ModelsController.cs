@@ -1,9 +1,12 @@
-﻿using AppAlquiler_DataAccessLayer.Data;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_BusinessLayer.Services;
+using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Drawing2D;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -11,25 +14,25 @@ namespace AppAlquiler_WebAPI.Controllers
     [ApiController]
     public class ModelsController : ControllerBase
     {
-        private readonly AlquilerDbContext _context;
+        private readonly IModelService _modelService;
 
-        public ModelsController(AlquilerDbContext context)
+        public ModelsController(IModelService modelService)
         {
-            _context = context;
+            _modelService = modelService;
         }
 
         //GET: api/Modelos
         [HttpGet]
         public async Task<IActionResult> GetAllModels()
         {
-            var model= _context.Models.ToListAsync();
+            var model= await _modelService.GetAllModelAsync();
             return Ok(model);
         }
 
         [HttpGet("{id}", Name = "GetModel")]
         public async Task<IActionResult> GetModel(int id)
         {
-            var model=await _context.Models.FindAsync(id);
+            var model=await _modelService.GetModelAsync(id);
 
             if(model == null)
             {
@@ -50,47 +53,20 @@ namespace AppAlquiler_WebAPI.Controllers
                 var model = new Model
                 {
                     Name = modelDto.Name,
-                    State = modelDto.State
+                    Active = modelDto.Active
                 };
 
-                _context.Models.Add(model);
-                await _context.SaveChangesAsync(); //guarda los cambios
-                return CreatedAtAction("GetModelo",new {id= model.Id},model);
+                var succeeded = await _modelService.AddModelAsync(model);
+                if (succeeded)
+                    return CreatedAtAction("GetModel", new { Id = model.Id }, model);
+                else
+                    return BadRequest(ModelState);
             }
             return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
-        //DELETE: api/action/2
 
-        //(No se si es la forma correcta  de realizar el delete)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteModel(int id) 
-        {
-            var model = await _context.Models.FindAsync(id);
-
-            if(model != null)
-            {
-                model.State = true;
-                await _context.SaveChangesAsync();
-            }
-
-            return NoContent();
-        }
-
-        //Metodo de Activar el modelo modificando el estado
-        [HttpPut("{id}")]
-        public async Task RestoreModel(int id)
-        {
-            var model = await _context.Models.FindAsync(id);
-
-            if (model != null && model.State)
-            {
-                model.State = false;
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        [HttpPut("{id}", Name ="PutModel")]
+        [HttpPut("{id}", Name = "PutModel")]
         public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
         {
             if (id != model.Id)
@@ -98,11 +74,13 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            _context.Entry(model).State = EntityState.Modified;
+            //_context.Entry(model).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                var succeeded = await _modelService.UpdateModelAsync(model);
+                if (succeeded)
+                    return NoContent();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -119,9 +97,41 @@ namespace AppAlquiler_WebAPI.Controllers
             return NoContent();
         }
 
+        //DELETE: api/action/2
+
+        //(No se si es la forma correcta  de realizar el delete)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteModel(int id) 
+        {
+            var model = await _modelService.GetModelAsync(id);
+
+            if(model != null && model.Active)
+            {
+                model.Active = false;
+                await _modelService.UpdateModelAsync(model);    //Cambia el estado Active a falso (baja logica).
+            }
+
+            return NoContent();
+        }
+
+        //Metodo de Activar el modelo modificando el estado
+        /*
+        [HttpPut("{id}")]
+        public async Task RestoreModel(int id)
+        {
+            var model = await _context.Models.FindAsync(id);
+
+            if (model != null && model.State)
+            {
+                model.State = false;
+                await _context.SaveChangesAsync();
+            }
+        }
+        */
+
         private bool ModelExists(int id)
         {
-            return _context.Models.Any(m => m.Id == id);
+            return _modelService.GetModelAsync(id) != null;
         }
     }
 }

@@ -10,7 +10,8 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public int PassengerCapacity { get; set; } //Cantiadad de pasajeros
         //definicion combustible
         public string? Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
-        public bool State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public State State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public bool Active { get; set; } //Baja logica
         public float Price { get; set; }
         //public string TypeVehicle { get; set; }
 
