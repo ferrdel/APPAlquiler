@@ -39,6 +39,7 @@ namespace AppAlquiler_BusinessLayer.Services
             }
             catch (Exception)
             {
+                //Aca captura el error
                 return false;
             }
         }
@@ -53,6 +54,7 @@ namespace AppAlquiler_BusinessLayer.Services
             }
             catch (Exception)
             {
+                //Si modelo Id es incorrecto salta el error
                 return false;
             }
         }

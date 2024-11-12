@@ -13,6 +13,7 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
         Task<bool> AddAsync(T entity);
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);
+        Task<bool> ActivateAsync(T entity);
         Task SaveChangesAsync();
 
     }

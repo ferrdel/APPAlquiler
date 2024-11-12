@@ -28,7 +28,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Motorcycles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Motorcycle>>> GetMotorcycles()
+        public async Task<ActionResult<IEnumerable<MotorcycleDto>>> GetMotorcycles()
         {
             var motorcycle = await _motorcycleService.GetAllMotorcycleAsync();
             return Ok(motorcycle);
@@ -36,7 +36,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Motorcycles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Motorcycle>> GetMotorcycle(int id)
+        public async Task<ActionResult<MotorcycleDto>> GetMotorcycle(int id)
         {
             var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
 
@@ -45,18 +45,57 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound();
             }
 
-            return motorcycle;
+            var motorcycleDto = new MotorcycleDto
+            {
+                Id = motorcycle.Id,
+                Description = motorcycle.Description,
+                GasolineConsumption = motorcycle.GasolineConsumption,
+                LuggageCapacity = motorcycle.LuggageCapacity,
+                PassengerCapacity = motorcycle.PassengerCapacity,
+                Fuel = motorcycle.Fuel,
+                State = Enum.GetName(motorcycle.State),
+                Active = motorcycle.Active,
+                Price = motorcycle.Price,
+                ModelId = motorcycle.ModelId,
+                BrandId = motorcycle.BrandId,
+
+                Abs = motorcycle.Abs,
+                Cilindrada = motorcycle.Cilindrada,
+                TypeMotorcycleId = motorcycle.TypeMotorcycleId
+            };
+
+            return motorcycleDto;
         }
 
         // PUT: api/Motorcycles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMotorcycle(int id, Motorcycle motorcycle)
+        public async Task<IActionResult> PutMotorcycle(int id, MotorcycleDto motorcycleDto)
         {
-            if (id != motorcycle.Id)
+            if (id != motorcycleDto.Id)
             {
                 return BadRequest("Id mismatch");
             }
+
+            var motorcycle = new Motorcycle
+            {
+                Id = (int)motorcycleDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
+                Description = motorcycleDto.Description,
+                GasolineConsumption = motorcycleDto.GasolineConsumption,
+                LuggageCapacity = motorcycleDto.LuggageCapacity,
+                PassengerCapacity = motorcycleDto.PassengerCapacity,
+                Fuel = motorcycleDto.Fuel,
+                //State = stateEnum,
+                State = Enum.Parse<State>(motorcycleDto.State),
+                Active = motorcycleDto.Active,
+                Price = motorcycleDto.Price,
+                ModelId = motorcycleDto.ModelId,
+                BrandId = motorcycleDto.BrandId,
+                //CAracteristicas Motorcycle
+                Abs = motorcycleDto.Abs,
+                Cilindrada = motorcycleDto.Cilindrada,
+                TypeMotorcycleId = motorcycleDto.TypeMotorcycleId
+            };
 
             try
             {
@@ -114,10 +153,10 @@ namespace AppAlquiler_WebAPI.Controllers
                     LuggageCapacity = motorcycleDto.LuggageCapacity,
                     PassengerCapacity = motorcycleDto.PassengerCapacity,
                     Fuel = motorcycleDto.Fuel,
-                    State = motorcycleDto.State,
+                    State = Enum.Parse<State>(motorcycleDto.State),
                     Active = motorcycleDto.Active,
                     Price = motorcycleDto.Price,
-                    ModelID = motorcycleDto.ModelId,
+                    ModelId = motorcycleDto.ModelId,
                     BrandId = motorcycleDto.BrandId,
                     
                     Abs=motorcycleDto.Abs,
@@ -139,10 +178,23 @@ namespace AppAlquiler_WebAPI.Controllers
         public async Task<IActionResult> DeleteMotorcycle(int id)
         {
             var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
-            if (motorcycle == null && motorcycle.Active)
+            if (motorcycle != null && motorcycle.Active)
             {
                 motorcycle.Active = false;
                 await _motorcycleService.UpdateMotorcycleAsync(motorcycle);    //Cambia el estado Active a falso (baja logica).
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ActivateMotorcycle(int id)
+        {
+            var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
+            if (motorcycle != null && !motorcycle.Active)
+            {
+                motorcycle.Active = true;
+                await _motorcycleService.UpdateMotorcycleAsync(motorcycle);
             }
 
             return NoContent();

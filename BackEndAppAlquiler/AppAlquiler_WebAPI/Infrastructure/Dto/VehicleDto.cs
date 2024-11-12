@@ -1,16 +1,20 @@
 ﻿using AppAlquiler_DataAccessLayer.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
     public class VehicleDto
     {
+        public int? Id { get; set; }     //Agregado para front
         public string Description { get; set; }
-        public string GasolineConsumption { get; set; }//cantidad de litros de nafta
-        public string LuggageCapacity { get; set; }//capacidad de equipaje(En Litros)
+        public float GasolineConsumption { get; set; }//cantidad de litros de nafta
+        public float LuggageCapacity { get; set; }//capacidad de equipaje(En Litros)
         public int PassengerCapacity { get; set; } //Cantiadad de pasajeros
         //definicion combustible
         public string? Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
-        public State State { get; set; } //Alquilado,Disponible,EnMantenimiento
+
+        [EnumDataType(typeof(State), ErrorMessage = "{0} Indicado no es valido")]
+        public string State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public bool Active { get; set; } //Baja logica
         public float Price { get; set; }
         //public string TypeVehicle { get; set; }

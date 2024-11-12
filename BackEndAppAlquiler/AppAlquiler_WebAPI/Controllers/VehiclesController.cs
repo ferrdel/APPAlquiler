@@ -89,10 +89,10 @@ namespace AppAlquiler_WebAPI.Controllers
                     LuggageCapacity = vehicleDto.LuggageCapacity,
                     PassengerCapacity = vehicleDto.PassengerCapacity,
                     Fuel = vehicleDto.Fuel,
-                    State = vehicleDto.State,
+                    State = Enum.Parse<State>(vehicleDto.State),
                     Active = vehicleDto.Active,
                     Price = vehicleDto.Price,
-                    ModelID = vehicleDto.ModelId,
+                    ModelId = vehicleDto.ModelId,
                     BrandId = vehicleDto.BrandId
                 };
 

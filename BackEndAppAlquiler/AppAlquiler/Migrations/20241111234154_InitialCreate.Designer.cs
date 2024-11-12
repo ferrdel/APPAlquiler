@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppAlquiler_DataAccessLayer.Migrations
 {
     [DbContext(typeof(AlquilerDbContext))]
-    [Migration("20241107062115_InitialCreate")]
+    [Migration("20241111234154_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,15 +48,13 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<string>("Fuel")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GasolineConsumption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("GasolineConsumption")
+                        .HasColumnType("real");
 
-                    b.Property<string>("LuggageCapacity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("LuggageCapacity")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ModelID")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberSpeeds")
@@ -78,7 +76,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("ModelID");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Bikes");
                 });
@@ -120,19 +118,17 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<string>("Fuel")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GasolineConsumption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("GasolineConsumption")
+                        .HasColumnType("real");
 
-                    b.Property<string>("LuggageCapacity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("LuggageCapacity")
+                        .HasColumnType("real");
 
                     b.Property<string>("Material")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ModelID")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<string>("Navigation")
@@ -164,7 +160,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("ModelID");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Boats");
                 });
@@ -222,15 +218,13 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<string>("Fuel")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GasolineConsumption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("GasolineConsumption")
+                        .HasColumnType("real");
 
-                    b.Property<string>("LuggageCapacity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("LuggageCapacity")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ModelID")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberDoors")
@@ -257,7 +251,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("ModelID");
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Cars");
                 });
@@ -309,15 +303,13 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<string>("Fuel")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GasolineConsumption")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("GasolineConsumption")
+                        .HasColumnType("real");
 
-                    b.Property<string>("LuggageCapacity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("LuggageCapacity")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ModelID")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
                     b.Property<int>("PassengerCapacity")
@@ -336,7 +328,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("ModelID");
+                    b.HasIndex("ModelId");
 
                     b.HasIndex("TypeMotorcycleId");
 
@@ -373,7 +365,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelID")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -392,7 +384,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelID")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -411,7 +403,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelID")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -430,7 +422,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelID")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
