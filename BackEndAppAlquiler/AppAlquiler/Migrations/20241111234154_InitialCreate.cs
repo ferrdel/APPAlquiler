@@ -62,14 +62,14 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     FrameSize = table.Column<int>(type: "int", nullable: false),
                     NumberSpeeds = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GasolineConsumption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LuggageCapacity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GasolineConsumption = table.Column<float>(type: "real", nullable: false),
+                    LuggageCapacity = table.Column<float>(type: "real", nullable: false),
                     PassengerCapacity = table.Column<int>(type: "int", nullable: false),
                     Fuel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    ModelID = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -82,8 +82,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bikes_Models_ModelID",
-                        column: x => x.ModelID,
+                        name: "FK_Bikes_Models_ModelId",
+                        column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -105,14 +105,14 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Accessories = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Propulsion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GasolineConsumption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LuggageCapacity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GasolineConsumption = table.Column<float>(type: "real", nullable: false),
+                    LuggageCapacity = table.Column<float>(type: "real", nullable: false),
                     PassengerCapacity = table.Column<int>(type: "int", nullable: false),
                     Fuel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    ModelID = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -125,8 +125,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Boats_Models_ModelID",
-                        column: x => x.ModelID,
+                        name: "FK_Boats_Models_ModelId",
+                        column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -146,14 +146,14 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Sound = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EngineLiters = table.Column<float>(type: "real", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GasolineConsumption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LuggageCapacity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GasolineConsumption = table.Column<float>(type: "real", nullable: false),
+                    LuggageCapacity = table.Column<float>(type: "real", nullable: false),
                     PassengerCapacity = table.Column<int>(type: "int", nullable: false),
                     Fuel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    ModelID = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -166,8 +166,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Cars_Models_ModelID",
-                        column: x => x.ModelID,
+                        name: "FK_Cars_Models_ModelId",
+                        column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -183,14 +183,14 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Cilindrada = table.Column<int>(type: "int", nullable: false),
                     TypeMotorcycleId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GasolineConsumption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LuggageCapacity = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GasolineConsumption = table.Column<float>(type: "real", nullable: false),
+                    LuggageCapacity = table.Column<float>(type: "real", nullable: false),
                     PassengerCapacity = table.Column<int>(type: "int", nullable: false),
                     Fuel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    ModelID = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -203,8 +203,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Motorcycles_Models_ModelID",
-                        column: x => x.ModelID,
+                        name: "FK_Motorcycles_Models_ModelId",
+                        column: x => x.ModelId,
                         principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -222,9 +222,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bikes_ModelID",
+                name: "IX_Bikes_ModelId",
                 table: "Bikes",
-                column: "ModelID");
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boats_BrandId",
@@ -232,9 +232,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Boats_ModelID",
+                name: "IX_Boats_ModelId",
                 table: "Boats",
-                column: "ModelID");
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_BrandId",
@@ -242,9 +242,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_ModelID",
+                name: "IX_Cars_ModelId",
                 table: "Cars",
-                column: "ModelID");
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Motorcycles_BrandId",
@@ -252,9 +252,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Motorcycles_ModelID",
+                name: "IX_Motorcycles_ModelId",
                 table: "Motorcycles",
-                column: "ModelID");
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Motorcycles_TypeMotorcycleId",

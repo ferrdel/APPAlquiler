@@ -14,8 +14,9 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> AddCarAsync(Car car);
         Task<bool> UpdateCarAsync(Car car);
         Task<bool> DeleteCarAsync(int id);
+        Task<bool> ActivateAsync(int id);
 
-        Task<Car> GetBrandByIdAsync(int id);
-        Task<Car> GetModelByIdAsync(int id);
+        Task<Brand> GetBrandByIdAsync(int id);
+        Task<Model> GetModelByIdAsync(int id);
     }
 }

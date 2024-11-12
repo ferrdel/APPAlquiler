@@ -23,58 +23,47 @@ namespace AppAlquiler_WebAPI.Controllers
 
         //GET: api/Modelos
         [HttpGet]
-        public async Task<IActionResult> GetAllModels()
+        public async Task<ActionResult<IEnumerable<ModelDto>>> GetAllModels()
         {
             var model= await _modelService.GetAllModelAsync();
             return Ok(model);
         }
 
         [HttpGet("{id}", Name = "GetModel")]
-        public async Task<IActionResult> GetModel(int id)
+        public async Task<ActionResult<ModelDto>> GetModel(int id)
         {
-            var model=await _modelService.GetModelAsync(id);
+            var model = await _modelService.GetModelAsync(id);
 
             if(model == null)
             {
                 return NotFound("Model not found");
             }
-            else
+
+            var modelDto = new ModelDto
             {
-                return Ok(model);
-            }
+                Id = model.Id,
+                Name = model.Name,
+                Active = model.Active,
+            };
 
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
-        {
-            if (ModelState.IsValid)
-            {
-                var model = new Model
-                {
-                    Name = modelDto.Name,
-                    Active = modelDto.Active
-                };
-
-                var succeeded = await _modelService.AddModelAsync(model);
-                if (succeeded)
-                    return CreatedAtAction("GetModel", new { Id = model.Id }, model);
-                else
-                    return BadRequest(ModelState);
-            }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            return modelDto;
         }
 
 
         [HttpPut("{id}", Name = "PutModel")]
-        public async Task<IActionResult> PutModel(int id, [FromBody] Model model)
+        public async Task<IActionResult> PutModel(int id, [FromBody] ModelDto modelDto)
         {
-            if (id != model.Id)
+            if (id != modelDto.Id)
             {
                 return BadRequest("Id mismatch");
             }
 
-            //_context.Entry(model).State = EntityState.Modified;
+            var model = new Model
+            {
+                Id = (int)modelDto.Id,
+                Name = modelDto.Name,
+                Active = modelDto.Active,
+            };
 
             try
             {
@@ -97,6 +86,26 @@ namespace AppAlquiler_WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
+        {
+            if (ModelState.IsValid)
+            {
+                var model = new Model
+                {
+                    Name = modelDto.Name,
+                    Active = modelDto.Active
+                };
+
+                var succeeded = await _modelService.AddModelAsync(model);
+                if (succeeded)
+                    return CreatedAtAction("GetModel", new { Id = model.Id }, model);
+                else
+                    return BadRequest(ModelState);
+            }
+            return BadRequest(ModelState); // elModelState es la representacion del modelo
+        }
+
         //DELETE: api/action/2
 
         //(No se si es la forma correcta  de realizar el delete)
@@ -109,6 +118,19 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 model.Active = false;
                 await _modelService.UpdateModelAsync(model);    //Cambia el estado Active a falso (baja logica).
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ActivateModel(int id)
+        {
+            var model = await _modelService.GetModelAsync(id);
+            if (model != null && !model.Active)
+            {
+                model.Active = true;
+                await _modelService.UpdateModelAsync(model);
             }
 
             return NoContent();

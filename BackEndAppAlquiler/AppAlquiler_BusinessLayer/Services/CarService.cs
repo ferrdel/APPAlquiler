@@ -70,13 +70,27 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
+        public async Task<bool> ActivateAsync(int id)
+        {
+            try
+            {
+                await _carRepository.ActivateAsync(await _carRepository.GetByIdAsync(id));
+                await _carRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        public async Task<Car> GetBrandByIdAsync(int id)
+
+        public async Task<Brand> GetBrandByIdAsync(int id)
         {
             return await _carRepository.GetBrandByIdAsync(id);
         }
 
-        public async Task<Car> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _carRepository.GetModelByIdAsync(id);
         }

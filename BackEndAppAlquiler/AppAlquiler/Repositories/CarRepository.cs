@@ -13,14 +13,15 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     {
         public CarRepository(AlquilerDbContext context) : base(context) { }
 
-        public async Task<Car> GetBrandByIdAsync(int id)
+        public async Task<Brand> GetBrandByIdAsync(int id)
         {
-            return await _context.Set<Car>().FindAsync(id);
+            var estado = await _context.Set<Brand>().FindAsync(id);     //Devuelve null si no lo encuentra
+            return estado;
         }
 
-        public async Task<Car> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Car>().FindAsync(id);
+            return await _context.Set<Model>().FindAsync(id);
         }
     }
 }

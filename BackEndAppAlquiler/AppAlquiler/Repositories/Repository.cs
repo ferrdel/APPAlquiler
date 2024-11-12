@@ -30,13 +30,16 @@ namespace AppAlquiler_DataAccessLayer.Repositories
 
         public async Task<bool> AddAsync(T entity)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 await _context.Set<T>().AddAsync(entity);
+                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception)
             {
+                await transaction.RollbackAsync();
                 return false;
             }
         }
@@ -59,6 +62,19 @@ namespace AppAlquiler_DataAccessLayer.Repositories
             try
             {
                 _context.Set<T>().Remove(entity);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ActivateAsync(T entity)
+        {
+            try
+            {
+                _context.Set<T>().Update(entity);
                 return true;
             }
             catch (Exception)

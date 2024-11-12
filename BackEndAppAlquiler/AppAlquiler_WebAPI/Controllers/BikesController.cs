@@ -11,6 +11,7 @@ using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
+using System.Runtime.ConstrainedExecution;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -27,7 +28,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Bikes
         [HttpGet]
-        public async Task<IActionResult> GetBikes()
+        public async Task<ActionResult<IEnumerable<BikeDto>>> GetBikes()
         {
             var bikes = await _bikeService.GetAllBikeAsync();
             return Ok(bikes);
@@ -35,7 +36,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Bikes/5
         [HttpGet("{id}", Name = "GetBike")]
-        public async Task<IActionResult> GetBike(int id)
+        public async Task<ActionResult<BikeDto>> GetBike(int id)
         {
             var bike = await _bikeService.GetBikeAsync(id);
 
@@ -44,25 +45,67 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound("Bike not found");
             }
 
+            var bikeDTO = new BikeDto
+            {
+                Id = bike.Id,    //agregado para el front
+                Description = bike.Description,
+                GasolineConsumption = bike.GasolineConsumption,
+                LuggageCapacity = bike.LuggageCapacity,
+                PassengerCapacity = bike.PassengerCapacity,
+                Fuel = bike.Fuel,
+
+                //parseo
+                State = Enum.GetName(bike.State),
+                Active = bike.Active,
+                Price = bike.Price,
+                ModelId = bike.ModelId,
+                BrandId = bike.BrandId,
+                //Caracteristicas Bike
+                Whell = bike.Whell,
+                FrameSize = bike.FrameSize,
+                NumberSpeeds = bike.NumberSpeeds
+            };
+
+            return bikeDTO;
+
             return Ok(bike);
         }
 
         // PUT: api/Bikes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBike(int id,[FromBody] Bike bike)
+        public async Task<IActionResult> PutBike(int id,[FromBody] BikeDto bikeDto)
         {
-            if (id != bike.Id)
+            if (id != bikeDto.Id)
             {
                 return BadRequest("Id mismatch");
             }
 
-            //_context.Entry(bike).State = EntityState.Modified;
+            var bike = new Bike
+            {
+                Id = (int)bikeDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
+                Description = bikeDto.Description,
+                GasolineConsumption = bikeDto.GasolineConsumption,
+                LuggageCapacity = bikeDto.LuggageCapacity,
+                PassengerCapacity = bikeDto.PassengerCapacity,
+                Fuel = bikeDto.Fuel,
+                //State = stateEnum,
+                State = Enum.Parse<State>(bikeDto.State),
+                Active = bikeDto.Active,
+                Price = bikeDto.Price,
+                ModelId = bikeDto.ModelId,
+                BrandId = bikeDto.BrandId,
+                //CAracteristicas Auto
+                Whell = bikeDto.Whell,
+                FrameSize = bikeDto.FrameSize,
+                NumberSpeeds = bikeDto.NumberSpeeds
+            };
 
             try
             {
                 var succeeded = await _bikeService.UpdateBikeAsync(bike);
-                if (succeeded) NoContent();
+                if (succeeded) return Content("bien");
+                else return BadRequest("Error");
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -84,22 +127,23 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBike([FromBody] BikeDto bikeDto)
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe la marca
+            if (!BrandExists(bikeDto.BrandId))
             {
-                //Verificacion de que existe la marca
-                if (!BrandExists(bikeDto.BrandId))
-                {
-                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest(ModelState);
-                }
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el modelo
-                if (!ModelExists(bikeDto.ModelId))
-                {
-                    ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest(ModelState);
-                }
+            //Verificacion de que existe el modelo
+            if (!ModelExists(bikeDto.ModelId))
+            {
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
 
+            //if (ModelState.IsValid)
+            try
+            {
                 var bike = new Bike
                 {
                     Description = bikeDto.Description,
@@ -107,10 +151,10 @@ namespace AppAlquiler_WebAPI.Controllers
                     LuggageCapacity = bikeDto.LuggageCapacity,
                     PassengerCapacity = bikeDto.PassengerCapacity,
                     Fuel = bikeDto.Fuel,
-                    State = bikeDto.State,
+                    State = Enum.Parse<State>(bikeDto.State),
                     Active = bikeDto.Active,
                     Price = bikeDto.Price,
-                    ModelID = bikeDto.ModelId,
+                    ModelId = bikeDto.ModelId,
                     BrandId = bikeDto.BrandId,
                     Whell = bikeDto.Whell,
                     FrameSize = bikeDto.FrameSize,
@@ -123,7 +167,11 @@ namespace AppAlquiler_WebAPI.Controllers
                 else
                     return BadRequest(ModelState);
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception )
+            {
+                return BadRequest("ModelState");
+            }
+            //return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
         // DELETE: api/Bikes/5
@@ -131,9 +179,22 @@ namespace AppAlquiler_WebAPI.Controllers
         public async Task<IActionResult> DeleteBike(int id)
         {
             var bike = await _bikeService.GetBikeAsync(id);
-            if (bike == null && bike.Active)
+            if (bike != null && bike.Active)
             {
                 bike.Active = false; //cambia el estado a true para que quede como eliminado
+                await _bikeService.UpdateBikeAsync(bike);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ActivateBike(int id)
+        {
+            var bike = await _bikeService.GetBikeAsync(id);
+            if (bike != null && !bike.Active)
+            {
+                bike.Active = true;
                 await _bikeService.UpdateBikeAsync(bike);
             }
 
