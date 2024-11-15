@@ -30,8 +30,8 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BikeDto>>> GetBikes()
         {
-            var bikes = await _bikeService.GetAllBikeAsync();
-            return Ok(bikes);
+            var succeded = await _bikeService.GetAllBikeAsync();
+            return Ok(succeded);
         }
 
         // GET: api/Bikes/5
@@ -58,6 +58,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 State = Enum.GetName(bike.State),
                 Active = bike.Active,
                 Price = bike.Price,
+                Image = bike.Image,
                 ModelId = bike.ModelId,
                 BrandId = bike.BrandId,
                 //Caracteristicas Bike
@@ -67,8 +68,6 @@ namespace AppAlquiler_WebAPI.Controllers
             };
 
             return bikeDTO;
-
-            return Ok(bike);
         }
 
         // PUT: api/Bikes/5
@@ -80,46 +79,48 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
-
-            var bike = new Bike
+            if (!BikeExists(id))
             {
-                Id = (int)bikeDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
-                Description = bikeDto.Description,
-                GasolineConsumption = bikeDto.GasolineConsumption,
-                LuggageCapacity = bikeDto.LuggageCapacity,
-                PassengerCapacity = bikeDto.PassengerCapacity,
-                Fuel = bikeDto.Fuel,
-                //State = stateEnum,
-                State = Enum.Parse<State>(bikeDto.State),
-                Active = bikeDto.Active,
-                Price = bikeDto.Price,
-                ModelId = bikeDto.ModelId,
-                BrandId = bikeDto.BrandId,
-                //CAracteristicas Auto
-                Whell = bikeDto.Whell,
-                FrameSize = bikeDto.FrameSize,
-                NumberSpeeds = bikeDto.NumberSpeeds
-            };
-
-            try
-            {
-                var succeeded = await _bikeService.UpdateBikeAsync(bike);
-                if (succeeded) return Content("bien");
-                else return BadRequest("Error");
+                return NotFound("Bike not found");
             }
-            catch (DbUpdateConcurrencyException ex)
+            //Verificacion de que existe la marca
+            if (!BrandExists(bikeDto.BrandId))
             {
-                if (!BikeExists(id))
-                {
-                    return NotFound("Bike not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
             }
 
-            return NoContent();
+            //Verificacion de que existe el modelo
+            if (!ModelExists(bikeDto.ModelId))
+            {
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
+
+            var bike = await _bikeService.GetBikeAsync(id);
+            if (bike == null)
+                return NotFound("bike not found");
+            if (bike.Active != bikeDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
+
+            bike.Description = bikeDto.Description;
+            bike.GasolineConsumption = bikeDto.GasolineConsumption;
+            bike.LuggageCapacity = bikeDto.LuggageCapacity;
+            bike.PassengerCapacity = bikeDto.PassengerCapacity;
+            bike.Fuel = bikeDto.Fuel;
+            bike.State = Enum.Parse<State>(bikeDto.State.ToLower());
+            bike.Price = bikeDto.Price;
+            bike.Image = bikeDto.Image;
+            bike.ModelId = bikeDto.ModelId;
+            bike.BrandId = bikeDto.BrandId;
+
+            bike.Whell = bikeDto.Whell;
+            bike.FrameSize = bikeDto.FrameSize;
+            bike.NumberSpeeds = bikeDto.NumberSpeeds;
+
+            var succeeded = await _bikeService.UpdateBikeAsync(bike);
+            if (!succeeded) return BadRequest("Fallo");
+            return Ok("Succeeded");
         }
 
         // POST: api/Bikes
@@ -151,9 +152,10 @@ namespace AppAlquiler_WebAPI.Controllers
                     LuggageCapacity = bikeDto.LuggageCapacity,
                     PassengerCapacity = bikeDto.PassengerCapacity,
                     Fuel = bikeDto.Fuel,
-                    State = Enum.Parse<State>(bikeDto.State),
+                    State = Enum.Parse<State>(bikeDto.State.ToLower()),
                     Active = bikeDto.Active,
                     Price = bikeDto.Price,
+                    Image = bikeDto.Image,
                     ModelId = bikeDto.ModelId,
                     BrandId = bikeDto.BrandId,
                     Whell = bikeDto.Whell,
@@ -184,8 +186,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 bike.Active = false; //cambia el estado a true para que quede como eliminado
                 await _bikeService.UpdateBikeAsync(bike);
             }
+            else return BadRequest("Not found bike or not Active");
 
-            return NoContent();
+            return Ok("Logical delete was successful.");
         }
 
         [HttpPatch("{id}")]
@@ -197,22 +200,26 @@ namespace AppAlquiler_WebAPI.Controllers
                 bike.Active = true;
                 await _bikeService.UpdateBikeAsync(bike);
             }
+            else return BadRequest("Not found bike or Active");
 
-            return NoContent();
+            return Ok("Logical activation was successful.");
         }
 
         private bool BikeExists(int id)
         {
-            return _bikeService.GetBikeAsync(id) != null;
+            var exists = _bikeService.GetBikeAsync(id).Result;
+            return exists != null;
         }
 
         private bool BrandExists(int id)
         {
-            return _bikeService.GetBrandByIdAsync(id) != null;
+            var exists = _bikeService.GetBrandByIdAsync(id).Result;
+            return exists != null;
         }
         private bool ModelExists(int id)
         {
-            return _bikeService.GetModelByIdAsync(id) != null;
+            var exists = _bikeService.GetModelByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

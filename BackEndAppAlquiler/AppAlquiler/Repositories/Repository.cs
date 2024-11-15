@@ -30,22 +30,19 @@ namespace AppAlquiler_DataAccessLayer.Repositories
 
         public async Task<bool> AddAsync(T entity)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 await _context.Set<T>().AddAsync(entity);
-                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
                 return false;
             }
         }
 
         public async Task<bool> UpdateAsync(T entity)
-        {
+        {   
             try
             {
                 _context.Set<T>().Update(entity);

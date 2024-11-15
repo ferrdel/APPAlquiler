@@ -26,7 +26,8 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<Bike> GetBikeAsync(int id)
         {
-            return await _bikeRepository.GetByIdAsync(id);
+            var succeeded = await _bikeRepository.GetByIdAsync(id);
+            return succeeded;
         }
 
         public async Task<bool> AddBikeAsync(Bike bike)
@@ -74,12 +75,12 @@ namespace AppAlquiler_BusinessLayer.Services
         }
 
 
-        public Task<Bike> GetBrandByIdAsync(int id)
+        public Task<Brand> GetBrandByIdAsync(int id)
         {
             return _bikeRepository.GetBrandByIdAsync(id);
         }
 
-        public async Task<Bike> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _bikeRepository.GetModelByIdAsync(id);
         }

@@ -76,17 +76,17 @@ namespace AppAlquiler_BusinessLayer.Services
             throw new NotImplementedException();
         }*/
 
-        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
+        public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
             return await _motorcycleRepository.GetTypeMotorcycleByIdAsync(id);
         }
 
-        public async Task<Motorcycle> GetBrandByIdAsync(int id)
+        public async Task<Brand> GetBrandByIdAsync(int id)
         {
             return await _motorcycleRepository.GetBrandByIdAsync(id);
         }
 
-        public async Task<Motorcycle> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _motorcycleRepository.GetModelByIdAsync(id);
         }

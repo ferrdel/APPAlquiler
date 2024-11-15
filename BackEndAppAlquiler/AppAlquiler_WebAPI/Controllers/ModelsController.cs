@@ -58,32 +58,17 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            var model = new Model
-            {
-                Id = (int)modelDto.Id,
-                Name = modelDto.Name,
-                Active = modelDto.Active,
-            };
+            var model = await _modelService.GetModelAsync(id);
+            if (model == null)
+                return NotFound("Model not found");
+            if (model.Active != modelDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
 
-            try
-            {
-                var succeeded = await _modelService.UpdateModelAsync(model);
-                if (succeeded)
-                    return NoContent();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!ModelExists(id))
-                {
-                    return NotFound("Model not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
+            model.Name = modelDto.Name;
 
-            return NoContent();
+            var succeeded = await _modelService.UpdateModelAsync(model);
+            if (!succeeded) return BadRequest("fallo");
+            return Ok("Succeeded");
         }
 
         [HttpPost]
@@ -119,8 +104,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 model.Active = false;
                 await _modelService.UpdateModelAsync(model);    //Cambia el estado Active a falso (baja logica).
             }
+            else return BadRequest("Not found model or not Active");
 
-            return NoContent();
+            return Ok("Logical delete was successful.");
         }
 
         [HttpPatch("{id}")]
@@ -132,24 +118,10 @@ namespace AppAlquiler_WebAPI.Controllers
                 model.Active = true;
                 await _modelService.UpdateModelAsync(model);
             }
+            else return BadRequest("Not found model or Active");
 
-            return NoContent();
+            return Ok("Logical activation was successful.");
         }
-
-        //Metodo de Activar el modelo modificando el estado
-        /*
-        [HttpPut("{id}")]
-        public async Task RestoreModel(int id)
-        {
-            var model = await _context.Models.FindAsync(id);
-
-            if (model != null && model.State)
-            {
-                model.State = false;
-                await _context.SaveChangesAsync();
-            }
-        }
-        */
 
         private bool ModelExists(int id)
         {

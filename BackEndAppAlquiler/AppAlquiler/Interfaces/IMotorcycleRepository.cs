@@ -12,9 +12,9 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
         Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycle();
         Task<IEnumerable<Motorcycle>> SearchTypeMotorcycle(string searchTerm);
 
-        Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id);
+        Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id);
 
-        Task<Motorcycle> GetBrandByIdAsync(int id);
-        Task<Motorcycle> GetModelByIdAsync(int id);
+        Task<Brand> GetBrandByIdAsync(int id);
+        Task<Model> GetModelByIdAsync(int id);
     }
 }

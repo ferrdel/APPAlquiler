@@ -23,19 +23,19 @@ namespace AppAlquiler_DataAccessLayer.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
+        public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
-            return await _context.Set<Motorcycle>().FindAsync(id);
+            return await _context.Set<TypeMotorcycle>().FindAsync(id);
         }
 
-        public async Task<Motorcycle> GetBrandByIdAsync(int id)
+        public async Task<Brand> GetBrandByIdAsync(int id)
         {
-            return await _context.Set<Motorcycle>().FindAsync(id);
+            return await _context.Set<Brand>().FindAsync(id);
         }
 
-        public async Task<Motorcycle> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Motorcycle>().FindAsync(id);
+            return await _context.Set<Model>().FindAsync(id);
         }
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppAlquiler_DataAccessLayer.Migrations
 {
     [DbContext(typeof(AlquilerDbContext))]
-    [Migration("20241111234154_InitialCreate")]
+    [Migration("20241115225912_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -50,6 +50,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -120,6 +124,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -221,6 +229,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
 
@@ -306,6 +318,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
 
@@ -346,9 +362,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

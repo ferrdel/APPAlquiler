@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppAlquiler_BusinessLayer.DTOs
 {
-    public class CreatBoatDto : CreateVehicleDto
+    public class CreateBoatDto : CreateVehicleDto
     {
         public string Dimension { get; set; }//Tamaño,
         public string Engine { get; set; }//Motor(fuera de borda, intraborda. ENUM),

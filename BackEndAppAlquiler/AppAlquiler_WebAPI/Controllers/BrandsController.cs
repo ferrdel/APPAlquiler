@@ -58,32 +58,17 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            var brand = new Brand
-            {
-                Id = (int)brandDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
-                Name = brandDto.Name,
-                Active = brandDto.Active
-            };
+            var brand = await _brandService.GetBrandAsync(id);
+            if (brand == null)
+                return NotFound("Brand not found");
+            if (brand.Active != brandDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
 
-            try
-            {
-                var succeeded = await _brandService.UpdateBrandAsync(brand);
-                if (succeeded)
-                    return NoContent();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!BrandExists(id))
-                {
-                    return NotFound("Brand not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
+            brand.Name = brandDto.Name;
 
-            return NoContent();
+            var succeeded = await _brandService.UpdateBrandAsync(brand);
+            if (!succeeded) return BadRequest("fallo");
+            return Ok("Succeeded");
         }
 
         [HttpPost]
@@ -110,7 +95,7 @@ namespace AppAlquiler_WebAPI.Controllers
         //Metodo eliminar, cambiando a false el estado de la marca
 
         [HttpDelete("{id}", Name = "DeleteBrand")]
-        public async Task DeleteBrand(int id)
+        public async Task<IActionResult> DeleteBrand(int id)
         {
             var brand = await _brandService.GetBrandAsync(id);
 
@@ -119,6 +104,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 brand.Active = false;
                 await _brandService.UpdateBrandAsync(brand);    //Cambia el estado Active a falso (baja logica).
             }
+            else return BadRequest("Not found brand or not Active");
+
+            return Ok("Logical delete was successful.");
 
         }
 
@@ -131,8 +119,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 brand.Active = true;
                 await _brandService.UpdateBrandAsync(brand);
             }
+            else return BadRequest("Not found brand or Active");
 
-            return NoContent();
+            return Ok("Logical activation was successful.");
         }
 
         private bool BrandExists(int id)

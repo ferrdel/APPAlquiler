@@ -4,6 +4,7 @@ using AppAlquiler_DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,8 +25,9 @@ namespace AppAlquiler_BusinessLayer.Services
         }
 
         public async Task<Boat> GetBoatAsync(int id)
-        {
-            return await _boatRepository.GetByIdAsync(id);
+        { 
+            //trae los datos que se enviaron, por ende nunca viene null
+            return await _boatRepository.GetByIdAsync(id);    //Devuelve un arreglo provisional y se rompe dado que no es null
         }
 
         public async Task<bool> AddBoatAsync(Boat boat)
@@ -46,7 +48,7 @@ namespace AppAlquiler_BusinessLayer.Services
         {
             try
             {
-                await _boatRepository.UpdateAsync(boat);
+                //await _boatRepository.UpdateAsync(boat);
                 await _boatRepository.SaveChangesAsync();
                 return true;
             }
@@ -71,12 +73,12 @@ namespace AppAlquiler_BusinessLayer.Services
         }
 
 
-        public async Task<Boat> GetBrandByIdAsync(int id)
+        public async Task<Brand> GetBrandByIdAsync(int id)
         {
             return await _boatRepository.GetBrandByIdAsync(id);
         }
 
-        public async Task<Boat> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _boatRepository.GetModelByIdAsync(id);
         }

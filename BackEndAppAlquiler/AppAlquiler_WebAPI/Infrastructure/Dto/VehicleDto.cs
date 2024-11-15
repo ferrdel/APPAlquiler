@@ -17,6 +17,7 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public string State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public bool Active { get; set; } //Baja logica
         public float Price { get; set; }
+        public string Image { get; set; }
         //public string TypeVehicle { get; set; }
 
         //RelationShips

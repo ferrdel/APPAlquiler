@@ -44,7 +44,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -69,6 +69,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -112,6 +113,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -153,6 +155,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -190,6 +193,7 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     State = table.Column<int>(type: "int", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },

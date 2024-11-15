@@ -57,6 +57,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 State = Enum.GetName(car.State),
                 Active = car.Active,
                 Price = car.Price,
+                Image = car.Image,
                 ModelId = car.ModelId,
                 BrandId = car.BrandId,
                 //CAracteristicas Auto
@@ -75,55 +76,58 @@ namespace AppAlquiler_WebAPI.Controllers
         // PUT: api/Cars/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(int id, CarDto carDto)
+        public async Task<IActionResult> PutCar(int id,[FromBody] CarDto carDto)
         {
             if (id != carDto.Id)
             {
                 return BadRequest("Id mismatch");
             }
-
-            var car = new Car
+            if (!CarExists(id))
             {
-                Id = (int)carDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
-                Description = carDto.Description,
-                GasolineConsumption = carDto.GasolineConsumption,
-                LuggageCapacity = carDto.LuggageCapacity,
-                PassengerCapacity = carDto.PassengerCapacity,
-                Fuel = carDto.Fuel,
-                //State = stateEnum,
-                State = Enum.Parse<State>(carDto.State),
-                Active = carDto.Active,
-                Price = carDto.Price,
-                ModelId = carDto.ModelId,
-                BrandId = carDto.BrandId,
-                //CAracteristicas Auto
-                NumberDoors = carDto.NumberDoors,
-                AirConditioning = carDto.AirConditioning,
-                Transmission = carDto.Transmission,
-                Airbag = carDto.Airbag,
-                Abs = carDto.Abs,
-                Sound = carDto.Sound,
-                EngineLiters = carDto.EngineLiters
-            };
-
-            try
-            {
-                var succeeded = await _carService.UpdateCarAsync(car);
-                if (succeeded) NoContent();
+                return NotFound("Car not found");
             }
-            catch (DbUpdateConcurrencyException ex)
+            //Verificacion de que existe la marca
+            if (!BrandExists(carDto.BrandId))
             {
-                if (!CarExists(id))
-                {
-                    return NotFound("Car not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest("brand");
+            }
+            //Verificacion de que existe el modelo
+            if (!ModelExists(carDto.ModelId))
+            {
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest("hla");
             }
 
-            return NoContent();
+            var car = await _carService.GetCarAsync(id);
+            if (car == null)
+                return NotFound("Car not found");
+            
+            if (car.Active != carDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
+
+            car.Description = carDto.Description;
+            car.GasolineConsumption = carDto.GasolineConsumption;
+            car.LuggageCapacity = carDto.LuggageCapacity;
+            car.PassengerCapacity = carDto.PassengerCapacity;
+            car.Fuel = carDto.Fuel;
+            car.State = Enum.Parse<State>(carDto.State);
+            car.Price = carDto.Price;
+            car.Image = carDto.Image;
+            car.ModelId = carDto.ModelId;
+            car.BrandId = carDto.BrandId;
+            //Caracteristicas Auto
+            car.NumberDoors = carDto.NumberDoors;
+            car.AirConditioning = carDto.AirConditioning;
+            car.Transmission = carDto.Transmission;
+            car.Airbag = carDto.Airbag;
+            car.Abs = carDto.Abs;
+            car.Sound = carDto.Sound;
+            car.EngineLiters = carDto.EngineLiters;
+
+            var succeeded = await _carService.UpdateCarAsync(car);
+            if (!succeeded) return BadRequest("fallo");
+            return Ok("Succeeded");
         }
 
         // POST: api/Cars
@@ -137,14 +141,14 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (!BrandExists(carDto.BrandId))
                 {
                     ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest("brand");
+                    return BadRequest(ModelState);
                 }
 
                 //Verificacion de que existe el modelo
                 if (!ModelExists(carDto.ModelId))
                 {
                     ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest("hla");
+                    return BadRequest(ModelState);
                 }
 
                 var car = new Car
@@ -157,6 +161,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     State = Enum.Parse<State>(carDto.State),
                     Active = carDto.Active,
                     Price = carDto.Price,
+                    Image = carDto.Image,
                     ModelId = carDto.ModelId,
                     BrandId = carDto.BrandId,
                     //CAracteristicas Auto
@@ -188,8 +193,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 car.Active = false;
                 await _carService.UpdateCarAsync(car);
             }
+            else return BadRequest("Not found car or not Active");
 
-            return NoContent();
+            return Ok("Logical delete was successful.");
         }
 
         [HttpPatch("{id}")]
@@ -201,23 +207,26 @@ namespace AppAlquiler_WebAPI.Controllers
                 car.Active = true;
                 await _carService.UpdateCarAsync(car);
             }
+            else return BadRequest("Not found car or Active");
 
-            return NoContent();
+            return Ok("Logical activation was successful.");
         }
 
         private bool CarExists(int id)
         {
-            return _carService.GetCarAsync(id) != null;
+            var exists =_carService.GetCarAsync(id).Result;
+            return exists != null;
         }
 
         private bool BrandExists(int id)
         {
-            var estado = _carService.GetBrandByIdAsync(id) != null? true:false;
-            return estado;
+            var exists = _carService.GetBrandByIdAsync(id).Result;
+            return exists != null;
         }
         private bool ModelExists(int id)
         {
-            return _carService.GetModelByIdAsync(id) != null;
+            var exists =_carService.GetModelByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

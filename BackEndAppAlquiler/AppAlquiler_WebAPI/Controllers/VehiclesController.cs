@@ -92,6 +92,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     State = Enum.Parse<State>(vehicleDto.State),
                     Active = vehicleDto.Active,
                     Price = vehicleDto.Price,
+                    Image = vehicleDto.Image,
                     ModelId = vehicleDto.ModelId,
                     BrandId = vehicleDto.BrandId
                 };

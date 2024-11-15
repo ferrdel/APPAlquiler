@@ -8,9 +8,9 @@ namespace AppAlquiler_DataAccessLayer.Models
 {   
     public enum State
     {
-        Alquilado,
-        Disponible,
-        EnMantenimiento
+        alquilado,
+        disponible,
+        enmantenimiento
     }
     public class Vehicle
     {
@@ -25,8 +25,9 @@ namespace AppAlquiler_DataAccessLayer.Models
         public string? Fuel { get; set; } //tipo combustible
         public State State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public bool Active { get; set; } //Baja logica
-        public  float Price {  get; set; }
-       // public string TypeVehicle { get; set; } //defino tipo para poder instanciarlo en el controller (bike,boat,car,motorcycle)
+        public float Price { get; set; }
+        public string Image { get; set; }
+        // public string TypeVehicle { get; set; } //defino tipo para poder instanciarlo en el controller (bike,boat,car,motorcycle)
 
         //RelationShips
 
