@@ -1,6 +1,7 @@
 ﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using AppAlquiler_DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,12 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Car>> GetAllCarAsync()
         {
-            return await _carRepository.GetAllAsync();
+            var allCars = await _carRepository.GetAllAsync();
+            foreach (var car in allCars)                                //Cargamos el objeto model en todos los objetos de la clase
+            {
+                car.Model = await _carRepository.GetModelByIdAsync(car.ModelId);
+            }
+            return allCars.ToList();
         }
 
         public Task<Car> GetCarAsync(int id)
@@ -84,11 +90,6 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
-
-        public async Task<Brand> GetBrandByIdAsync(int id)
-        {
-            return await _carRepository.GetBrandByIdAsync(id);
-        }
 
         public async Task<Model> GetModelByIdAsync(int id)
         {

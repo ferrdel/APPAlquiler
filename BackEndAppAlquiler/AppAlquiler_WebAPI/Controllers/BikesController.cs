@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -45,6 +46,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound("Bike not found");
             }
 
+            //var model = _bikeService.GetModelByIdAsync(bike.ModelId).Result;        //Llamamos a model sin ninguna verificacion porque ya sabemos que existe.
+            //Necesita un nuevo Dto (BikeFrontDto)
             var bikeDTO = new BikeDto
             {
                 Id = bike.Id,    //agregado para el front
@@ -59,8 +62,10 @@ namespace AppAlquiler_WebAPI.Controllers
                 Active = bike.Active,
                 Price = bike.Price,
                 Image = bike.Image,
+                //ModelName = model.Name,                //Mostramos el nombre del modelo y de brand para utilizarlos en el front
+                //BrandName = model.Brand.Name,
                 ModelId = bike.ModelId,
-                BrandId = bike.BrandId,
+                
                 //Caracteristicas Bike
                 Whell = bike.Whell,
                 FrameSize = bike.FrameSize,
@@ -83,13 +88,6 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound("Bike not found");
             }
-            //Verificacion de que existe la marca
-            if (!BrandExists(bikeDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest(ModelState);
-            }
-
             //Verificacion de que existe el modelo
             if (!ModelExists(bikeDto.ModelId))
             {
@@ -112,7 +110,6 @@ namespace AppAlquiler_WebAPI.Controllers
             bike.Price = bikeDto.Price;
             bike.Image = bikeDto.Image;
             bike.ModelId = bikeDto.ModelId;
-            bike.BrandId = bikeDto.BrandId;
 
             bike.Whell = bikeDto.Whell;
             bike.FrameSize = bikeDto.FrameSize;
@@ -128,13 +125,6 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBike([FromBody] BikeDto bikeDto)
         {
-            //Verificacion de que existe la marca
-            if (!BrandExists(bikeDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest(ModelState);
-            }
-
             //Verificacion de que existe el modelo
             if (!ModelExists(bikeDto.ModelId))
             {
@@ -142,7 +132,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            //if (ModelState.IsValid)
             try
             {
                 var bike = new Bike
@@ -152,12 +141,11 @@ namespace AppAlquiler_WebAPI.Controllers
                     LuggageCapacity = bikeDto.LuggageCapacity,
                     PassengerCapacity = bikeDto.PassengerCapacity,
                     Fuel = bikeDto.Fuel,
-                    State = Enum.Parse<State>(bikeDto.State.ToLower()),
+                    State = Enum.Parse<State>(bikeDto.State),
                     Active = bikeDto.Active,
                     Price = bikeDto.Price,
                     Image = bikeDto.Image,
                     ModelId = bikeDto.ModelId,
-                    BrandId = bikeDto.BrandId,
                     Whell = bikeDto.Whell,
                     FrameSize = bikeDto.FrameSize,
                     NumberSpeeds = bikeDto.NumberSpeeds
@@ -167,13 +155,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetBike", new { Id = bike.Id }, bike);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                return BadRequest("ModelState");
+                return BadRequest(ex.Message);
             }
-            //return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
         // DELETE: api/Bikes/5
@@ -211,11 +198,6 @@ namespace AppAlquiler_WebAPI.Controllers
             return exists != null;
         }
 
-        private bool BrandExists(int id)
-        {
-            var exists = _bikeService.GetBrandByIdAsync(id).Result;
-            return exists != null;
-        }
         private bool ModelExists(int id)
         {
             var exists = _bikeService.GetModelByIdAsync(id).Result;

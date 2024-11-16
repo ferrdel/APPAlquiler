@@ -59,7 +59,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = car.Price,
                 Image = car.Image,
                 ModelId = car.ModelId,
-                BrandId = car.BrandId,
                 //CAracteristicas Auto
                 NumberDoors = car.NumberDoors,
                 AirConditioning = car.AirConditioning,
@@ -86,12 +85,6 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound("Car not found");
             }
-            //Verificacion de que existe la marca
-            if (!BrandExists(carDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest("brand");
-            }
             //Verificacion de que existe el modelo
             if (!ModelExists(carDto.ModelId))
             {
@@ -115,7 +108,6 @@ namespace AppAlquiler_WebAPI.Controllers
             car.Price = carDto.Price;
             car.Image = carDto.Image;
             car.ModelId = carDto.ModelId;
-            car.BrandId = carDto.BrandId;
             //Caracteristicas Auto
             car.NumberDoors = carDto.NumberDoors;
             car.AirConditioning = carDto.AirConditioning;
@@ -135,22 +127,15 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCar([FromBody] CarDto carDto)
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(carDto.ModelId))
             {
-                //Verificacion de que existe la marca
-                if (!BrandExists(carDto.BrandId))
-                {
-                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest(ModelState);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el modelo
-                if (!ModelExists(carDto.ModelId))
-                {
-                    ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest(ModelState);
-                }
-
+            try
+            { 
                 var car = new Car
                 {
                     Description = carDto.Description,
@@ -163,7 +148,6 @@ namespace AppAlquiler_WebAPI.Controllers
                     Price = carDto.Price,
                     Image = carDto.Image,
                     ModelId = carDto.ModelId,
-                    BrandId = carDto.BrandId,
                     //CAracteristicas Auto
                     NumberDoors = carDto.NumberDoors,
                     AirConditioning = carDto.AirConditioning,
@@ -178,9 +162,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetCar", new { Id = car.Id }, car);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Cars/5
@@ -218,11 +205,6 @@ namespace AppAlquiler_WebAPI.Controllers
             return exists != null;
         }
 
-        private bool BrandExists(int id)
-        {
-            var exists = _carService.GetBrandByIdAsync(id).Result;
-            return exists != null;
-        }
         private bool ModelExists(int id)
         {
             var exists =_carService.GetModelByIdAsync(id).Result;

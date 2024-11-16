@@ -73,7 +73,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostTypeMotorcycle([FromBody] TypeMotorcycleDto typeMotorcycleDto)
         {
-            if (ModelState.IsValid)
+            try
             {
                 var typeMotorcycle = new TypeMotorcycle
                 {
@@ -85,9 +85,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetTypeMotorcycle", new { Id = typeMotorcycle.Id }, typeMotorcycle);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //Metodo eliminar, cambiando a false el estado de la marca

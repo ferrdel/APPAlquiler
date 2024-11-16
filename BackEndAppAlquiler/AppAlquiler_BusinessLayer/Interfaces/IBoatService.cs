@@ -15,7 +15,6 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> UpdateBoatAsync(Boat boat);
         Task<bool> DeleteBoatAsync(int id);
 
-        Task<Brand> GetBrandByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
     }
 }

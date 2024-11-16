@@ -13,29 +13,16 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     {
         public MotorcycleRepository(AlquilerDbContext context) : base(context) { }
 
-        public Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycle()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Motorcycle>> SearchTypeMotorcycle(string searchTerm)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
             return await _context.Set<TypeMotorcycle>().FindAsync(id);
         }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
-        {
-            return await _context.Set<Brand>().FindAsync(id);
-        }
-
         public async Task<Model> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Model>().FindAsync(id);
+            var model = await _context.Set<Model>().FindAsync(id);      //Aca brand viene nulo
+            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);     //Aca cargamos el valor de brand en model
+            return model;
         }
     }
 }

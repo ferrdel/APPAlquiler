@@ -9,12 +9,7 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface IMotorcycleRepository: IRepository<Motorcycle>
     {
-        Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycle();
-        Task<IEnumerable<Motorcycle>> SearchTypeMotorcycle(string searchTerm);
-
         Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id);
-
-        Task<Brand> GetBrandByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
     }
 }

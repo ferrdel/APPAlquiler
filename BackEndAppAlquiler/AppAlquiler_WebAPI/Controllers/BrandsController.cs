@@ -74,8 +74,8 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBrand([FromBody] BrandDto brandDto)
         {
-            if (ModelState.IsValid)
-            {
+            try
+            { 
                 var brand = new Brand
                 {
                     Name = brandDto.Name,
@@ -86,10 +86,13 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetBrand", new { Id = brand.Id }, brand);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
 
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //Metodo eliminar, cambiando a false el estado de la marca

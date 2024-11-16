@@ -21,7 +21,12 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Bike>> GetAllBikeAsync()
         {
-            return await _bikeRepository.GetAllAsync();
+            var allBikes = await _bikeRepository.GetAllAsync();
+            foreach (var bike in allBikes)                                //Cargamos el objeto model en todos los objetos de la clase
+            {
+                bike.Model = await _bikeRepository.GetModelByIdAsync(bike.ModelId);
+            }
+            return allBikes.ToList();
         }
 
         public async Task<Bike> GetBikeAsync(int id)
@@ -72,12 +77,6 @@ namespace AppAlquiler_BusinessLayer.Services
             {
                 return false;
             }
-        }
-
-
-        public Task<Brand> GetBrandByIdAsync(int id)
-        {
-            return _bikeRepository.GetBrandByIdAsync(id);
         }
 
         public async Task<Model> GetModelByIdAsync(int id)

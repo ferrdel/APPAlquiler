@@ -8,6 +8,6 @@
         public bool Active { get; set; }
 
         //definicion de la marca
-        //public int BrandId { get; set; }
+        public int BrandId { get; set; }
     }
 }

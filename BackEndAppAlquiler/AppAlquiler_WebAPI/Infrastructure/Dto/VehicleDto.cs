@@ -13,16 +13,20 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         //definicion combustible
         public string? Fuel { get; set; } //tipo combustible (ver bien el tipo de dato)
 
-        [EnumDataType(typeof(State), ErrorMessage = "{0} Indicado no es valido")]
-        public string State { get; set; } //Alquilado,Disponible,EnMantenimiento
+        //[EnumDataType(typeof(State), ErrorMessage = "{0} Indicado no es valido")]
+        private string _state { get; set; } //Alquilado,Disponible,EnMantenimiento
+        public string State 
+        { 
+            get { return _state; }
+            set { _state = value.ToLower(); }           //Pasamos a minusculas todas las letras, para evitar errores por una letra con mayuscula
+        }
         public bool Active { get; set; } //Baja logica
         public float Price { get; set; }
-        public string Image { get; set; }
-        //public string TypeVehicle { get; set; }
+        public string? Image { get; set; }
 
         //RelationShips
         public int ModelId { get; set; }
         //definicion de la marca
-        public int BrandId { get; set; }
+        //public int BrandId { get; set; }
     }
 }

@@ -9,7 +9,6 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface ICarRepository: IRepository<Car>
     {
-        Task<Brand> GetBrandByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
     }
 }

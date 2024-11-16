@@ -9,5 +9,6 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface IModelRepository: IRepository<Model>
     {
+        Task<Brand> GetBrandByIdAsync(int id);
     }
 }

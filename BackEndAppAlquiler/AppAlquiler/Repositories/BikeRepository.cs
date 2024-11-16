@@ -13,14 +13,12 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     {
         public BikeRepository(AlquilerDbContext context) : base(context) { }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
-        {
-            return await _context.Set<Brand>().FindAsync(id);
-        }
 
         public async Task<Model> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Model>().FindAsync(id);
+            var model = await _context.Set<Model>().FindAsync(id);      //Aca brand viene nulo
+            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);     //Aca cargamos el valor de brand en model
+            return model;
         }
     }
 }

@@ -58,7 +58,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = motorcycle.Price,
                 Image = motorcycle.Image,
                 ModelId = motorcycle.ModelId,
-                BrandId = motorcycle.BrandId,
 
                 Abs = motorcycle.Abs,
                 Cilindrada = motorcycle.Cilindrada,
@@ -80,12 +79,6 @@ namespace AppAlquiler_WebAPI.Controllers
             if (!MotorcycleExists(id))
             {
                 return NotFound("Motorcycle not found");
-            }
-            //Verificacion de que existe la marca
-            if (!BrandExists(motorcycleDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest(ModelState);
             }
             //Verificacion de que existe el modelo
             if (!ModelExists(motorcycleDto.ModelId))
@@ -116,7 +109,6 @@ namespace AppAlquiler_WebAPI.Controllers
             motorcycle.Price = motorcycleDto.Price;
             motorcycle.Image = motorcycleDto.Image;
             motorcycle.ModelId = motorcycleDto.ModelId;
-            motorcycle.BrandId = motorcycleDto.BrandId;
 
             motorcycle.Abs = motorcycleDto.Abs;
             motorcycle.Cilindrada = motorcycleDto.Cilindrada;
@@ -132,29 +124,22 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostMotorcycle([FromBody]MotorcycleDto motorcycleDto)
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(motorcycleDto.ModelId))
             {
-                //Verificacion de que existe la marca
-                if (!BrandExists(motorcycleDto.BrandId))
-                {
-                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest(ModelState);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el modelo
-                if (!ModelExists(motorcycleDto.ModelId))
-                {
-                    ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest(ModelState);
-                }
+            //Verificacion de que existe el tipo de motocicleta
+            if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
+            {
+                ModelState.AddModelError("TypeId", "Type Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el tipo de motocicleta
-                if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
-                {
-                    ModelState.AddModelError("TypeId", "Type Id Not found.");
-                    return BadRequest(ModelState);
-                }
-
+            try
+            { 
                 var motorcycle = new Motorcycle
                 {
                     Description = motorcycleDto.Description,
@@ -167,7 +152,6 @@ namespace AppAlquiler_WebAPI.Controllers
                     Price = motorcycleDto.Price,
                     Image = motorcycleDto.Image,
                     ModelId = motorcycleDto.ModelId,
-                    BrandId = motorcycleDto.BrandId,
                     
                     Abs=motorcycleDto.Abs,
                     Cilindrada=motorcycleDto.Cilindrada,
@@ -178,9 +162,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetMotorcycle", new { Id = motorcycle.Id }, motorcycle);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Motorcycles/5
@@ -217,16 +204,14 @@ namespace AppAlquiler_WebAPI.Controllers
             var exists = _motorcycleService.GetMotorcycleAsync(id).Result;
             return exists != null;
         }
-        private bool BrandExists(int id)
-        {
-            var exists = _motorcycleService.GetBrandByIdAsync(id).Result;
-            return exists != null;
-        }
         private bool ModelExists(int id)
         {
             var exists = _motorcycleService.GetModelByIdAsync(id).Result;
             return exists != null;
         }
+
+
+
         private bool TypeMotorcycleExists(int id)
         {
             var exists = _motorcycleService.GetTypeMotorcycleByIdAsync(id).Result;

@@ -26,7 +26,7 @@ namespace AppAlquiler_DataAccessLayer.Models
         public State State { get; set; } //Alquilado,Disponible,EnMantenimiento
         public bool Active { get; set; } //Baja logica
         public float Price { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         // public string TypeVehicle { get; set; } //defino tipo para poder instanciarlo en el controller (bike,boat,car,motorcycle)
 
         //RelationShips
@@ -34,7 +34,7 @@ namespace AppAlquiler_DataAccessLayer.Models
         public int ModelId { get; set; }
         public Model Model { get; set; }
         //definicion de la marca
-        public int BrandId { get; set; }
-        public Brand Brand { get; set; }
+        //public int BrandId { get; set; }
+        //public Brand Brand { get; set; }
     }
 }

@@ -12,5 +12,10 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     public class ModelRepository : Repository<Model>, IModelRepository
     {
         public ModelRepository(AlquilerDbContext context) : base(context) { }
+
+        public async Task<Brand> GetBrandByIdAsync(int id)
+        {
+            return await _context.Set<Brand>().FindAsync(id);
+        }
     }
 }

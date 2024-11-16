@@ -23,7 +23,12 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Model>> GetAllModelAsync()
         {
-            return await _modelRepository.GetAllAsync();
+            var allModels = await _modelRepository.GetAllAsync();
+            foreach (var model in allModels)                                //Cargamos el objeto brand en todos los objetos de la clase
+            {
+                model.Brand = await _modelRepository.GetBrandByIdAsync(model.BrandId);
+            }
+            return allModels.ToList();
         }
 
         public async Task<Model> GetModelAsync(int id)
@@ -70,6 +75,11 @@ namespace AppAlquiler_BusinessLayer.Services
             {
                 return false;
             }
+        }
+
+        public async Task<Brand> GetBrandByIdAsync(int id)
+        {
+            return await _modelRepository.GetBrandByIdAsync(id);
         }
     }
 }

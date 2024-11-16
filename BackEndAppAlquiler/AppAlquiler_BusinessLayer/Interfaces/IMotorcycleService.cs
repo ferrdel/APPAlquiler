@@ -16,9 +16,7 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> UpdateMotorcycleAsync(Motorcycle motorcycle);
         Task<bool> DeleteMotorcycleAsync(int id);
 
-        //Task<IEnumerable<TypeMotorcycle>> GetAllTypeMotorcycleAsync();
         Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id);
-        Task<Brand> GetBrandByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
     }
 }

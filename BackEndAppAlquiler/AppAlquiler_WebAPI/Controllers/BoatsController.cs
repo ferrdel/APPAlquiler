@@ -60,7 +60,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = boat.Price,
                 Image = boat.Image,
                 ModelId = boat.ModelId,
-                BrandId = boat.BrandId,
                 //CAracteristicas de Boat
                 Dimension = boat.Dimension,
                 Engine = boat.Engine,
@@ -88,12 +87,6 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return NotFound("boat not found");
             }
-            //Verificacion de que existe la marca
-            if (!BrandExists(boatDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest(ModelState);
-            }
 
             //Verificacion de que existe el modelo
             if (!ModelExists(boatDto.ModelId))
@@ -117,7 +110,6 @@ namespace AppAlquiler_WebAPI.Controllers
             boat.Price = boatDto.Price;
             boat.Image = boatDto.Image;
             boat.ModelId = boatDto.ModelId;
-            boat.BrandId = boatDto.BrandId;
             //caracteristicas de la lancha
             boat.Dimension = boatDto.Dimension;
             boat.Engine = boatDto.Engine;
@@ -139,22 +131,15 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBoat([FromBody ]BoatDto boatDto)
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(boatDto.ModelId))
             {
-                //Verificacion de que existe la marca
-                if (!BrandExists(boatDto.BrandId))
-                {
-                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest(ModelState);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el modelo
-                if (!ModelExists(boatDto.ModelId))
-                {
-                    ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest(ModelState);
-                }
-
+            try
+            {
                 var boat = new Boat
                 {
                     Description = boatDto.Description,
@@ -167,7 +152,6 @@ namespace AppAlquiler_WebAPI.Controllers
                     Price = boatDto.Price,
                     Image = boatDto.Image,
                     ModelId = boatDto.ModelId,
-                    BrandId = boatDto.BrandId,
                     //caracteristicas de la lancha
                     Dimension = boatDto.Dimension,
                     Engine = boatDto.Engine,
@@ -184,9 +168,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetBoat", new { Id = boat.Id }, boat);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Boats/5
@@ -224,11 +211,6 @@ namespace AppAlquiler_WebAPI.Controllers
             return exists != null;
         }
 
-        private bool BrandExists(int id)
-        {
-            var exists = _boatService.GetBrandByIdAsync(id).Result;
-            return  exists != null;
-        }
         private bool ModelExists(int id)
         {
             var exists = _boatService.GetModelByIdAsync(id).Result;  

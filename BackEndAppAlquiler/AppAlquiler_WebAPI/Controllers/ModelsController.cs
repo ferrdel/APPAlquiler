@@ -25,7 +25,7 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ModelDto>>> GetAllModels()
         {
-            var model= await _modelService.GetAllModelAsync();
+            var model = await _modelService.GetAllModelAsync();
             return Ok(model);
         }
 
@@ -44,6 +44,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 Id = model.Id,
                 Name = model.Name,
                 Active = model.Active,
+                BrandId = model.BrandId,
             };
 
             return modelDto;
@@ -57,6 +58,12 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
+            //Verificacion de que existe la marca
+            if (!BrandExists(modelDto.BrandId))
+            {
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
+            }
 
             var model = await _modelService.GetModelAsync(id);
             if (model == null)
@@ -65,6 +72,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("The active attribute cannot be changed in this option.");
 
             model.Name = modelDto.Name;
+            model.BrandId = modelDto.BrandId;
 
             var succeeded = await _modelService.UpdateModelAsync(model);
             if (!succeeded) return BadRequest("fallo");
@@ -74,21 +82,32 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe la marca
+            if (!BrandExists(modelDto.BrandId))
             {
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
+            }
+
+            try
+            { 
                 var model = new Model
                 {
                     Name = modelDto.Name,
-                    Active = modelDto.Active
+                    Active = modelDto.Active,
+                    BrandId = modelDto.BrandId
                 };
 
                 var succeeded = await _modelService.AddModelAsync(model);
                 if (succeeded)
                     return CreatedAtAction("GetModel", new { Id = model.Id }, model);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //DELETE: api/action/2
@@ -126,6 +145,11 @@ namespace AppAlquiler_WebAPI.Controllers
         private bool ModelExists(int id)
         {
             return _modelService.GetModelAsync(id) != null;
+        }
+        private bool BrandExists(int id)
+        {
+            var exists = _modelService.GetBrandByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

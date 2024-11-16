@@ -13,7 +13,7 @@ namespace AppAlquiler_DataAccessLayer.Models
         public bool Active { get; set; } //Baja logica
 
         //Relationships
-        //public int BrandId { get; set; }
-        //public Brand Brand { get; set; }
+        public int BrandId { get; set; }
+        public Brand Brand { get; set; }
     }
 }

@@ -25,20 +25,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Models",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Models", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TypeMotorcycles",
                 columns: table => new
                 {
@@ -50,6 +36,27 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TypeMotorcycles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Models",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Models", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Models_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,18 +77,11 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    ModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bikes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Bikes_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bikes_Models_ModelId",
                         column: x => x.ModelId,
@@ -114,18 +114,11 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    ModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Boats", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Boats_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Boats_Models_ModelId",
                         column: x => x.ModelId,
@@ -156,18 +149,11 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    ModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cars_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Cars_Models_ModelId",
                         column: x => x.ModelId,
@@ -194,18 +180,11 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     Active = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    ModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Motorcycles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Motorcycles_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Motorcycles_Models_ModelId",
                         column: x => x.ModelId,
@@ -221,19 +200,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bikes_BrandId",
-                table: "Bikes",
-                column: "BrandId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Bikes_ModelId",
                 table: "Bikes",
                 column: "ModelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Boats_BrandId",
-                table: "Boats",
-                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Boats_ModelId",
@@ -241,18 +210,13 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cars_BrandId",
-                table: "Cars",
-                column: "BrandId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cars_ModelId",
                 table: "Cars",
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Motorcycles_BrandId",
-                table: "Motorcycles",
+                name: "IX_Models_BrandId",
+                table: "Models",
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
@@ -282,13 +246,13 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                 name: "Motorcycles");
 
             migrationBuilder.DropTable(
-                name: "Brands");
-
-            migrationBuilder.DropTable(
                 name: "Models");
 
             migrationBuilder.DropTable(
                 name: "TypeMotorcycles");
+
+            migrationBuilder.DropTable(
+                name: "Brands");
         }
     }
 }

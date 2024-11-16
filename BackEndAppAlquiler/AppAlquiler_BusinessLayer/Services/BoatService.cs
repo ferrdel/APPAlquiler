@@ -1,6 +1,7 @@
 ﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using AppAlquiler_DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,16 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Boat>> GetAllBoatAsync()
         {
-            return await _boatRepository.GetAllAsync();
+            var allBoats = await _boatRepository.GetAllAsync();
+            foreach (var boat in allBoats)                                //Cargamos el objeto model en todos los objetos de la clase
+            {
+                boat.Model = await _boatRepository.GetModelByIdAsync(boat.ModelId);
+            }
+            return allBoats.ToList();
         }
 
         public async Task<Boat> GetBoatAsync(int id)
-        { 
-            //trae los datos que se enviaron, por ende nunca viene null
+        {
             return await _boatRepository.GetByIdAsync(id);    //Devuelve un arreglo provisional y se rompe dado que no es null
         }
 
@@ -72,11 +77,6 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
-
-        public async Task<Brand> GetBrandByIdAsync(int id)
-        {
-            return await _boatRepository.GetBrandByIdAsync(id);
-        }
 
         public async Task<Model> GetModelByIdAsync(int id)
         {

@@ -9,7 +9,6 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface IBikeRepository: IRepository<Bike>
     {
-        Task<Brand> GetBrandByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
     }
 }
