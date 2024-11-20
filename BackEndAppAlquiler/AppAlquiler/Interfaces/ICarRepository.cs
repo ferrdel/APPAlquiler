@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface ICarRepository: IRepository<Car>
-    {
+    {        
         Task<Model> GetModelByIdAsync(int id);
+
+        //agregado
+        Task<IEnumerable<Car>> GetAllCarsAsync();
+        Task<Car> GetCarByIdAsync(int id);
     }
 }

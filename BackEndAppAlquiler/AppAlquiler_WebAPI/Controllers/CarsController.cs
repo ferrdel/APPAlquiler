@@ -10,6 +10,7 @@ using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
+using System.Runtime.ConstrainedExecution;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -25,11 +26,38 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         // GET: api/Cars
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CarDto>>> GetCars()
+        [HttpGet]       
+        public async Task<ActionResult<IEnumerable<CarDetailsDTO>>> GetCars()
         {
             var succeded = await _carService.GetAllCarAsync();
-            return Ok(succeded);
+            var carDetails = succeded.Select(car => new CarDetailsDTO
+            {
+                Id = car.Id,    //agregado para el front
+                Description = car.Description,
+                GasolineConsumption = car.GasolineConsumption,
+                LuggageCapacity = car.LuggageCapacity,
+                PassengerCapacity = car.PassengerCapacity,
+                Fuel = car.Fuel,
+
+                //parseo
+                State = Enum.GetName(car.State),
+                Active = car.Active,
+                Price = car.Price,
+                Image = car.Image,
+                Model = car.Model.Name,
+
+                //agregado brand
+                Brand = car.Model.Brand.Name,
+                //CAracteristicas Auto
+                NumberDoors = car.NumberDoors,
+                AirConditioning = car.AirConditioning,
+                Transmission = car.Transmission,
+                Airbag = car.Airbag,
+                Abs = car.Abs,
+                Sound = car.Sound,
+                EngineLiters = car.EngineLiters
+            });            
+            return Ok(carDetails);
         }
 
         // GET: api/Cars/5
@@ -59,6 +87,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = car.Price,
                 Image = car.Image,
                 ModelId = car.ModelId,
+
+                //agregado brand
+                BrandId = car.Model.BrandId,
                 //CAracteristicas Auto
                 NumberDoors = car.NumberDoors,
                 AirConditioning = car.AirConditioning,
@@ -118,8 +149,8 @@ namespace AppAlquiler_WebAPI.Controllers
             car.EngineLiters = carDto.EngineLiters;
 
             var succeeded = await _carService.UpdateCarAsync(car);
-            if (!succeeded) return BadRequest("fallo");
-            return Ok("Succeeded");
+            if (!succeeded) return BadRequest("fallo");            
+            return NoContent();
         }
 
         // POST: api/Cars
@@ -181,8 +212,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 await _carService.UpdateCarAsync(car);
             }
             else return BadRequest("Not found car or not Active");
-
-            return Ok("Logical delete was successful.");
+            
+            return NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -195,8 +226,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 await _carService.UpdateCarAsync(car);
             }
             else return BadRequest("Not found car or Active");
-
-            return Ok("Logical activation was successful.");
+            
+            return NoContent();
         }
 
         private bool CarExists(int id)

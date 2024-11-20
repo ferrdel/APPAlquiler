@@ -21,17 +21,22 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Car>> GetAllCarAsync()
         {
+            /*
             var allCars = await _carRepository.GetAllAsync();
             foreach (var car in allCars)                                //Cargamos el objeto model en todos los objetos de la clase
             {
                 car.Model = await _carRepository.GetModelByIdAsync(car.ModelId);
             }
             return allCars.ToList();
+            */
+            var allCars = await _carRepository.GetAllCarsAsync();
+            return allCars;
         }
 
         public Task<Car> GetCarAsync(int id)
         {
-            return _carRepository.GetByIdAsync(id);
+            //return _carRepository.GetByIdAsync(id);
+            return _carRepository.GetCarByIdAsync(id);
         }
 
         public async Task<bool> AddCarAsync(Car car)

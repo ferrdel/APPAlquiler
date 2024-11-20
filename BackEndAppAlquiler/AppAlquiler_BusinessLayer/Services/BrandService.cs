@@ -23,7 +23,8 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Brand>> GetAllBrandAsync()
         {
-            return await _brandRepository.GetAllAsync();
+            //return await _brandRepository.GetAllAsync();
+            return await _brandRepository.GetAllBrandsAsync();
         }
 
         public async Task<Brand> GetBrandAsync(int id)
