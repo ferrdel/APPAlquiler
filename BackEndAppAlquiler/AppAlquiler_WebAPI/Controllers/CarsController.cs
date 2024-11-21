@@ -27,10 +27,10 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Cars
         [HttpGet]       
-        public async Task<ActionResult<IEnumerable<CarDetailsDTO>>> GetCars()
+        public async Task<ActionResult<IEnumerable<CarDetailsDto>>> GetCars()
         {
-            var succeded = await _carService.GetAllCarAsync();
-            var carDetails = succeded.Select(car => new CarDetailsDTO
+            var succeeded = await _carService.GetAllCarAsync();
+            var carDetails = succeeded.Select(car => new CarDetailsDto
             {
                 Id = car.Id,    //agregado para el front
                 Description = car.Description,
@@ -87,8 +87,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = car.Price,
                 Image = car.Image,
                 ModelId = car.ModelId,
-
-                //agregado brand
                 BrandId = car.Model.BrandId,
                 //CAracteristicas Auto
                 NumberDoors = car.NumberDoors,
@@ -120,7 +118,7 @@ namespace AppAlquiler_WebAPI.Controllers
             if (!ModelExists(carDto.ModelId))
             {
                 ModelState.AddModelError("ModelId", "Model Id Not found.");
-                return BadRequest("hla");
+                return BadRequest("Model not found");
             }
 
             var car = await _carService.GetCarAsync(id);

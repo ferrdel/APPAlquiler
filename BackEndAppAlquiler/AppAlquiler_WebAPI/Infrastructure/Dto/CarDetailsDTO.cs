@@ -1,6 +1,6 @@
 ﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class CarDetailsDTO : VehicleDetailsDTO
+    public class CarDetailsDto : VehicleDetailsDto
     {
         public int NumberDoors { get; set; } //cantidad puertas
         public bool AirConditioning { get; set; } //Aire acondicionado

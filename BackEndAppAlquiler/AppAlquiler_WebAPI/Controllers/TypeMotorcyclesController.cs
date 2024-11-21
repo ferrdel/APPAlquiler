@@ -67,7 +67,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             var succeeded = await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMotorcycle);
             if (!succeeded) return BadRequest("fallo");
-            return Ok("Succeeded");
+            return NoContent();
         }
 
         [HttpPost]
@@ -106,7 +106,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found typeMotorcycle or not Active");
 
-            return Ok("Logical delete was successful.");
+            return NoContent();
         }
 
         
@@ -121,7 +121,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found typeMotorcycle or Active");
 
-            return Ok("Logical activation was successful.");
+            return NoContent();
         }
 
         private bool TypeMExists(int id)

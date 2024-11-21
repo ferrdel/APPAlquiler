@@ -11,5 +11,8 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
     {
         Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);
+
+        Task<IEnumerable<Motorcycle>> GetAllMotorcyclesAsync();
+        Task<Motorcycle> GetMotorcycleByIdAsync(int id);
     }
 }

@@ -10,5 +10,8 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
     public interface IModelRepository: IRepository<Model>
     {
         Task<Brand> GetBrandByIdAsync(int id);
+
+        Task<IEnumerable<Model>> GetAllModelsAsync();
+        //Task<Model> GetModelByIdAsync(int id);
     }
 }

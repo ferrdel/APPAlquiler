@@ -22,17 +22,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Boat>> GetAllBoatAsync()
         {
-            var allBoats = await _boatRepository.GetAllAsync();
-            foreach (var boat in allBoats)                                //Cargamos el objeto model en todos los objetos de la clase
-            {
-                boat.Model = await _boatRepository.GetModelByIdAsync(boat.ModelId);
-            }
-            return allBoats.ToList();
+            var allBoats = await _boatRepository.GetAllBoatsAsync();
+            return allBoats;
         }
 
         public async Task<Boat> GetBoatAsync(int id)
         {
-            return await _boatRepository.GetByIdAsync(id);    //Devuelve un arreglo provisional y se rompe dado que no es null
+            return await _boatRepository.GetBoatByIdAsync(id);    //Devuelve un arreglo provisional y se rompe dado que no es null
         }
 
         public async Task<bool> AddBoatAsync(Boat boat)
@@ -77,11 +73,24 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
+        public async Task<bool> ActivateAsync(int id)
+        {
+            try
+            {
+                await _boatRepository.ActivateAsync(await _boatRepository.GetByIdAsync(id));
+                await _boatRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
 
         public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _boatRepository.GetModelByIdAsync(id);
         }
-
     }
 }

@@ -14,5 +14,6 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> AddBrandAsync(Brand brand);
         Task<bool> UpdateBrandAsync(Brand brand);
         Task<bool> DeleteBrandAsync(int id);
+        Task<bool> ActivateAsync(int id);
     }
 }

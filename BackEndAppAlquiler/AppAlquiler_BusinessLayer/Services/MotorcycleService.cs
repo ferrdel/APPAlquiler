@@ -1,5 +1,4 @@
-﻿using AppAlquiler_BusinessLayer.DTOs;
-using AppAlquiler_BusinessLayer.Interfaces;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_DataAccessLayer.Repositories;
@@ -22,18 +21,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Motorcycle>> GetAllMotorcycleAsync()
         {
-            var allMotorcycles = await _motorcycleRepository.GetAllAsync();
-            foreach (var motorcycle in allMotorcycles)                                //Cargamos el objeto model y TypeMotorcycle en todos los objetos de la clase
-            {
-                motorcycle.Model = await _motorcycleRepository.GetModelByIdAsync(motorcycle.ModelId);
-                motorcycle.TypeMotorcycle = await _motorcycleRepository.GetTypeMotorcycleByIdAsync(motorcycle.TypeMotorcycleId);
-            }
-            return allMotorcycles.ToList();
+            var allMotorcycles = await _motorcycleRepository.GetAllMotorcyclesAsync();
+            return allMotorcycles;
         }
 
         public async Task<Motorcycle> GetMotorcycleAsync(int id)
         {
-            return await _motorcycleRepository.GetByIdAsync(id);
+            return await _motorcycleRepository.GetMotorcycleByIdAsync(id);
         }
 
         public async Task<bool> AddMotorcycleAsync(Motorcycle motorcycle)
@@ -77,11 +71,19 @@ namespace AppAlquiler_BusinessLayer.Services
                 return false;
             }
         }
-
-        /*public Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycleAsync()
+        public async Task<bool> ActivateAsync(int id)
         {
-            throw new NotImplementedException();
-        }*/
+            try
+            {
+                await _motorcycleRepository.ActivateAsync(await _motorcycleRepository.GetByIdAsync(id));
+                await _motorcycleRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
@@ -93,5 +95,7 @@ namespace AppAlquiler_BusinessLayer.Services
         {
             return await _motorcycleRepository.GetModelByIdAsync(id);
         }
+
+        
     }
 }

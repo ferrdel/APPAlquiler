@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AppAlquiler_BusinessLayer.DTOs
+﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class CreateBoatDto : CreateVehicleDto
+    public class BoatDetailsDto : VehicleDetailsDto
     {
         public string Dimension { get; set; }//Tamaño,
         public string Engine { get; set; }//Motor(fuera de borda, intraborda. ENUM),

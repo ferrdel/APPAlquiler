@@ -1,5 +1,4 @@
-﻿using AppAlquiler_BusinessLayer.DTOs;
-using AppAlquiler_BusinessLayer.Interfaces;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
@@ -23,12 +22,8 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Model>> GetAllModelAsync()
         {
-            var allModels = await _modelRepository.GetAllAsync();
-            foreach (var model in allModels)                                //Cargamos el objeto brand en todos los objetos de la clase
-            {
-                model.Brand = await _modelRepository.GetBrandByIdAsync(model.BrandId);
-            }
-            return allModels.ToList();
+            var allModels = await _modelRepository.GetAllModelsAsync();
+            return allModels;
         }
 
         public async Task<Model> GetModelAsync(int id)
@@ -80,6 +75,20 @@ namespace AppAlquiler_BusinessLayer.Services
         public async Task<Brand> GetBrandByIdAsync(int id)
         {
             return await _modelRepository.GetBrandByIdAsync(id);
+        }
+
+        public async Task<bool> ActivateAsync(int id)
+        {
+            try
+            {
+                await _modelRepository.ActivateAsync(await _modelRepository.GetByIdAsync(id));
+                await _modelRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

@@ -21,18 +21,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Bike>> GetAllBikeAsync()
         {
-            var allBikes = await _bikeRepository.GetAllAsync();
-            foreach (var bike in allBikes)                                //Cargamos el objeto model en todos los objetos de la clase
-            {
-                bike.Model = await _bikeRepository.GetModelByIdAsync(bike.ModelId);
-            }
-            return allBikes.ToList();
+            var allBikes = await _bikeRepository.GetAllBikesAsync();
+            return allBikes;
         }
 
         public async Task<Bike> GetBikeAsync(int id)
         {
-            var succeeded = await _bikeRepository.GetByIdAsync(id);
-            return succeeded;
+            return await _bikeRepository.GetBikeByIdAsync(id);
         }
 
         public async Task<bool> AddBikeAsync(Bike bike)
@@ -70,6 +65,20 @@ namespace AppAlquiler_BusinessLayer.Services
             try
             {
                 await _bikeRepository.DeleteAsync(await _bikeRepository.GetByIdAsync(id));
+                await _bikeRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ActivateAsync(int id)
+        {
+            try
+            {
+                await _bikeRepository.ActivateAsync(await _bikeRepository.GetByIdAsync(id));
                 await _bikeRepository.SaveChangesAsync();
                 return true;
             }

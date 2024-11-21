@@ -16,12 +16,11 @@ namespace AppAlquiler_DataAccessLayer.Repositories
 
         public async Task<Model> GetModelByIdAsync(int id)
         {
-            var model = await _context.Set<Model>().FindAsync(id);      //Aca brand viene nulo
-            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);     //Aca cargamos el valor de brand en model
+            var model = await _context.Set<Model>().FindAsync(id);
+            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);
             return model;
         }
 
-        //agregado
         public async Task<IEnumerable<Car>> GetAllCarsAsync()
         {
             return await _context.Cars

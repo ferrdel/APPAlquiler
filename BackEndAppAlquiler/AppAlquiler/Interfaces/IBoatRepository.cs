@@ -10,5 +10,8 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
     public interface IBoatRepository: IRepository<Boat>
     {
         Task<Model> GetModelByIdAsync(int id);
+
+        Task<IEnumerable<Boat>> GetAllBoatsAsync();
+        Task<Boat> GetBoatByIdAsync(int id);
     }
 }

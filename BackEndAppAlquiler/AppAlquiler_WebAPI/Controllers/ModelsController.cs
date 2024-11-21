@@ -25,8 +25,15 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ModelDto>>> GetAllModels()
         {
-            var model = await _modelService.GetAllModelAsync();
-            return Ok(model);
+            var succeeded = await _modelService.GetAllModelAsync();
+            var modelDetails = succeeded.Select(model => new ModelDetailsDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Active = model.Active,
+                Brand = model.Brand.Name
+            });
+            return Ok(modelDetails);
         }
 
         [HttpGet("{id}", Name = "GetModel")]
@@ -76,7 +83,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             var succeeded = await _modelService.UpdateModelAsync(model);
             if (!succeeded) return BadRequest("fallo");
-            return Ok("Succeeded");
+            return NoContent();
         }
 
         [HttpPost]
@@ -125,7 +132,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found model or not Active");
 
-            return Ok("Logical delete was successful.");
+            return NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -139,7 +146,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found model or Active");
 
-            return Ok("Logical activation was successful.");
+            return NoContent();
         }
 
         private bool ModelExists(int id)

@@ -1,5 +1,4 @@
-﻿using AppAlquiler_BusinessLayer.DTOs;
-using AppAlquiler_DataAccessLayer.Models;
+﻿using AppAlquiler_DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +14,7 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> AddMotorcycleAsync(Motorcycle motorcycle);
         Task<bool> UpdateMotorcycleAsync(Motorcycle motorcycle);
         Task<bool> DeleteMotorcycleAsync(int id);
+        Task<bool> ActivateAsync(int id);
 
         Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id);
         Task<Model> GetModelByIdAsync(int id);

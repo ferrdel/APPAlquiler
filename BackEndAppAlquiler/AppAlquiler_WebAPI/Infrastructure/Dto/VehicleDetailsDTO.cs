@@ -1,6 +1,6 @@
 ﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class VehicleDetailsDTO
+    public class VehicleDetailsDto
     {
         public int? Id { get; set; }     //Agregado para front
         public string Description { get; set; }

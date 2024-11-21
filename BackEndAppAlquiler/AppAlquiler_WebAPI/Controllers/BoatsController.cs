@@ -27,10 +27,38 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Boats
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BoatDto>>> GetBoats()
+        public async Task<ActionResult<IEnumerable<BoatDetailsDto>>> GetBoats()
         {
-            var succeeded = await _boatService.GetAllBoatAsync();
-            return Ok(succeeded);
+            var succeded = await _boatService.GetAllBoatAsync();
+            var boatDetails = succeded.Select(boat => new BoatDetailsDto
+            {
+                Id = boat.Id,    //agregado para el front
+                Description = boat.Description,
+                GasolineConsumption = boat.GasolineConsumption,
+                LuggageCapacity = boat.LuggageCapacity,
+                PassengerCapacity = boat.PassengerCapacity,
+                Fuel = boat .Fuel,
+
+                //parseo
+                State = Enum.GetName(boat.State),
+                Active = boat.Active,
+                Price = boat.Price,
+                Image = boat.Image,
+                Model = boat.Model.Name,
+                Brand = boat.Model.Brand.Name,
+
+                Dimension = boat.Dimension,
+                Engine = boat.Engine,
+                Material = boat.Material,
+                Stability = boat.Stability,
+                Navigation = boat.Navigation,
+                Facilities = boat.Facilities,
+                Sound = boat.Sound,
+                Accessories = boat.Accessories,
+                Propulsion = boat.Propulsion
+
+            });
+            return Ok(boatDetails);
         }
 
         // GET: api/Boats/5
@@ -60,6 +88,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 Price = boat.Price,
                 Image = boat.Image,
                 ModelId = boat.ModelId,
+                BrandId = boat.Model.BrandId,
                 //CAracteristicas de Boat
                 Dimension = boat.Dimension,
                 Engine = boat.Engine,
@@ -123,7 +152,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             var succeeded = await _boatService.UpdateBoatAsync(boat);
             if (!succeeded) return BadRequest("Fallo"); 
-            return Ok("Succeeded");
+            return NoContent();
         }
 
         // POST: api/Boats
@@ -188,7 +217,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found boat or not active");
 
-            return Ok("Logical elimination was successful.");
+            return NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -202,7 +231,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found boat or Active");
 
-            return Ok("Logical activation was successful.");
+            return NoContent();
         }
 
         private bool BoatExists(int id)

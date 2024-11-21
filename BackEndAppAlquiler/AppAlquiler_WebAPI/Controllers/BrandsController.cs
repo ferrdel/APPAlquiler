@@ -6,6 +6,7 @@ using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -43,7 +44,7 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 Id = brand.Id,
                 Name = brand.Name,
-                Active = brand.Active
+                Active = brand.Active,
             };
 
             return Ok(brand);
@@ -68,7 +69,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             var succeeded = await _brandService.UpdateBrandAsync(brand);
             if (!succeeded) return BadRequest("fallo");
-            return Ok("Succeeded");
+            return NoContent();
         }
 
         [HttpPost]
@@ -109,7 +110,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found brand or not Active");
 
-            return Ok("Logical delete was successful.");
+            return NoContent();
 
         }
 
@@ -124,7 +125,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found brand or Active");
 
-            return Ok("Logical activation was successful.");
+            return NoContent();
         }
 
         private bool BrandExists(int id)

@@ -29,10 +29,33 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Bikes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BikeDto>>> GetBikes()
+        public async Task<ActionResult<IEnumerable<BikeDetailsDto>>> GetBikes()
         {
             var succeded = await _bikeService.GetAllBikeAsync();
-            return Ok(succeded);
+            var bikeDetails = succeded.Select(bike => new BikeDetailsDto
+            {
+                Id = bike.Id,    //agregado para el front
+                Description = bike.Description,
+                GasolineConsumption = bike.GasolineConsumption,
+                LuggageCapacity = bike.LuggageCapacity,
+                PassengerCapacity = bike.PassengerCapacity,
+                Fuel = bike.Fuel,
+
+                //parseo
+                State = Enum.GetName(bike.State),
+                Active = bike.Active,
+                Price = bike.Price,
+                Image = bike.Image,
+                Model = bike.Model.Name,
+
+                //agregado brand
+                Brand = bike.Model.Brand.Name,
+                //Caracteristicas Bike
+                Whell = bike.Whell,
+                FrameSize = bike.FrameSize,
+                NumberSpeeds = bike.NumberSpeeds
+            });
+            return Ok(bikeDetails);
         }
 
         // GET: api/Bikes/5
@@ -62,10 +85,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 Active = bike.Active,
                 Price = bike.Price,
                 Image = bike.Image,
-                //ModelName = model.Name,                //Mostramos el nombre del modelo y de brand para utilizarlos en el front
-                //BrandName = model.Brand.Name,
                 ModelId = bike.ModelId,
-                
+                BrandId = bike.Model.BrandId,
                 //Caracteristicas Bike
                 Whell = bike.Whell,
                 FrameSize = bike.FrameSize,
@@ -117,7 +138,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             var succeeded = await _bikeService.UpdateBikeAsync(bike);
             if (!succeeded) return BadRequest("Fallo");
-            return Ok("Succeeded");
+            return NoContent();
         }
 
         // POST: api/Bikes
@@ -175,7 +196,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found bike or not Active");
 
-            return Ok("Logical delete was successful.");
+            return NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -189,7 +210,7 @@ namespace AppAlquiler_WebAPI.Controllers
             }
             else return BadRequest("Not found bike or Active");
 
-            return Ok("Logical activation was successful.");
+            return NoContent();
         }
 
         private bool BikeExists(int id)
