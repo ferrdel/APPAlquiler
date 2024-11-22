@@ -1,4 +1,7 @@
-﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
+﻿using AppAlquiler_DataAccessLayer.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
     public class BrandDto
     {

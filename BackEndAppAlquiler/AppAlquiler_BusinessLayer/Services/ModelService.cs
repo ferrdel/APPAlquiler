@@ -1,5 +1,4 @@
-﻿using AppAlquiler_BusinessLayer.DTOs;
-using AppAlquiler_BusinessLayer.Interfaces;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
@@ -23,7 +22,8 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Model>> GetAllModelAsync()
         {
-            return await _modelRepository.GetAllAsync();
+            var allModels = await _modelRepository.GetAllModelsAsync();
+            return allModels;
         }
 
         public async Task<Model> GetModelAsync(int id)
@@ -63,6 +63,25 @@ namespace AppAlquiler_BusinessLayer.Services
             try
             {
                 await _modelRepository.DeleteAsync(await _modelRepository.GetByIdAsync(id));
+                await _modelRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Brand> GetBrandByIdAsync(int id)
+        {
+            return await _modelRepository.GetBrandByIdAsync(id);
+        }
+
+        public async Task<bool> ActivateAsync(int id)
+        {
+            try
+            {
+                await _modelRepository.ActivateAsync(await _modelRepository.GetByIdAsync(id));
                 await _modelRepository.SaveChangesAsync();
                 return true;
             }

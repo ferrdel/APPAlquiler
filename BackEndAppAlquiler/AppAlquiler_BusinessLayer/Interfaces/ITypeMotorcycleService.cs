@@ -14,5 +14,6 @@ namespace AppAlquiler_BusinessLayer.Interfaces
         Task<bool> AddTypeMotorcycleAsync(TypeMotorcycle typeMotorcycle);
         Task<bool> UpdateTypeMotorcycleAsync(TypeMotorcycle typeMotorcycle);
         Task<bool> DeleteTypeMotorcycleAsync(int id);
+        Task<bool> ActivateAsync(int id);
     }
 }

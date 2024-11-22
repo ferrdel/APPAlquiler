@@ -1,9 +1,6 @@
-﻿using AppAlquiler_DataAccessLayer.Models;
-using System.ComponentModel.DataAnnotations;
-
-namespace AppAlquiler_WebAPI.Infrastructure.Dto
+﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class VehicleDto
+    public class VehicleDetailsDto
     {
         public int? Id { get; set; }     //Agregado para front
         public string Description { get; set; }
@@ -15,8 +12,8 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
 
         //[EnumDataType(typeof(State), ErrorMessage = "{0} Indicado no es valido")]
         private string _state { get; set; } //Alquilado,Disponible,EnMantenimiento
-        public string State 
-        { 
+        public string State
+        {
             get { return _state; }
             set { _state = value.ToLower(); }           //Pasamos a minusculas todas las letras, para evitar errores por una letra con mayuscula
         }
@@ -25,8 +22,8 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public string? Image { get; set; }
 
         //RelationShips
-        public int ModelId { get; set; }
+        public string Model { get; set; }
         //definicion de la marca
-        public int BrandId { get; set; }
+        public string Brand { get; set; }
     }
 }

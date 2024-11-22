@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -28,10 +29,33 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // GET: api/Bikes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BikeDto>>> GetBikes()
+        public async Task<ActionResult<IEnumerable<BikeDetailsDto>>> GetBikes()
         {
-            var bikes = await _bikeService.GetAllBikeAsync();
-            return Ok(bikes);
+            var succeded = await _bikeService.GetAllBikeAsync();
+            var bikeDetails = succeded.Select(bike => new BikeDetailsDto
+            {
+                Id = bike.Id,    //agregado para el front
+                Description = bike.Description,
+                GasolineConsumption = bike.GasolineConsumption,
+                LuggageCapacity = bike.LuggageCapacity,
+                PassengerCapacity = bike.PassengerCapacity,
+                Fuel = bike.Fuel,
+
+                //parseo
+                State = Enum.GetName(bike.State),
+                Active = bike.Active,
+                Price = bike.Price,
+                Image = bike.Image,
+                Model = bike.Model.Name,
+
+                //agregado brand
+                Brand = bike.Model.Brand.Name,
+                //Caracteristicas Bike
+                Whell = bike.Whell,
+                FrameSize = bike.FrameSize,
+                NumberSpeeds = bike.NumberSpeeds
+            });
+            return Ok(bikeDetails);
         }
 
         // GET: api/Bikes/5
@@ -45,6 +69,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 return NotFound("Bike not found");
             }
 
+            //var model = _bikeService.GetModelByIdAsync(bike.ModelId).Result;        //Llamamos a model sin ninguna verificacion porque ya sabemos que existe.
+            //Necesita un nuevo Dto (BikeFrontDto)
             var bikeDTO = new BikeDto
             {
                 Id = bike.Id,    //agregado para el front
@@ -58,8 +84,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 State = Enum.GetName(bike.State),
                 Active = bike.Active,
                 Price = bike.Price,
+                Image = bike.Image,
                 ModelId = bike.ModelId,
-                BrandId = bike.BrandId,
+                BrandId = bike.Model.BrandId,
                 //Caracteristicas Bike
                 Whell = bike.Whell,
                 FrameSize = bike.FrameSize,
@@ -67,8 +94,6 @@ namespace AppAlquiler_WebAPI.Controllers
             };
 
             return bikeDTO;
-
-            return Ok(bike);
         }
 
         // PUT: api/Bikes/5
@@ -80,45 +105,39 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
-
-            var bike = new Bike
+            if (!BikeExists(id))
             {
-                Id = (int)bikeDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
-                Description = bikeDto.Description,
-                GasolineConsumption = bikeDto.GasolineConsumption,
-                LuggageCapacity = bikeDto.LuggageCapacity,
-                PassengerCapacity = bikeDto.PassengerCapacity,
-                Fuel = bikeDto.Fuel,
-                //State = stateEnum,
-                State = Enum.Parse<State>(bikeDto.State),
-                Active = bikeDto.Active,
-                Price = bikeDto.Price,
-                ModelId = bikeDto.ModelId,
-                BrandId = bikeDto.BrandId,
-                //CAracteristicas Auto
-                Whell = bikeDto.Whell,
-                FrameSize = bikeDto.FrameSize,
-                NumberSpeeds = bikeDto.NumberSpeeds
-            };
-
-            try
-            {
-                var succeeded = await _bikeService.UpdateBikeAsync(bike);
-                if (succeeded) return Content("bien");
-                else return BadRequest("Error");
+                return NotFound("Bike not found");
             }
-            catch (DbUpdateConcurrencyException ex)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(bikeDto.ModelId))
             {
-                if (!BikeExists(id))
-                {
-                    return NotFound("Bike not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
             }
 
+            var bike = await _bikeService.GetBikeAsync(id);
+            if (bike == null)
+                return NotFound("bike not found");
+            if (bike.Active != bikeDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
+
+            bike.Description = bikeDto.Description;
+            bike.GasolineConsumption = bikeDto.GasolineConsumption;
+            bike.LuggageCapacity = bikeDto.LuggageCapacity;
+            bike.PassengerCapacity = bikeDto.PassengerCapacity;
+            bike.Fuel = bikeDto.Fuel;
+            bike.State = Enum.Parse<State>(bikeDto.State.ToLower());
+            bike.Price = bikeDto.Price;
+            bike.Image = bikeDto.Image;
+            bike.ModelId = bikeDto.ModelId;
+
+            bike.Whell = bikeDto.Whell;
+            bike.FrameSize = bikeDto.FrameSize;
+            bike.NumberSpeeds = bikeDto.NumberSpeeds;
+
+            var succeeded = await _bikeService.UpdateBikeAsync(bike);
+            if (!succeeded) return BadRequest("Fallo");
             return NoContent();
         }
 
@@ -127,13 +146,6 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBike([FromBody] BikeDto bikeDto)
         {
-            //Verificacion de que existe la marca
-            if (!BrandExists(bikeDto.BrandId))
-            {
-                ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                return BadRequest(ModelState);
-            }
-
             //Verificacion de que existe el modelo
             if (!ModelExists(bikeDto.ModelId))
             {
@@ -141,7 +153,6 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            //if (ModelState.IsValid)
             try
             {
                 var bike = new Bike
@@ -154,8 +165,8 @@ namespace AppAlquiler_WebAPI.Controllers
                     State = Enum.Parse<State>(bikeDto.State),
                     Active = bikeDto.Active,
                     Price = bikeDto.Price,
+                    Image = bikeDto.Image,
                     ModelId = bikeDto.ModelId,
-                    BrandId = bikeDto.BrandId,
                     Whell = bikeDto.Whell,
                     FrameSize = bikeDto.FrameSize,
                     NumberSpeeds = bikeDto.NumberSpeeds
@@ -165,13 +176,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetBike", new { Id = bike.Id }, bike);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                return BadRequest("ModelState");
+                return BadRequest(ex.Message);
             }
-            //return BadRequest(ModelState); // elModelState es la representacion del modelo
         }
 
         // DELETE: api/Bikes/5
@@ -184,6 +194,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 bike.Active = false; //cambia el estado a true para que quede como eliminado
                 await _bikeService.UpdateBikeAsync(bike);
             }
+            else return BadRequest("Not found bike or not Active");
 
             return NoContent();
         }
@@ -197,22 +208,21 @@ namespace AppAlquiler_WebAPI.Controllers
                 bike.Active = true;
                 await _bikeService.UpdateBikeAsync(bike);
             }
+            else return BadRequest("Not found bike or Active");
 
             return NoContent();
         }
 
         private bool BikeExists(int id)
         {
-            return _bikeService.GetBikeAsync(id) != null;
+            var exists = _bikeService.GetBikeAsync(id).Result;
+            return exists != null;
         }
 
-        private bool BrandExists(int id)
-        {
-            return _bikeService.GetBrandByIdAsync(id) != null;
-        }
         private bool ModelExists(int id)
         {
-            return _bikeService.GetModelByIdAsync(id) != null;
+            var exists = _bikeService.GetModelByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

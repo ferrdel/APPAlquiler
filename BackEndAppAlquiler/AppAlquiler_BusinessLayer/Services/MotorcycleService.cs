@@ -1,7 +1,7 @@
-﻿using AppAlquiler_BusinessLayer.DTOs;
-using AppAlquiler_BusinessLayer.Interfaces;
+﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using AppAlquiler_DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +21,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Motorcycle>> GetAllMotorcycleAsync()
         {
-            return await _motorcycleRepository.GetAllAsync();
+            var allMotorcycles = await _motorcycleRepository.GetAllMotorcyclesAsync();
+            return allMotorcycles;
         }
 
         public async Task<Motorcycle> GetMotorcycleAsync(int id)
         {
-            return await _motorcycleRepository.GetByIdAsync(id);
+            return await _motorcycleRepository.GetMotorcycleByIdAsync(id);
         }
 
         public async Task<bool> AddMotorcycleAsync(Motorcycle motorcycle)
@@ -70,25 +71,31 @@ namespace AppAlquiler_BusinessLayer.Services
                 return false;
             }
         }
-
-        /*public Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycleAsync()
+        public async Task<bool> ActivateAsync(int id)
         {
-            throw new NotImplementedException();
-        }*/
+            try
+            {
+                await _motorcycleRepository.ActivateAsync(await _motorcycleRepository.GetByIdAsync(id));
+                await _motorcycleRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
+        public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
             return await _motorcycleRepository.GetTypeMotorcycleByIdAsync(id);
         }
 
-        public async Task<Motorcycle> GetBrandByIdAsync(int id)
-        {
-            return await _motorcycleRepository.GetBrandByIdAsync(id);
-        }
 
-        public async Task<Motorcycle> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _motorcycleRepository.GetModelByIdAsync(id);
         }
+
+        
     }
 }

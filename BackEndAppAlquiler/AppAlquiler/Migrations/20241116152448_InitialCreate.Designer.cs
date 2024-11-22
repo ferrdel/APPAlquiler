@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppAlquiler_DataAccessLayer.Migrations
 {
     [DbContext(typeof(AlquilerDbContext))]
-    [Migration("20241111234154_InitialCreate")]
+    [Migration("20241116152448_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,9 +35,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -50,6 +47,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -74,8 +75,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
-
                     b.HasIndex("ModelId");
 
                     b.ToTable("Bikes");
@@ -95,9 +94,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
-
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -120,6 +116,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -157,8 +157,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BrandId");
 
                     b.HasIndex("ModelId");
 
@@ -205,9 +203,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Airbag")
                         .HasColumnType("bit");
 
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -220,6 +215,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -249,8 +248,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
-
                     b.HasIndex("ModelId");
 
                     b.ToTable("Cars");
@@ -267,11 +264,16 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
 
                     b.ToTable("Models");
                 });
@@ -290,9 +292,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Cilindrada")
                         .HasColumnType("int");
 
@@ -305,6 +304,10 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.Property<float>("GasolineConsumption")
                         .HasColumnType("real");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("LuggageCapacity")
                         .HasColumnType("real");
@@ -326,8 +329,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
-
                     b.HasIndex("ModelId");
 
                     b.HasIndex("TypeMotorcycleId");
@@ -346,9 +347,8 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -357,62 +357,38 @@ namespace AppAlquiler_DataAccessLayer.Migrations
 
             modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Bike", b =>
                 {
-                    b.HasOne("AppAlquiler_DataAccessLayer.Models.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Brand");
 
                     b.Navigation("Model");
                 });
 
             modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Boat", b =>
                 {
-                    b.HasOne("AppAlquiler_DataAccessLayer.Models.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Brand");
 
                     b.Navigation("Model");
                 });
 
             modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Car", b =>
                 {
-                    b.HasOne("AppAlquiler_DataAccessLayer.Models.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Brand");
-
                     b.Navigation("Model");
                 });
 
-            modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Motorcycle", b =>
+            modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Model", b =>
                 {
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Brand", "Brand")
                         .WithMany()
@@ -420,6 +396,11 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("AppAlquiler_DataAccessLayer.Models.Motorcycle", b =>
+                {
                     b.HasOne("AppAlquiler_DataAccessLayer.Models.Model", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId")
@@ -431,8 +412,6 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                         .HasForeignKey("TypeMotorcycleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Brand");
 
                     b.Navigation("Model");
 

@@ -9,5 +9,6 @@ namespace AppAlquiler_DataAccessLayer.Interfaces
 {
     public interface IBrandRepository: IRepository<Brand>
     {
+        Task<IEnumerable<Brand>> GetAllBrandsAsync();
     }
 }

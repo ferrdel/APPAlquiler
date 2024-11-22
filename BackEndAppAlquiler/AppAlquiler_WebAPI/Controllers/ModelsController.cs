@@ -25,8 +25,15 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ModelDto>>> GetAllModels()
         {
-            var model= await _modelService.GetAllModelAsync();
-            return Ok(model);
+            var succeeded = await _modelService.GetAllModelAsync();
+            var modelDetails = succeeded.Select(model => new ModelDetailsDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Active = model.Active,
+                Brand = model.Brand.Name
+            });
+            return Ok(modelDetails);
         }
 
         [HttpGet("{id}", Name = "GetModel")]
@@ -44,6 +51,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 Id = model.Id,
                 Name = model.Name,
                 Active = model.Active,
+                BrandId = model.BrandId,
             };
 
             return modelDto;
@@ -57,53 +65,56 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
-
-            var model = new Model
+            //Verificacion de que existe la marca
+            if (!BrandExists(modelDto.BrandId))
             {
-                Id = (int)modelDto.Id,
-                Name = modelDto.Name,
-                Active = modelDto.Active,
-            };
-
-            try
-            {
-                var succeeded = await _modelService.UpdateModelAsync(model);
-                if (succeeded)
-                    return NoContent();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!ModelExists(id))
-                {
-                    return NotFound("Model not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
             }
 
+            var model = await _modelService.GetModelAsync(id);
+            if (model == null)
+                return NotFound("Model not found");
+            if (model.Active != modelDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
+
+            model.Name = modelDto.Name;
+            model.BrandId = modelDto.BrandId;
+
+            var succeeded = await _modelService.UpdateModelAsync(model);
+            if (!succeeded) return BadRequest("fallo");
             return NoContent();
         }
 
         [HttpPost]
         public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe la marca
+            if (!BrandExists(modelDto.BrandId))
             {
+                ModelState.AddModelError("BrandId", "Brand Id Not found.");
+                return BadRequest(ModelState);
+            }
+
+            try
+            { 
                 var model = new Model
                 {
                     Name = modelDto.Name,
-                    Active = modelDto.Active
+                    Active = modelDto.Active,
+                    BrandId = modelDto.BrandId
                 };
 
                 var succeeded = await _modelService.AddModelAsync(model);
                 if (succeeded)
                     return CreatedAtAction("GetModel", new { Id = model.Id }, model);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //DELETE: api/action/2
@@ -119,6 +130,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 model.Active = false;
                 await _modelService.UpdateModelAsync(model);    //Cambia el estado Active a falso (baja logica).
             }
+            else return BadRequest("Not found model or not Active");
 
             return NoContent();
         }
@@ -132,28 +144,19 @@ namespace AppAlquiler_WebAPI.Controllers
                 model.Active = true;
                 await _modelService.UpdateModelAsync(model);
             }
+            else return BadRequest("Not found model or Active");
 
             return NoContent();
         }
 
-        //Metodo de Activar el modelo modificando el estado
-        /*
-        [HttpPut("{id}")]
-        public async Task RestoreModel(int id)
-        {
-            var model = await _context.Models.FindAsync(id);
-
-            if (model != null && model.State)
-            {
-                model.State = false;
-                await _context.SaveChangesAsync();
-            }
-        }
-        */
-
         private bool ModelExists(int id)
         {
             return _modelService.GetModelAsync(id) != null;
+        }
+        private bool BrandExists(int id)
+        {
+            var exists = _modelService.GetBrandByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

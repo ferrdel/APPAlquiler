@@ -42,7 +42,7 @@ namespace AppAlquiler_WebAPI.Controllers
             var typeMotorcycleDto = new TypeMotorcycleDto
             {
                 Id = typeMotorcycle.Id,
-                Name = typeMotorcycle.Name,
+                Name = Enum.GetName(typeMotorcycle.Name),
                 Active = typeMotorcycle.Active,
             };
 
@@ -57,57 +57,45 @@ namespace AppAlquiler_WebAPI.Controllers
                 return BadRequest("Id mismatch");
             }
 
-            var typeMotorcycle = new TypeMotorcycle
-            {
-                Id = (int)typeMotorcycleDto.Id,
-                Name = typeMotorcycleDto.Name,
-                Active = typeMotorcycleDto.Active,
-            };
+            var typeMotorcycle = await _typeMotorcycleService.GetTypeMotorcycleAsync(id);
+            if (typeMotorcycle == null)
+                return NotFound("TypeMotorcycle not found");
+            if (typeMotorcycle.Active != typeMotorcycleDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
 
-            try
-            {
-                var succeeded = await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMotorcycle);
-                if (succeeded)
-                    return NoContent();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!TypeMExists(id))
-                {
-                    return NotFound("TypeMotorcycle not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
+            typeMotorcycle.Name = Enum.Parse<NameTypeMotorcycle>(typeMotorcycleDto.Name);
 
+            var succeeded = await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMotorcycle);
+            if (!succeeded) return BadRequest("fallo");
             return NoContent();
         }
 
         [HttpPost]
         public async Task<IActionResult> PostTypeMotorcycle([FromBody] TypeMotorcycleDto typeMotorcycleDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var typeMot = new TypeMotorcycle
+                var typeMotorcycle = new TypeMotorcycle
                 {
-                    Name = typeMotorcycleDto.Name,
+                    Name = Enum.Parse<NameTypeMotorcycle>(typeMotorcycleDto.Name),
                     Active = typeMotorcycleDto.Active
                 };
 
-                var succeeded = await _typeMotorcycleService.AddTypeMotorcycleAsync(typeMot);
+                var succeeded = await _typeMotorcycleService.AddTypeMotorcycleAsync(typeMotorcycle);
                 if (succeeded)
-                    return CreatedAtAction("GetTypeMotororcycle", new { Id = typeMot.Id }, typeMot);
+                    return CreatedAtAction("GetTypeMotorcycle", new { Id = typeMotorcycle.Id }, typeMotorcycle);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //Metodo eliminar, cambiando a false el estado de la marca
         [HttpDelete("{id}", Name = "DeleteTypeMotorcycle")]
-        public async Task DeleteType(int id)
+        public async Task<IActionResult> DeleteType(int id)
         {
             var typeMot = await _typeMotorcycleService.GetTypeMotorcycleAsync(id);
 
@@ -116,6 +104,9 @@ namespace AppAlquiler_WebAPI.Controllers
                 typeMot.Active = false;
                 await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMot);
             }
+            else return BadRequest("Not found typeMotorcycle or not Active");
+
+            return NoContent();
         }
 
         
@@ -128,14 +119,15 @@ namespace AppAlquiler_WebAPI.Controllers
                 typeMot.Active = true;
                 await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMot);
             }
+            else return BadRequest("Not found typeMotorcycle or Active");
 
             return NoContent();
         }
 
-        //ToDo   ---- Verificar que este con el servicio
         private bool TypeMExists(int id)
         {
-            return _typeMotorcycleService.GetTypeMotorcycleAsync(id) != null;
+            var exists = _typeMotorcycleService.GetTypeMotorcycleAsync(id).Result;
+            return exists != null;
         }
     }
 }

@@ -12,5 +12,8 @@ namespace AppAlquiler_DataAccessLayer.Models
         public string Name{ get; set; }
         public bool Active { get; set; } //Baja logica
 
+        // Relación de 1 a N (una Marca tiene muchos Modelos)
+        public List<Model> Models { get; set; }  // Navegación hacia los Modelos
+
     }
 }

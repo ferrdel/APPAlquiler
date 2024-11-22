@@ -1,6 +1,7 @@
 ﻿using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,24 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     {
         public CarRepository(AlquilerDbContext context) : base(context) { }
 
-        public async Task<Brand> GetBrandByIdAsync(int id)
-        {
-            var estado = await _context.Set<Brand>().FindAsync(id);     //Devuelve null si no lo encuentra
-            return estado;
-        }
-
         public async Task<Model> GetModelByIdAsync(int id)
         {
-            return await _context.Set<Model>().FindAsync(id);
+            var model = await _context.Set<Model>().FindAsync(id);
+            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);
+            return model;
+        }
+
+        public async Task<IEnumerable<Car>> GetAllCarsAsync()
+        {
+            return await _context.Cars
+                .Include(m => m.Model)
+                    .ThenInclude(m => m.Brand)                
+                .ToListAsync();
+        }
+
+        public async Task<Car> GetCarByIdAsync(int id)
+        {
+            return await _context.Cars.Include(c => c.Model).FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

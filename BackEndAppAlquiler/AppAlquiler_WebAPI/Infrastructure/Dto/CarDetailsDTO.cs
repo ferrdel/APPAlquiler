@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AppAlquiler_BusinessLayer.DTOs
+﻿namespace AppAlquiler_WebAPI.Infrastructure.Dto
 {
-    public class CreateCarDto : CreateVehicleDto
+    public class CarDetailsDto : VehicleDetailsDto
     {
         public int NumberDoors { get; set; } //cantidad puertas
         public bool AirConditioning { get; set; } //Aire acondicionado

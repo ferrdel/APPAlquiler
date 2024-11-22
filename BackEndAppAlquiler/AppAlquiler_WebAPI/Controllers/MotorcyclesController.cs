@@ -30,8 +30,29 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MotorcycleDto>>> GetMotorcycles()
         {
-            var motorcycle = await _motorcycleService.GetAllMotorcycleAsync();
-            return Ok(motorcycle);
+            var succeded = await _motorcycleService.GetAllMotorcycleAsync();
+            var motorcycleDetails = succeded.Select(motorcycle => new MotorcycleDetailsDto
+            {
+                Id = motorcycle.Id,    //agregado para el front
+                Description = motorcycle.Description,
+                GasolineConsumption = motorcycle.GasolineConsumption,
+                LuggageCapacity = motorcycle.LuggageCapacity,
+                PassengerCapacity = motorcycle.PassengerCapacity,
+                Fuel = motorcycle.Fuel,
+
+                //parseo
+                State = Enum.GetName(motorcycle.State),
+                Active = motorcycle.Active,
+                Price = motorcycle.Price,
+                Image = motorcycle.Image,
+                Model = motorcycle.Model.Name,
+                Brand = motorcycle.Model.Brand.Name,
+
+                Abs = motorcycle.Abs,
+                Cilindrada = motorcycle.Cilindrada,
+                TypeMotorcycle = Enum.GetName(motorcycle.TypeMotorcycle.Name)                       //verificar
+            });
+            return Ok(motorcycleDetails);
         }
 
         // GET: api/Motorcycles/5
@@ -42,7 +63,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
             if (motorcycle == null)
             {
-                return NotFound();
+                return NotFound("Motorcycle not found");
             }
 
             var motorcycleDto = new MotorcycleDto
@@ -53,11 +74,13 @@ namespace AppAlquiler_WebAPI.Controllers
                 LuggageCapacity = motorcycle.LuggageCapacity,
                 PassengerCapacity = motorcycle.PassengerCapacity,
                 Fuel = motorcycle.Fuel,
+
                 State = Enum.GetName(motorcycle.State),
                 Active = motorcycle.Active,
                 Price = motorcycle.Price,
+                Image = motorcycle.Image,
                 ModelId = motorcycle.ModelId,
-                BrandId = motorcycle.BrandId,
+                BrandId = motorcycle.Model.BrandId,
 
                 Abs = motorcycle.Abs,
                 Cilindrada = motorcycle.Cilindrada,
@@ -76,45 +99,46 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 return BadRequest("Id mismatch");
             }
-
-            var motorcycle = new Motorcycle
+            if (!MotorcycleExists(id))
             {
-                Id = (int)motorcycleDto.Id, //agregado porque no llegaba id. Ademas castea porque podia es nullable
-                Description = motorcycleDto.Description,
-                GasolineConsumption = motorcycleDto.GasolineConsumption,
-                LuggageCapacity = motorcycleDto.LuggageCapacity,
-                PassengerCapacity = motorcycleDto.PassengerCapacity,
-                Fuel = motorcycleDto.Fuel,
-                //State = stateEnum,
-                State = Enum.Parse<State>(motorcycleDto.State),
-                Active = motorcycleDto.Active,
-                Price = motorcycleDto.Price,
-                ModelId = motorcycleDto.ModelId,
-                BrandId = motorcycleDto.BrandId,
-                //CAracteristicas Motorcycle
-                Abs = motorcycleDto.Abs,
-                Cilindrada = motorcycleDto.Cilindrada,
-                TypeMotorcycleId = motorcycleDto.TypeMotorcycleId
-            };
-
-            try
-            {
-                var succeeded = await _motorcycleService.UpdateMotorcycleAsync(motorcycle);
-                if (succeeded)
-                    return NoContent();
+                return NotFound("Motorcycle not found");
             }
-            catch (DbUpdateConcurrencyException ex)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(motorcycleDto.ModelId))
             {
-                if (!MotorcycleExists(id))
-                {
-                    return NotFound("Motorcycle not found");
-                }
-                else
-                {
-                    return BadRequest(ex.Message);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
+            //Verificacion de que existe el tipo de motocicleta
+            if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
+            {
+                ModelState.AddModelError("TypeId", "Type Id Not found.");
+                return BadRequest(ModelState);
             }
 
+            var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
+            if (motorcycle == null)
+                return NotFound("motorcycle not found");
+            
+            if (motorcycle.Active != motorcycleDto.Active)      //Verifica que no se cambia el valor de Active en la funcion update
+                return BadRequest("The active attribute cannot be changed in this option.");
+
+            motorcycle.Description = motorcycleDto.Description;
+            motorcycle.GasolineConsumption = motorcycleDto.GasolineConsumption;
+            motorcycle.LuggageCapacity = motorcycleDto.LuggageCapacity;
+            motorcycle.PassengerCapacity = motorcycleDto.PassengerCapacity;
+            motorcycle.Fuel = motorcycleDto.Fuel;
+            motorcycle.State = Enum.Parse<State>(motorcycleDto.State);
+            motorcycle.Price = motorcycleDto.Price;
+            motorcycle.Image = motorcycleDto.Image;
+            motorcycle.ModelId = motorcycleDto.ModelId;
+
+            motorcycle.Abs = motorcycleDto.Abs;
+            motorcycle.Cilindrada = motorcycleDto.Cilindrada;
+            motorcycle.TypeMotorcycleId = motorcycleDto.TypeMotorcycleId;
+
+            var succeeded = await _motorcycleService.UpdateMotorcycleAsync(motorcycle);
+            if (!succeeded) return BadRequest("fallo");
             return NoContent();
         }
 
@@ -123,29 +147,22 @@ namespace AppAlquiler_WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostMotorcycle([FromBody]MotorcycleDto motorcycleDto)
         {
-            if (ModelState.IsValid)
+            //Verificacion de que existe el modelo
+            if (!ModelExists(motorcycleDto.ModelId))
             {
-                //Verificacion de que existe la marca
-                if (!BrandExists(motorcycleDto.BrandId))
-                {
-                    ModelState.AddModelError("BrandId", "Brand Id Not found.");
-                    return BadRequest(ModelState);
-                }
+                ModelState.AddModelError("ModelId", "Model Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el modelo
-                if (!ModelExists(motorcycleDto.ModelId))
-                {
-                    ModelState.AddModelError("ModelId", "Model Id Not found.");
-                    return BadRequest(ModelState);
-                }
+            //Verificacion de que existe el tipo de motocicleta
+            if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
+            {
+                ModelState.AddModelError("TypeId", "Type Id Not found.");
+                return BadRequest(ModelState);
+            }
 
-                //Verificacion de que existe el tipo de motocicleta
-                if (!TypeMotorcycleExists(motorcycleDto.TypeMotorcycleId))
-                {
-                    ModelState.AddModelError("TypeId", "Type Id Not found.");
-                    return BadRequest(ModelState);
-                }
-
+            try
+            { 
                 var motorcycle = new Motorcycle
                 {
                     Description = motorcycleDto.Description,
@@ -156,8 +173,8 @@ namespace AppAlquiler_WebAPI.Controllers
                     State = Enum.Parse<State>(motorcycleDto.State),
                     Active = motorcycleDto.Active,
                     Price = motorcycleDto.Price,
+                    Image = motorcycleDto.Image,
                     ModelId = motorcycleDto.ModelId,
-                    BrandId = motorcycleDto.BrandId,
                     
                     Abs=motorcycleDto.Abs,
                     Cilindrada=motorcycleDto.Cilindrada,
@@ -168,9 +185,12 @@ namespace AppAlquiler_WebAPI.Controllers
                 if (succeeded)
                     return CreatedAtAction("GetMotorcycle", new { Id = motorcycle.Id }, motorcycle);
                 else
-                    return BadRequest(ModelState);
+                    return BadRequest("Failed to create");
             }
-            return BadRequest(ModelState); // elModelState es la representacion del modelo
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Motorcycles/5
@@ -183,6 +203,7 @@ namespace AppAlquiler_WebAPI.Controllers
                 motorcycle.Active = false;
                 await _motorcycleService.UpdateMotorcycleAsync(motorcycle);    //Cambia el estado Active a falso (baja logica).
             }
+            else return BadRequest("Not found motorcycle or not Active");
 
             return NoContent();
         }
@@ -196,25 +217,26 @@ namespace AppAlquiler_WebAPI.Controllers
                 motorcycle.Active = true;
                 await _motorcycleService.UpdateMotorcycleAsync(motorcycle);
             }
+            else return BadRequest("Not found motorcycle or Active");
 
             return NoContent();
         }
 
         private bool MotorcycleExists(int id)
         {
-            return _motorcycleService.GetMotorcycleAsync(id) != null;
-        }
-        private bool BrandExists(int id)
-        {
-            return _motorcycleService.GetBrandByIdAsync(id) != null;
+            var exists = _motorcycleService.GetMotorcycleAsync(id).Result;
+            return exists != null;
         }
         private bool ModelExists(int id)
         {
-            return _motorcycleService.GetModelByIdAsync(id) != null;
+            var exists = _motorcycleService.GetModelByIdAsync(id).Result;
+            return exists != null;
         }
+
         private bool TypeMotorcycleExists(int id)
         {
-            return _motorcycleService.GetTypeMotorcycleByIdAsync(id) != null;
+            var exists = _motorcycleService.GetTypeMotorcycleByIdAsync(id).Result;
+            return exists != null;
         }
     }
 }

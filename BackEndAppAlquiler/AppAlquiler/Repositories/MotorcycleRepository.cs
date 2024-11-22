@@ -1,6 +1,7 @@
 ﻿using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,29 +14,33 @@ namespace AppAlquiler_DataAccessLayer.Repositories
     {
         public MotorcycleRepository(AlquilerDbContext context) : base(context) { }
 
-        public Task<IEnumerable<Motorcycle>> GetAllTypeMotorcycle()
+        public async Task<TypeMotorcycle> GetTypeMotorcycleByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<TypeMotorcycle>().FindAsync(id);
         }
 
-        public Task<IEnumerable<Motorcycle>> SearchTypeMotorcycle(string searchTerm)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var model = await _context.Set<Model>().FindAsync(id);      
+            model.Brand = await _context.Set<Brand>().FindAsync(model.BrandId);     
+            return model;
         }
 
-        public async Task<Motorcycle> GetTypeMotorcycleByIdAsync(int id)
+        public async Task<IEnumerable<Motorcycle>> GetAllMotorcyclesAsync()
         {
-            return await _context.Set<Motorcycle>().FindAsync(id);
+            return await _context.Motorcycles
+                .Include(m => m.Model)
+                    .ThenInclude(m => m.Brand)
+                .Include(m => m.TypeMotorcycle)
+                .ToListAsync();
         }
 
-        public async Task<Motorcycle> GetBrandByIdAsync(int id)
+        public async Task<Motorcycle> GetMotorcycleByIdAsync(int id)
         {
-            return await _context.Set<Motorcycle>().FindAsync(id);
-        }
-
-        public async Task<Motorcycle> GetModelByIdAsync(int id)
-        {
-            return await _context.Set<Motorcycle>().FindAsync(id);
+            return await _context.Motorcycles
+                .Include(c => c.Model)
+                .Include(c => c.TypeMotorcycle)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

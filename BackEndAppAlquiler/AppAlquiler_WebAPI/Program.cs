@@ -4,6 +4,7 @@ using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,18 @@ builder.Services.AddScoped<ITypeMotorcycleRepository, TypeMotorcycleRepository>(
 builder.Services.AddScoped<ITypeMotorcycleService, TypeMotorcycleService>();
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    //Agregado para errores ciclicos
+    //.AddJsonOptions(x =>     //agrega un id adicional para referenciar las relaciones
+      //  x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+    .AddJsonOptions(options =>  //deja en null el objeto relacion, las ignora
+     {
+         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+     })
+
+;
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -53,6 +65,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//CORS
+app.UseCors(
+    x => x
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    //.WithOrigins("https://mybeautifullpage.com")
+    .AllowAnyOrigin()
+    //.SetIsOriginAllowed(origin => true)
+);
+
 
 app.UseHttpsRedirection();
 

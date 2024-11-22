@@ -1,9 +1,11 @@
 ﻿using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
+using AppAlquiler_DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +22,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Boat>> GetAllBoatAsync()
         {
-            return await _boatRepository.GetAllAsync();
+            var allBoats = await _boatRepository.GetAllBoatsAsync();
+            return allBoats;
         }
 
         public async Task<Boat> GetBoatAsync(int id)
         {
-            return await _boatRepository.GetByIdAsync(id);
+            return await _boatRepository.GetBoatByIdAsync(id);    //Devuelve un arreglo provisional y se rompe dado que no es null
         }
 
         public async Task<bool> AddBoatAsync(Boat boat)
@@ -46,7 +49,7 @@ namespace AppAlquiler_BusinessLayer.Services
         {
             try
             {
-                await _boatRepository.UpdateAsync(boat);
+                //await _boatRepository.UpdateAsync(boat);
                 await _boatRepository.SaveChangesAsync();
                 return true;
             }
@@ -70,16 +73,24 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
-
-        public async Task<Boat> GetBrandByIdAsync(int id)
+        public async Task<bool> ActivateAsync(int id)
         {
-            return await _boatRepository.GetBrandByIdAsync(id);
+            try
+            {
+                await _boatRepository.ActivateAsync(await _boatRepository.GetByIdAsync(id));
+                await _boatRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public async Task<Boat> GetModelByIdAsync(int id)
+
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _boatRepository.GetModelByIdAsync(id);
         }
-
     }
 }

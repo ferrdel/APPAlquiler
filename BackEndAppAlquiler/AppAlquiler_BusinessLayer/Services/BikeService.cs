@@ -21,12 +21,13 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<IEnumerable<Bike>> GetAllBikeAsync()
         {
-            return await _bikeRepository.GetAllAsync();
+            var allBikes = await _bikeRepository.GetAllBikesAsync();
+            return allBikes;
         }
 
         public async Task<Bike> GetBikeAsync(int id)
         {
-            return await _bikeRepository.GetByIdAsync(id);
+            return await _bikeRepository.GetBikeByIdAsync(id);
         }
 
         public async Task<bool> AddBikeAsync(Bike bike)
@@ -73,13 +74,21 @@ namespace AppAlquiler_BusinessLayer.Services
             }
         }
 
-
-        public Task<Bike> GetBrandByIdAsync(int id)
+        public async Task<bool> ActivateAsync(int id)
         {
-            return _bikeRepository.GetBrandByIdAsync(id);
+            try
+            {
+                await _bikeRepository.ActivateAsync(await _bikeRepository.GetByIdAsync(id));
+                await _bikeRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public async Task<Bike> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
             return await _bikeRepository.GetModelByIdAsync(id);
         }
