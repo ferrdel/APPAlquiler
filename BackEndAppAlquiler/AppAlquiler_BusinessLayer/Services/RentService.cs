@@ -31,9 +31,13 @@ namespace AppAlquiler_BusinessLayer.Services
                 .Select(r => new RentDto
                 {
                     Id = r.Id,
+                    PickUpDate = r.PickUpDate,
+                    ReturnDate = r.ReturnDate,
+                    PickUpTime = r.PickUpTime,
+                    ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
-                    UserId = r.User.Id,
+
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
                     UserLastName = r.User.LastName,
@@ -42,36 +46,9 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
                     UserRegion = r.User.Region,
-                })
-                .ToListAsync();
 
-            return rents;
-        }
-
-        public async Task<IEnumerable<RentDto>> GetMyRentsAsync()
-        {
-            var userId = (int)_currentUserService.UserId;
-            if (userId == null)
-            {
-                throw new UnauthorizedAccessException("User is not authenticated.");
-            }
-            var userName = _currentUserService.UserName;
-
-            var rents = await _context.Rents.Where(o => o.UserId == userId)
-                .Select(r => new RentDto
-                {
-                    Id = r.Id,
-                    State = r.State.ToString(),
-                    Vehicle = r.Vehicle.ToString(),
                     UserId = r.User.Id,
-                    UserDNI = r.User.DNI,
-                    UserFirstName = r.User.FirstName,
-                    UserLastName = r.User.LastName,
-                    UserAddress = r.User.Address,
-                    UserEmail = r.User.Email,
-                    UserPhoneNumber = r.User.PhoneNumber,
-                    UserCity = r.User.City,
-                    UserRegion = r.User.Region,
+                    VehicleId = r.VehicleId
                 })
                 .ToListAsync();
 
@@ -85,9 +62,13 @@ namespace AppAlquiler_BusinessLayer.Services
                 .Select(r => new RentDto
                 {
                     Id = r.Id,
+                    PickUpDate = r.PickUpDate,
+                    ReturnDate = r.ReturnDate,
+                    PickUpTime = r.PickUpTime,
+                    ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
-                    UserId = r.User.Id,
+
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
                     UserLastName = r.User.LastName,
@@ -96,21 +77,27 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
                     UserRegion = r.User.Region,
+
+                    VehicleId = r.VehicleId
                 })
                 .ToListAsync();
 
             return rents;
         }
 
-        public async Task<RentDto> GetByIdAsync(int id)
+        public async Task<RentDto> GetRentDtoByIdAsync(int id)
         {
             var rent = await _context.Rents.Include(c => c.User)
                 .Select(r => new RentDto
                 {
                     Id = r.Id,
+                    PickUpDate = r.PickUpDate,
+                    ReturnDate = r.ReturnDate,
+                    PickUpTime = r.PickUpTime,
+                    ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
-                    UserId = r.User.Id,
+
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
                     UserLastName = r.User.LastName,
@@ -119,29 +106,65 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
                     UserRegion = r.User.Region,
+
+                    UserId = r.User.Id,
+                    VehicleId = r.VehicleId
                 })
                 .FirstOrDefaultAsync(c => c.Id == id);
             return rent;
         }
 
-        public Task<bool> UpdateRentAsync(RentDto rentDto)
+        public async Task<IEnumerable<MyRentDto>> GetMyRentsAsync()
         {
-            throw new NotImplementedException();
+            var userId = (int)_currentUserService.UserId;
+            if (userId == null)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+            var userName = _currentUserService.UserName;
+
+            var rents = await _context.Rents.Where(o => o.UserId == userId)
+                .Select(r => new MyRentDto
+                {
+                    Id = r.Id,
+                    PickUpDate = r.PickUpDate,
+                    ReturnDate = r.ReturnDate,
+                    PickUpTime = r.PickUpTime,
+                    ReturnTime = r.ReturnTime,
+                    State = r.State.ToString(),
+                    Vehicle = r.Vehicle.ToString(),
+                    VehicleId = r.VehicleId,
+                })
+                .ToListAsync();
+
+            return rents;
         }
 
-        public async Task<bool> PlaceRentAsync(RentDto rentDto)
+        public async Task<Rent> GetByIdAsync(int id)
+        {
+            var rent = await _context.Rents.FindAsync(id);
+            return rent;
+        }
+
+        public async Task<bool> UpdateRentAsync(Rent rent)
         {
             try
             {
-                var rent = new Rent
-                {
-                    UserId = rentDto.UserId,
-                    ReturnDate = rentDto.ReturnDate,
-                    PickUpDate = rentDto.PickUpDate,
-                    //RentNumber = Guid.NewGuid().ToString(),
-                };
+                _context.Rents.Update(rent);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-                _context.Rents.Add(rent);
+        public async Task<bool> PlaceRentAsync(Rent rent)
+        {
+            try
+            {
+                await _context.Rents.AddAsync(rent);
                 await _context.SaveChangesAsync();
                 return true;
             }

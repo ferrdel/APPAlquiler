@@ -11,12 +11,13 @@ namespace AppAlquiler_BusinessLayer.Interfaces
     public interface IRentService
     {
         Task<IEnumerable<RentDto>> GetAllRentAsync();
-        Task<IEnumerable<RentDto>> GetMyRentsAsync();
         Task<IEnumerable<RentDto>> GetRentsByUserIdAsync(int id);
-        Task<RentDto> GetByIdAsync(int id);
+        Task<RentDto> GetRentDtoByIdAsync(int id);
+        Task<IEnumerable<MyRentDto>> GetMyRentsAsync();
+        Task<Rent> GetByIdAsync(int id);            //Se utiliza para actualizar los datos y verificar la existencia
 
-        Task<bool> UpdateRentAsync(RentDto rentDto);
-        Task<bool> PlaceRentAsync(RentDto rentDto);
+        Task<bool> UpdateRentAsync(Rent rent);
+        Task<bool> PlaceRentAsync(Rent rent);
 
     }
 }

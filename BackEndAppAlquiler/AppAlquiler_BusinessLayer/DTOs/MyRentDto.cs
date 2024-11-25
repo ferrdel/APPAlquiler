@@ -1,11 +1,14 @@
-﻿using AppAlquiler_DataAccessLayer.Models;
-using Mono.TextTemplating;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AppAlquiler_WebAPI.Infrastructure.Dto
+namespace AppAlquiler_BusinessLayer.DTOs
 {
-    public class CreateRentDto
+    public class MyRentDto
     {
-        public int? Id { get; set; }
+        public int Id {  get; set; }
         public DateOnly PickUpDate { get; set; } //fecha retiro
         public DateOnly ReturnDate { get; set; } //fecha devolucionre
         public TimeOnly PickUpTime { get; set; } // hra retiro
@@ -22,9 +25,6 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
             get { return _vehicle; }
             set { _vehicle = value.ToLower(); }         //Pasamos a minusculas todas las letras, para evitar errores por una letra con mayuscula
         }
-
-        //RelationShips
         public int VehicleId { get; set; }
-        public int UserId { get; set; }
     }
 }

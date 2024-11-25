@@ -98,21 +98,5 @@ namespace AppAlquiler_WebAPI.Controllers
             });
 
         }
-        [HttpGet("getId")]
-        public IActionResult GetCurrentUserId()
-        {
-            // Acceder al claim nameid
-            var userIdClaim = User.FindFirst("nameid");
-
-            if (userIdClaim == null)
-            {
-                return Unauthorized("User ID not found in token.");
-            }
-
-            // Convertir a un entero (si necesario)
-            var userId = int.Parse(userIdClaim.Value);
-
-            return Ok(userId);
-        }
     }
 }
