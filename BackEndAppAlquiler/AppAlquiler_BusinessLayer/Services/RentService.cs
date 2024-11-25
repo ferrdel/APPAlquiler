@@ -45,7 +45,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserEmail = r.User.Email,
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
-                    UserRegion = r.User.Region,
+                    UserRegion = r.User.Country,
 
                     UserId = r.User.Id,
                     VehicleId = r.VehicleId
@@ -76,7 +76,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserEmail = r.User.Email,
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
-                    UserRegion = r.User.Region,
+                    UserRegion = r.User.Country,
 
                     VehicleId = r.VehicleId
                 })
@@ -105,7 +105,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     UserEmail = r.User.Email,
                     UserPhoneNumber = r.User.PhoneNumber,
                     UserCity = r.User.City,
-                    UserRegion = r.User.Region,
+                    UserRegion = r.User.Country,
 
                     UserId = r.User.Id,
                     VehicleId = r.VehicleId
