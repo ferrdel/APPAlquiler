@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class NavbarComponent implements OnInit {
 	isAuthenticated = false;
-	currentUser: { unique_name?: string } | null = null;
+	currentUser: { unique_name?: string, role?:string, nameid?:number } | null = null;
 	private authSubscription: Subscription = new Subscription();
 
 	constructor(private authService: AuthService) {}

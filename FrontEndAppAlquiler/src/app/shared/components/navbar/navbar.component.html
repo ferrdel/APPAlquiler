@@ -81,6 +81,22 @@
 							{{ currentUser?.unique_name || 'User' }}
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="userMenu">
+							<!--AGREGADO-->							
+							<ng-container [ngSwitch]="currentUser?.role">
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/cars">Cars</a>
+								</li>								
+
+								<li *ngSwitchCase="'USER'">
+									<a class="dropdown-item" href="">Rents</a>
+								</li>
+								<!-- Agregar más casos si es necesario -->
+								<li *ngSwitchDefault>
+									<a class="dropdown-item" href="">Default Page</a>
+								</li>
+							</ng-container>
+														
+							<hr>
 							<li>
 								<button class="dropdown-item" (click)="logout()">Logout</button>
 							</li>
