@@ -12,7 +12,8 @@ import { MotorcycleService } from '../../../../core/services/motorcycle.service'
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { Brand } from '../../../../core/models/brand';
 import { Model } from '../../../../core/models/model';
-import { TypeMotorcycle } from '../../../../core/models/enums/type-motorcycle';
+import { TypeMotorcycleService } from '../../../../core/services/type-motorcycle.service';
+import { TypeMotorcycle } from '../../../../core/models/typeMotorcycle';
 
 @Component({
   selector: 'app-add-motorcycle',
@@ -28,17 +29,19 @@ export class AddMotorcycleComponent implements OnInit {
 
    // Convertir el enum a un array de pares clave-valor
    public estados = Object.entries(State);
-   public typeMoto = Object.entries(TypeMotorcycle);
+   //public typeMotos = Object.entries(TypeMotorcycle);
 
    //para listas desde BD
   public marcas: Brand[] = [];  
   public modelos: Model[] = [];
+  public typeMotos: TypeMotorcycle[] = [];
   
   miFormulario!: FormGroup; 
    
   constructor(private fb: FormBuilder,
     private brandService: BrandService,
     private modelService: ModelService,
+    private typeMotoServ: TypeMotorcycleService,
     private motoService: MotorcycleService,
 
     private activatedRoute: ActivatedRoute, //para rutas
@@ -61,7 +64,7 @@ export class AddMotorcycleComponent implements OnInit {
     cilindrada: [0, Validators.required],  
     price: [0, Validators.required],
     
-    typeMotorcycle: ["", Validators.required], 
+    typeMotorcycleId: ["", Validators.required], 
     
 
     //agregado para imagen
@@ -73,6 +76,7 @@ ngOnInit() {
   // Cargar marcas y modelos antes de asignar los valores del formulario
   this.isLoading = true;
   this.CargaMarcasModelos();
+  this.CargaTypes();
 } 
 
  
@@ -132,6 +136,64 @@ CargaMarcasModelos(){
     }
   );
 }
+
+CargaTypes(){    
+  forkJoin({      
+    typeMot: this.typeMotoServ.getTypeMoto(),      
+  }).subscribe(      
+    ({ typeMot}) => {        
+      //filtro por marcas que tengan modelos asociados           
+      this.typeMotos = typeMot.filter(typeM=> typeM.name != '');      
+      
+      //Sino hay marcas redirijo al listado
+      if(this.typeMotos.length < 1)
+        {
+          this.toastr.warning("Primero debe agregar Marcas y Modelos", 'Información');
+          this.router.navigateByUrl('/');
+          return;
+        }
+
+      //AGREGA NUEVO -> comprobar que ruta NO es para editar
+      if ( !this.router.url.includes('edit') ) {
+        this.isLoading = false;
+        return;
+      }        
+
+      //EDITA -> Si la ruta es para editar, busco el dato por id
+      this.activatedRoute.params
+        .pipe(
+          switchMap( ({ id }) => this.motoService.getMotoById( id ) ),
+        ).subscribe( 
+          (myCar) => {
+
+            //sino encontro dato, redirijo al home
+            if ( !myCar ) {
+              return this.router.navigateByUrl('/');
+            }
+
+            //reinicio form con los datos traidos del servidor
+            console.log({myCar});
+            this.miFormulario.reset( myCar );
+            this.isLoading = false;
+            this.showModels = true;
+
+            //filtrar modelos por marca del vehiculo
+            this.filtrarModelosPorMarca(myCar.brandId);
+
+            return;
+          },
+          (error) => {          
+            this.toastr.error(error, 'Se ha producido un error');            
+            return this.router.navigateByUrl('/');
+          }
+      );
+    },
+    (error) => {
+      this.toastr.error(error, 'Se ha producido un error');                  
+    }
+  );
+}
+
 
 
 // Obtener el valor seleccionado de marca

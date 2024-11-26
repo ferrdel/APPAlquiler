@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppAlquiler_DataAccessLayer.Migrations
 {
     [DbContext(typeof(AlquilerDbContext))]
-    [Migration("20241126033700_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241126223929_InitialCreat")]
+    partial class InitialCreat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -386,8 +386,9 @@ namespace AppAlquiler_DataAccessLayer.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

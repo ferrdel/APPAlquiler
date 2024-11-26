@@ -1,7 +1,5 @@
 import { Combustible } from "./enums/combustible.enum";
 import { State } from "./enums/state.enum";
-import { Transmision } from "./enums/transmision.enum";
-import { TypeMotorcycle } from "./enums/type-motorcycle";
 import { Vehicle } from "./vehicle";
 
 export class Motorcycle extends Vehicle{
@@ -23,7 +21,7 @@ export class Motorcycle extends Vehicle{
         image: string,
         model: string,
         brand: string,
-        public typeMotorcycle:TypeMotorcycle,
+        public typeMotorcycleId:number,
     
         public abs: boolean,
         public cilindrada: number        

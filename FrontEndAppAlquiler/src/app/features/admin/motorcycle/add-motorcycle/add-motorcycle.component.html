@@ -40,7 +40,7 @@
         
             <!--STATE-->    
             <div class="mb-3">
-                <label for="combustible" class="form-label">Estado</label>        
+                <label for="estado" class="form-label">Estado</label>        
                 <select class="form-select" aria-label="Default select example" formControlName="state" id="state">            
                     <option value="">-- Seleccione Estado --</option>
                     <option *ngFor="let estado of estados"  [value]="estado[0]">{{estado[1]}}</option>            
@@ -97,19 +97,18 @@
                 </span>
             </div>
 
-            <!--TYPO DE MOTOS-->        
+            <!--TYPO DE MOTOS--> 
             <div class="mb-3">
-                <label for="typeMoto" class="form-label">Tipo de Motocicleta</label>        
-                <select class="form-select" aria-label="Default select example" formControlName="typeMotorcycle" id="typeMoto" (change)="onOptionChange()">            
-                    <option value="">-- Seleccione Tipo Motocicleta --</option>
-                    <option *ngFor="let type of typeMoto"  [value]="type[0]">{{type[1]}}</option>            
+                <label for="tipo" class="form-label">Tipo de Motocicleta</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="typeMotorcycleId" id="tipo" (change)="onOptionChange()">            
+                    <option value="">-- Seleccione Marca --</option>
+                    <option *ngFor="let tipo of typeMotos"  value="{{tipo.id}}">{{tipo.name}}</option>            
                 </select>
-                <span *ngIf="hasErrorsAndTouched('typeMotorcycle')" class="form-text text-danger">
-                    
-                    {{getFieldError('typeMotorcycle')}}
+                <span *ngIf="hasErrorsAndTouched('typeMotorcycleId')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('typeMotorcycleId')}}
                 </span>
             </div>
-
                    
                                                     
             <!--PRICE-->

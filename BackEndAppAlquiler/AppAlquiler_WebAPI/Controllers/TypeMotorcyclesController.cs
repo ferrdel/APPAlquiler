@@ -42,7 +42,7 @@ namespace AppAlquiler_WebAPI.Controllers
             var typeMotorcycleDto = new TypeMotorcycleDto
             {
                 Id = typeMotorcycle.Id,
-                Name = Enum.GetName(typeMotorcycle.Name),
+                Name = typeMotorcycle.Name,
                 Active = typeMotorcycle.Active,
             };
 
@@ -63,7 +63,7 @@ namespace AppAlquiler_WebAPI.Controllers
             if (typeMotorcycle.Active != typeMotorcycleDto.Active)         //Verifica que no se cambia el valor de Active en la funcion update
                 return BadRequest("The active attribute cannot be changed in this option.");
 
-            typeMotorcycle.Name = Enum.Parse<NameTypeMotorcycle>(typeMotorcycleDto.Name);
+            typeMotorcycle.Name = typeMotorcycleDto.Name;
 
             var succeeded = await _typeMotorcycleService.UpdateTypeMotorcycleAsync(typeMotorcycle);
             if (!succeeded) return BadRequest("fallo");
@@ -77,7 +77,7 @@ namespace AppAlquiler_WebAPI.Controllers
             {
                 var typeMotorcycle = new TypeMotorcycle
                 {
-                    Name = Enum.Parse<NameTypeMotorcycle>(typeMotorcycleDto.Name),
+                    Name = typeMotorcycleDto.Name,
                     Active = typeMotorcycleDto.Active
                 };
 
