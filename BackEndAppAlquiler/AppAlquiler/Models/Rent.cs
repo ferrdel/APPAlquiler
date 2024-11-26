@@ -31,6 +31,7 @@ namespace AppAlquiler_DataAccessLayer.Models
         public RentState State { get; set; } // Pendiente, Confirmado, Rechazado
 
         public TypeVehicle Vehicle { get; set; }
+        public float TotAmount { get; set; }
 
         //RelationShips
         public int VehicleId { get; set; }

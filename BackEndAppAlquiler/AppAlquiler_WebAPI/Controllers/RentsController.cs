@@ -89,9 +89,18 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            //TODO: Añadir más validaciones, que el userId sea mayor a cero, etc.
-            //TODO: Map CreateRentDto to RentDto
+            if (rentDto.PickUpDate > rentDto.ReturnDate)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
+            {
+                return BadRequest("Invalid date: Return date cannot be before pick-up date.");
+            }
+            else if (rentDto.PickUpDate == rentDto.ReturnDate)
+            {
+                if (rentDto.PickUpTime > rentDto.ReturnTime)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
+                    return BadRequest("Invalid time: Pick-up time cannot be later than return time.");
+            }
+            
 
+            float price = await _rentService.GetVehicleByIdAsync(rentDto.Vehicle, rentDto.VehicleId);
             try
             {
                 var rent = new Rent
@@ -103,6 +112,7 @@ namespace AppAlquiler_WebAPI.Controllers
                     ReturnTime = rentDto.ReturnTime,
                     State = Enum.Parse<RentState>(rentDto.State),          //Se puede definir automaticamente como Pendiente
                     Vehicle = Enum.Parse<TypeVehicle>(rentDto.Vehicle),
+                    TotAmount = CalculateDifferenceDays(rentDto.ReturnDate, rentDto.PickUpDate) * price,
 
                     VehicleId = rentDto.VehicleId,
                     UserId = rentDto.UserId
@@ -122,6 +132,12 @@ namespace AppAlquiler_WebAPI.Controllers
         {
             var exists = _rentService.GetByIdAsync(id).Result;
             return exists != null;
+        }
+
+        private float CalculateDifferenceDays(DateOnly pickUpDate, DateOnly returnDate)
+        {
+            int difference = (pickUpDate.DayNumber - returnDate.DayNumber);     //Devuelve la diferencia de dias
+            return difference;
         }
     }
 }

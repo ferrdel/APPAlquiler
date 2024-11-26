@@ -1,5 +1,6 @@
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
+using AppAlquiler_DataAccessLayer.Converters;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
@@ -12,7 +13,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +84,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>  //deja en null el objeto relacion, las ignora
      {
          options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+         options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
+         options.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
      })
 
 ;
@@ -90,6 +97,11 @@ builder.Services.AddSwaggerGen(
      setup =>
      {
          setup.SwaggerDoc("v1", new OpenApiInfo { Title = "AppAlquiler", Version = "v1" });
+         //Agregado para cambiar el Json
+         setup.SchemaFilter<SwaggerSchemaFilter>();
+         setup.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", Format = "date" });
+         setup.MapType<TimeOnly>(() => new OpenApiSchema { Type = "string", Format = "time" });
+
          setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
          {
              Name = "Authorization",

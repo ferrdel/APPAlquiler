@@ -4,11 +4,13 @@ using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_DataAccessLayer.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -144,6 +146,38 @@ namespace AppAlquiler_BusinessLayer.Services
         {
             var rent = await _context.Rents.FindAsync(id);
             return rent;
+        }
+
+        public async Task<float> GetVehicleByIdAsync(string vehicle, int id)
+        {
+            float price = 0;
+            switch (vehicle.ToLower())
+            {
+                case "bike":
+                    var bike = _context.Bikes.FindAsync(id).Result; // Encuentra la bicicleta por ID
+                    if (bike != null) price = bike.Price;
+                    else throw new Exception("Bike not found");
+                    break;
+                case "boat":
+                    var boat = _context.Boats.FindAsync(id).Result; // Encuentra el barco por ID
+                    if (boat != null) price = boat.Price;
+                    else throw new Exception("Boat not found");
+                    break;
+                case "motorcycle":
+                    var motorcycle = _context.Motorcycles.FindAsync(id).Result; // Encuentra la motocicleta por ID
+                    if (motorcycle != null) price = motorcycle.Price;
+                    else throw new Exception("Motorcycle not found");
+                    break;
+                case "car":
+                    var car = _context.Cars.FindAsync(id).Result; // Encuentra el auto por ID
+                    if (car != null) price = car.Price;
+                    else throw new Exception("Car not found");
+                    break;
+                default:
+                    throw new ArgumentException("Vehicle type not recognized");
+            }
+
+            return price;
         }
 
         public async Task<bool> UpdateRentAsync(Rent rent)
