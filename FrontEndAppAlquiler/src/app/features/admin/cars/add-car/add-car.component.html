@@ -1,0 +1,213 @@
+<div class="container my-3">
+    
+    <!-- spinner-->
+    <shared-loading-spinner *ngIf="isLoading;else showForm"></shared-loading-spinner>
+
+    <ng-template #showForm>
+        <h2>Cars</h2>
+        <hr>
+        
+        <form class="mt-3 col-md-6" [formGroup]="miFormulario" (ngSubmit)="onSubmit()">                
+            <!--ID-->
+            <div class="mb-3" hidden>
+                <label for="idVehiculo" class="form-label">Id</label>
+                <input type="text" class="form-control" id="idVehiculo" formControlName="id">        
+                <span *ngIf="hasErrorsAndTouched('id')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('id')}}
+                </span>
+            </div>
+            
+            <!--DESCRIPTION-->
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Description</label>
+                <textarea class="form-control" name="descripcion" id="descripcion" formControlName="description"></textarea>        
+                <span *ngIf="hasErrorsAndTouched('description')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('description')}}
+                </span>
+            </div>
+
+            <!--IMAGE-->
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="text" class="form-control" name="image" id="image" formControlName="image">
+                <span *ngIf="hasErrorsAndTouched('image')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('image')}}
+                </span>
+            </div>
+
+            <!--GASOLINE CONSUMPTION-->
+            <div class="mb-3">
+                <label for="consumo" class="form-label">Gasoline Consumption</label>
+                <input type="number" class="form-control" id="consumo" min="1" step="0.5" formControlName="gasolineConsumption">        
+                <span *ngIf="hasErrorsAndTouched('gasolineConsumption')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('gasolineConsumption')}}
+                </span>
+            </div>
+
+            <!--LUGGAGE CAPACITY-->
+            <div class="mb-3">
+                <label for="capacidad" class="form-label">Capacidad de equipaje(En Litros)</label>
+                <input type="number" class="form-control" id="capacidad" min="1" step="0.5" formControlName="luggageCapacity">        
+                <span *ngIf="hasErrorsAndTouched('luggageCapacity')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('luggageCapacity')}}
+                </span>
+            </div>
+            
+            <!--PASSENGER CAPACITY-->
+            <div class="mb-3">
+                <label for="pasajeros" class="form-label">Passenger Capacity</label>
+                <input type="number" class="form-control" id="pasajeros" min="1" max="6" formControlName="passengerCapacity">              
+                <span *ngIf="hasErrorsAndTouched('passengerCapacity')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('passengerCapacity')}}
+                </span>
+            </div>
+
+            <!--FUEL-->
+            <div class="mb-3">
+                <label for="combustible" class="form-label">Combustible</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="fuel" id="combustible">            
+                    <option value="">-- Seleccione Tipo de Combustible --</option>
+                    <option *ngFor="let combustible of combustibles"  [value]="combustible[1]">{{combustible[1]}}</option>                
+                </select>
+                <span *ngIf="hasErrorsAndTouched('fuel')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('fuel')}}
+                </span>
+            </div>    
+
+            <!--STATE-->    
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="state" id="state">            
+                    <option value="">-- Seleccione Estado --</option>
+                    <option *ngFor="let estado of estados"  [value]="estado[0]">{{estado[1]}}</option>            
+                </select>
+                <span *ngIf="hasErrorsAndTouched('state')" class="form-text text-danger">
+                    <!--mensaje de error-->
+                    {{getFieldError('state')}}
+                </span>
+            </div>   
+            
+                        
+            <!--BRAND-->
+            <div class="mb-3">
+                <label for="marca" class="form-label">Brand</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="brandId" id="marca" (change)="onOptionChange()">            
+                    <option value="">-- Seleccione Marca --</option>
+                    <option *ngFor="let marca of marcas"  value="{{marca.id}}">{{marca.name}}</option>            
+                </select>
+                <span *ngIf="hasErrorsAndTouched('brandId')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('brandId')}}
+                </span>
+            </div>
+
+            <!--MODEL-->
+            <div class="mb-3" *ngIf="showModels">
+                <label for="modelo" class="form-label">Model</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="modelId" id="modelo">            
+                    <option value="">-- Seleccione Modelo --</option>
+                    <option *ngFor="let modelo of modelos"  value="{{modelo.id}}">{{modelo.name}}</option>            
+                </select>
+                <span *ngIf="hasErrorsAndTouched('modelId')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('modelId')}}
+                </span>
+            </div>
+                                                        
+            <!--NUMBER DOORS-->
+            <div class="mb-3">
+                <label for="puertas" class="form-label">Number Doors</label>
+                <input type="number" class="form-control" id="puertas" min="1" max="5" formControlName="numberDoors">              
+                <span *ngIf="hasErrorsAndTouched('numberDoors')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('numberDoors')}}
+                </span>
+            </div>
+                
+            <!--TRANSMISSION-->
+            <div class="mb-3">
+                <label for="transmision" class="form-label">Transmision</label>        
+                <select class="form-select" aria-label="Default select example" formControlName="transmission" id="transmision">            
+                    <option value="">-- Seleccione Transmisión --</option>
+                    <option *ngFor="let tipo of transmisiones"  [value]="tipo[1]">{{tipo[1]}}</option>                  
+                </select>
+                <span *ngIf="hasErrorsAndTouched('transmission')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('transmission')}}
+                </span>
+            </div>    
+
+            <!--AIR CONDITIONING-->
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="aire" formControlName="airConditioning">
+                <label class="form-check-label" for="aire">Air conditioning</label>
+                <span *ngIf="hasErrorsAndTouched('airConditioning')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('airConditioning')}}
+                </span>
+            </div>
+
+            <!--AIRBAG-->
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="airbag" formControlName="airbag">
+                <label class="form-check-label" for="airbag">Airbag</label>
+                <span *ngIf="hasErrorsAndTouched('airbag')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('airbag')}}
+                </span>
+            </div>
+
+            <!--ABS-->
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="abs" formControlName="abs">
+                <label class="form-check-label" for="abs">ABS</label>
+                <span *ngIf="hasErrorsAndTouched('abs')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('abs')}}
+                </span>
+            </div>
+
+            <!--SOUND-->
+            <div class="mb-3">
+                <label class="form-label" for="altavoces">Sound</label>
+                <input class="form-control" type="input"  id="altavoces" formControlName="sound">        
+                <span *ngIf="hasErrorsAndTouched('sound')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('sound')}}
+                </span>
+            </div>
+
+            <!--ENGINE LITERS -->
+            <div class="mb-3">
+                <label for="potencia" class="form-label">Engine Liters</label>
+                <input type="number" class="form-control" id="potencia" min="1" formControlName="engineLiters">                     
+                <span *ngIf="hasErrorsAndTouched('engineLiters')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('engineLiters')}}
+                </span>
+            </div>
+
+            <!--PRICE-->
+            <div class="mb-3">
+                <label for="precio" class="form-label">Price</label>
+                <input type="number" class="form-control" id="precio" min="1" formControlName="price">                     
+                <span *ngIf="hasErrorsAndTouched('price')" class="form-text text-danger">
+                    <!-- mensaje de error -->
+                    {{getFieldError('price')}}
+                </span>
+            </div>
+            
+                
+            <button type="submit" class="btn btn-primary mb-3">Save</button>
+
+            <button type="button" class="btn btn-secondary ms-3 mb-3" [routerLink]="['/cars']">Cancel</button>
+        </form>
+    </ng-template>
+</div>

@@ -1,9 +1,11 @@
 ﻿using AppAlquiler_BusinessLayer.Interfaces;
+using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -14,12 +16,15 @@ namespace AppAlquiler_WebAPI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
+        //Verificar
+        private readonly AlquilerDbContext _context;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, AlquilerDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _context = context;
         }
 
         [HttpPost("login")]
@@ -73,8 +78,8 @@ namespace AppAlquiler_WebAPI.Controllers
                 PhoneNumber = registerDto.PhoneNumber,
                 Address = registerDto.Address,
                 City = registerDto.City,
-                Region = registerDto.Region,
-                Generate = registerDto.Generate,
+                Country = registerDto.Country,
+                Gender = registerDto.Gender,
                 Active = true                           //Al registrase se lo guarda como Activo true
 
             };
@@ -97,6 +102,20 @@ namespace AppAlquiler_WebAPI.Controllers
                 Token = await _tokenService.GenerateToken(user) //Generate token
             });
 
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            // Acceder al claim nameid
+            var users = await _context.Set<User>().Where(o => o.Active == true).ToListAsync();        //Trae exclusivamente todos los usuarios activos
+
+            if (users == null)
+            {
+                return BadRequest("Users not found");
+            }
+
+
+            return users;
         }
     }
 }

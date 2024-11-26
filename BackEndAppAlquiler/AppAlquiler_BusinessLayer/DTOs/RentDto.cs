@@ -34,7 +34,7 @@ namespace AppAlquiler_BusinessLayer.DTOs
         public string UserPhoneNumber { get; set; }
         public string UserAddress { get; set; }
         public string UserCity { get; set; }
-        public string UserRegion { get; set; }
+        public string UserCountry { get; set; }
 
         //RelationShips
         public int VehicleId { get; set; }

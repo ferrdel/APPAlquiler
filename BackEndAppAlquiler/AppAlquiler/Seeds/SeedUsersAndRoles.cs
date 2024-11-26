@@ -41,7 +41,7 @@ namespace AppAlquiler_DataAccessLayer.Seeds
                         PhoneNumber = "123456789",
                         Address = "address",
                         City = "City",
-                        Region = "Region"
+                        Country = "Country"
                     };
 
                     var result = await userManager.CreateAsync(user, "adminadmin");
