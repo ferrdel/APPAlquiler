@@ -140,13 +140,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             NameClaimType = "nameid", // Mapea el nameid como el identificador principal
-            RoleClaimType = "role",    // Mapea el role para roles
+            //RoleClaimType = "role",    // Mapea el role para roles
             //ValidAudience = builder.Configuration["Jwt:Audience"],
             //ValidIssuer = builder.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
+});
 
 var app = builder.Build();
 

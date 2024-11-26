@@ -3,8 +3,10 @@ using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -19,6 +21,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpGet]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetRents()
         {
             var rents = await _rentService.GetAllRentAsync();
@@ -26,7 +29,8 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpGet("UserRents")]
-        public async Task<ActionResult<CreateRentDto>> GetRentsByUserAsync(int id)
+        //[Authorize(Roles = "ADMIN")]
+        public async Task<ActionResult<MyRentDto>> GetRentsByUserAsync(int id)
         {
             var rents = await _rentService.GetRentsByUserIdAsync(id);
 
@@ -38,6 +42,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        //[Authorize]
         public async Task<ActionResult<RentDto>> GetRentByidAsync(int id)
         {
             var rent = await _rentService.GetRentDtoByIdAsync(id);
@@ -45,6 +50,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpGet("MyRents")]
+        //[Authorize]
         public async Task<ActionResult<MyRentDto>> GetMyRentsAsync()
         {
             var rents = await _rentService.GetMyRentsAsync();
@@ -57,6 +63,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutRent(int id, [FromBody] UpdateRentDto rentDto)
         {
             if (id != rentDto.Id)
@@ -85,41 +92,40 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRent([FromBody] CreateRentDto rentDto)
+        //[Authorize]
+        public async Task<IActionResult> CreateRent([FromBody] CreateRentDto createRentDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (rentDto.PickUpDate > rentDto.ReturnDate)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
-            {
+            if (createRentDto.PickUpDate >= createRentDto.ReturnDate)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
+            {                               //Compara que el dia sea mayor, para que no contrate solo por horas
                 return BadRequest("Invalid date: Return date cannot be before pick-up date.");
             }
-            else if (rentDto.PickUpDate == rentDto.ReturnDate)
+            /*
+            else if (createRentDto.PickUpDate == createRentDto.ReturnDate)
             {
-                if (rentDto.PickUpTime > rentDto.ReturnTime)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
+                if (createRentDto.PickUpTime > createRentDto.ReturnTime)            //Verifica que la fecha de devolucion sea antes que la de recoger el vehiculo
                     return BadRequest("Invalid time: Pick-up time cannot be later than return time.");
-            }
-            
+                else if (createRentDto.PickUpTime == createRentDto.ReturnTime)
+                    return BadRequest("Invalid time: Pick-up time cannot be later than return time.");
+            }*/
 
-            float price = await _rentService.GetVehicleByIdAsync(rentDto.Vehicle, rentDto.VehicleId);
+            var rentDto = new RentDto
+            {
+                PickUpDate = createRentDto.PickUpDate,
+                ReturnDate = createRentDto.ReturnDate,
+                PickUpTime = createRentDto.PickUpTime,
+                ReturnTime = createRentDto.ReturnTime,
+                State = "pending",                          //Como es una nueva renta se carga como pendiente automaticamente
+                Vehicle = createRentDto.Vehicle,
+
+                VehicleId = createRentDto.VehicleId
+            };
+
             try
             {
-                var rent = new Rent
-                {
-
-                    PickUpDate = rentDto.PickUpDate,
-                    ReturnDate = rentDto.ReturnDate,
-                    PickUpTime = rentDto.PickUpTime,
-                    ReturnTime = rentDto.ReturnTime,
-                    State = Enum.Parse<RentState>(rentDto.State),          //Se puede definir automaticamente como Pendiente
-                    Vehicle = Enum.Parse<TypeVehicle>(rentDto.Vehicle),
-                    TotAmount = CalculateDifferenceDays(rentDto.ReturnDate, rentDto.PickUpDate) * price,
-
-                    VehicleId = rentDto.VehicleId,
-                    UserId = rentDto.UserId
-                };
-
-                var succeded = await _rentService.PlaceRentAsync(rent);
-                if (succeded) return Created();
+                var succeded = await _rentService.PlaceRentAsync(rentDto);
+                if (succeded) return NoContent();
                 else return BadRequest("Rent could not be placed");
             }
             catch (Exception ex)
@@ -134,10 +140,5 @@ namespace AppAlquiler_WebAPI.Controllers
             return exists != null;
         }
 
-        private float CalculateDifferenceDays(DateOnly pickUpDate, DateOnly returnDate)
-        {
-            int difference = (pickUpDate.DayNumber - returnDate.DayNumber);     //Devuelve la diferencia de dias
-            return difference;
-        }
     }
 }

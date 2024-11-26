@@ -26,6 +26,7 @@ namespace AppAlquiler_BusinessLayer.DTOs
             get { return _vehicle; }
             set { _vehicle = value.ToLower(); }         //Pasamos a minusculas todas las letras, para evitar errores por una letra con mayuscula
         }
+        public float TotAmount { get; set; }
 
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }

@@ -13,6 +13,7 @@ using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Runtime.ConstrainedExecution;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -28,6 +29,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         // GET: api/Bikes
+        //[AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BikeDetailsDto>>> GetBikes()
         {
@@ -59,6 +61,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         // GET: api/Bikes/5
+        //[AllowAnonymous]
         [HttpGet("{id}", Name = "GetBike")]
         public async Task<ActionResult<BikeDto>> GetBike(int id)
         {
@@ -99,6 +102,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // PUT: api/Bikes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutBike(int id,[FromBody] BikeDto bikeDto)
         {
             if (id != bikeDto.Id)
@@ -144,6 +148,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // POST: api/Bikes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostBike([FromBody] BikeDto bikeDto)
         {
             //Verificacion de que existe el modelo
@@ -186,6 +191,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // DELETE: api/Bikes/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteBike(int id)
         {
             var bike = await _bikeService.GetBikeAsync(id);
@@ -200,6 +206,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateBike(int id)
         {
             var bike = await _bikeService.GetBikeAsync(id);

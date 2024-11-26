@@ -11,6 +11,7 @@ using AppAlquiler_WebAPI.Infrastructure.Dto;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -104,6 +105,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // PUT: api/Cars/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutCar(int id,[FromBody] CarDto carDto)
         {
             if (id != carDto.Id)
@@ -154,6 +156,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // POST: api/Cars
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostCar([FromBody] CarDto carDto)
         {
             //Verificacion de que existe el modelo
@@ -201,6 +204,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // DELETE: api/Cars/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteCar(int id)
         {
             var car = await _carService.GetCarAsync(id);
@@ -215,6 +219,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateCar(int id)
         {
             var car = await _carService.GetCarAsync(id);

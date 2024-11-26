@@ -3,6 +3,7 @@ using AppAlquiler_BusinessLayer.Services;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
 
         [HttpPut("{id}", Name = "PutModel")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutModel(int id, [FromBody] ModelDto modelDto)
         {
             if (id != modelDto.Id)
@@ -87,6 +89,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostModel([FromBody] ModelDto modelDto) 
         {
             //Verificacion de que existe la marca
@@ -118,9 +121,8 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         //DELETE: api/action/2
-
-        //(No se si es la forma correcta  de realizar el delete)
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteModel(int id) 
         {
             var model = await _modelService.GetModelAsync(id);
@@ -136,6 +138,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateModel(int id)
         {
             var model = await _modelService.GetModelAsync(id);
