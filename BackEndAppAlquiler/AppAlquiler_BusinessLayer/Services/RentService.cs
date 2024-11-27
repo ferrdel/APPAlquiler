@@ -39,6 +39,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
+                    TotAmount = r.TotAmount,
 
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
@@ -99,6 +100,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
+                    TotAmount = r.TotAmount,
 
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
@@ -135,6 +137,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
                     VehicleId = r.VehicleId,
+                    TotAmount = r.TotAmount
                 })
                 .ToListAsync();
 
