@@ -152,14 +152,21 @@ namespace AppAlquiler_BusinessLayer.Services
 
         public async Task<bool> UpdateRentAsync(Rent rent)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 _context.Rents.Update(rent);
                 await _context.SaveChangesAsync();
+
+                await UpdateStateVehicleAsync(rent.Vehicle.ToString(), rent.VehicleId, rent.State.ToString());
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception)
             {
+                await transaction.RollbackAsync();
                 return false;
             }
         }
@@ -195,7 +202,7 @@ namespace AppAlquiler_BusinessLayer.Services
                 await _context.SaveChangesAsync();
 
 
-                await UpdateStateVehicleAsync(rentDto.Vehicle, rentDto.VehicleId);
+                await UpdateStateVehicleAsync(rentDto.Vehicle, rentDto.VehicleId,rentDto.State);
                 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -246,7 +253,7 @@ namespace AppAlquiler_BusinessLayer.Services
             return difference;
         }
 
-        private async Task UpdateStateVehicleAsync(string vehicle, int id)
+        private async Task UpdateStateVehicleAsync(string vehicle, int id, string rentState)
         {
             switch (vehicle.ToLower())
             {
@@ -254,8 +261,12 @@ namespace AppAlquiler_BusinessLayer.Services
                     var bike = _context.Bikes.FindAsync(id).Result; // Encuentra la bicicleta por ID
                     if (bike != null)
                     {
-                        if (bike.State == State.alquilado) throw new Exception("Bike is already rented");
-                        bike.State = State.alquilado;
+                        if (rentState == "pending")
+                        {
+                            if (bike.State == State.alquilado) throw new Exception("Bike is already rented");
+                            bike.State = State.alquilado;
+                        }
+                        if (rentState == "rejected") bike.State = State.disponible;
                         _context.Bikes.Update(bike);
                     }
                     else throw new Exception("Bike not found");
@@ -264,8 +275,12 @@ namespace AppAlquiler_BusinessLayer.Services
                     var boat = _context.Boats.FindAsync(id).Result; // Encuentra el barco por ID
                     if (boat != null)
                     {
-                        if (boat.State == State.alquilado) throw new Exception("Boat is already rented");
-                        boat.State = State.alquilado;
+                        if (rentState == "pending")
+                        {
+                            if (boat.State == State.alquilado) throw new Exception("Boat is already rented");
+                            boat.State = State.alquilado;
+                        }
+                        if (rentState == "rejected") boat.State = State.disponible;
                         _context.Boats.Update(boat);
                     }
                     else throw new Exception("Boat not found");
@@ -274,8 +289,12 @@ namespace AppAlquiler_BusinessLayer.Services
                     var motorcycle = _context.Motorcycles.FindAsync(id).Result; // Encuentra la motocicleta por ID
                     if (motorcycle != null)
                     {
-                        if (motorcycle.State == State.alquilado) throw new Exception("Motorcycle is already rented");
-                        motorcycle.State = State.alquilado;
+                        if (rentState == "pending")
+                        {
+                            if (motorcycle.State == State.alquilado) throw new Exception("Motorcycle is already rented");
+                            motorcycle.State = State.alquilado;
+                        }
+                        if (rentState == "rejected") motorcycle.State = State.disponible;
                         _context.Motorcycles.Update(motorcycle);
                     }
                     else throw new Exception("Motorcycle not found");
@@ -284,8 +303,12 @@ namespace AppAlquiler_BusinessLayer.Services
                     var car = _context.Cars.FindAsync(id).Result; // Encuentra el auto por ID
                     if (car != null)
                     {
-                        if (car.State == State.alquilado) throw new Exception("Car is already rented");
-                        car.State = State.alquilado;
+                        if (rentState == "pending")
+                        {
+                            if (car.State == State.alquilado) throw new Exception("Car is already rented");
+                            car.State = State.alquilado;
+                        }
+                        if (rentState == "rejected") car.State = State.disponible;
                         _context.Cars.Update(car);
                     }
                     else throw new Exception("Car not found");

@@ -85,7 +85,19 @@
 							<ng-container [ngSwitch]="currentUser?.role">
 								<li *ngSwitchCase="'ADMIN'">
 									<a class="dropdown-item" routerLink="/cars">Cars</a>
-								</li>								
+								</li>
+								
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/bikes/addBike">Bikes</a>
+								</li>
+
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/boats/addBoats">Boats</a>
+								</li>
+
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/motorcycles/addMoto">Motorcycles</a>
+								</li>
 
 								<li *ngSwitchCase="'ADMIN'">
 									<a class="dropdown-item" routerLink="/rents">Rents</a>

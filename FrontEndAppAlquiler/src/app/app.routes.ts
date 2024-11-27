@@ -44,7 +44,10 @@ export const routes: Routes = [
     },
 
     {
-        path: 'bikes', children: [
+        path: 'bikes',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'}, 
+        children: [
             { path:'', component: ListCarComponent },
             { path:'addBike', component: AddBikeComponent },
             { path:'editBike/:id', component: AddBikeComponent },            
@@ -52,14 +55,20 @@ export const routes: Routes = [
     },
 
     {
-        path: 'boats', children: [
+        path: 'boats',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'},
+         children: [
             { path:'', component: ListCarComponent },
             { path:'addBoat', component: AddBoatsComponent },
             { path:'editBoat/:id', component: AddBoatsComponent },            
         ]        
     },
     {
-        path: 'motorcycles', children: [
+        path: 'motorcycles',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'},
+        children: [
             { path:'', component: ListCarComponent },
             { path:'addMoto', component: AddMotorcycleComponent },
             { path:'editMoto/:id', component: AddMotorcycleComponent },            
