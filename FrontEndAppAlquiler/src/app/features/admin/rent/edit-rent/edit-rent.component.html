@@ -1,0 +1,141 @@
+<div class="container my-3">
+    
+    <!-- spinner-->
+    <shared-loading-spinner *ngIf="isLoading;else showForm"></shared-loading-spinner>
+
+    <ng-template #showForm>
+        <h2>Rent</h2>
+        <hr>
+
+        <form class="mt-3 col-12 col-md-6" [formGroup]="miFormulario" (ngSubmit)="onSubmit()">                            
+
+            <!--RENT-->
+            <div>
+                <h4>Details:</h4>
+                <!--PICKUP-->
+                <div>
+                    <div class="mb-3">                                
+                        <label for="pickUpDate" class="form-label">Pickup Date</label>
+                        <input type="text" class="form-control" id="pickUpDate" name="pickUpDate" formControlName="pickUpDate" [readonly]="isReadonly">                                                   
+                        <span *ngIf="hasErrorsAndTouched('pickUpDate')" class="form-text text-danger">
+                            <!-- mensaje de error -->
+                            {{getFieldError('pickUpDate')}}
+                        </span>
+                    </div> 
+
+                    <div class="mb-3">                                
+                        <label for="pickUpTime" class="form-label">Pickup Time</label>
+                        <input type="text" class="form-control" id="pickUpTime" name="pickUpTime" formControlName="pickUpTime" [readonly]="isReadonly">                                                   
+                        <span *ngIf="hasErrorsAndTouched('pickUpTime')" class="form-text text-danger">
+                            <!-- mensaje de error -->
+                            {{getFieldError('pickUpTime')}}
+                        </span>
+                    </div> 
+
+                </div>
+
+                <!--RETURN-->
+                <div>
+                    <div class="mb-3">                                
+                        <label for="returnDate" class="form-label">Return Date</label>
+                        <input type="text" class="form-control" id="returnDate" name="returnDate" formControlName="returnDate" [readonly]="isReadonly">                                                   
+                        <span *ngIf="hasErrorsAndTouched('returnDate')" class="form-text text-danger">
+                            <!-- mensaje de error -->
+                            {{getFieldError('returnDate')}}
+                        </span>
+                    </div> 
+
+                    <div class="mb-3">                                
+                        <label for="returnTime" class="form-label">Return Time</label>
+                        <input type="text" class="form-control" id="returnTime" name="returnTime" formControlName="returnTime" [readonly]="isReadonly">                                                   
+                        <span *ngIf="hasErrorsAndTouched('returnTime')" class="form-text text-danger">
+                            <!-- mensaje de error -->
+                            {{getFieldError('returnTime')}}
+                        </span>
+                    </div>
+                </div>
+            
+                <!--TOTAL AMOUNT-->
+                <div class="mb-3">                                
+                    <label for="totAmount" class="form-label">Total Amount</label>
+                    <input type="text" class="form-control" name="totAmount" id="totAmount" formControlName="totAmount" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('totAmount')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('totAmount')}}
+                    </span>
+                </div>                        
+            
+                <!--STATE-->    
+                <div class="mb-3">
+                    <label for="state" class="form-label">State</label>        
+                    <select class="form-select" aria-label="Default select example" formControlName="state" id="state">            
+                        <option value="">-- Seleccione Estado --</option>
+                        <option *ngFor="let estado of estados"  [value]="estado[0]">{{estado[1]}}</option>            
+                    </select>
+                    <span *ngIf="hasErrorsAndTouched('state')" class="form-text text-danger">
+                        <!--mensaje de error-->
+                        {{getFieldError('state')}}
+                    </span>
+                </div>   
+            </div>
+                                                                    
+            <!--PERSON-->        
+            <div>   
+                <h4>User</h4>                              
+                <div class="mb-3">                                
+                    <label for="userId" class="form-label">User ID</label>
+                    <input type="text" class="form-control" name="userId" id="userId" formControlName="userId" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('userId')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('userId')}}
+                    </span>
+                </div>                        
+
+                <div class="mb-3">                                
+                    <label for="userFirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" name="userFirstName" id="userFirstName" formControlName="userFirstName" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('userFirstName')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('userFirstName')}}
+                    </span>
+                </div>                        
+
+                <div class="mb-3">                                
+                    <label for="userLastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" name="userLastName" id="userLastName" formControlName="userLastName" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('userLastName')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('userLastName')}}
+                    </span>
+                </div>                        
+            </div>
+                    
+            <!--VEHICLE-->
+            <div>
+                <h4>Vehicle</h4>
+                <div class="mb-3">                                
+                    <label for="vehicleId" class="form-label">Vehicle Id</label>
+                    <input type="text" class="form-control" name="vehicleId" id="vehicleId" formControlName="vehicleId" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('vehicleId')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('vehicleId')}}
+                    </span>
+                </div>                        
+    
+                <div class="mb-3">                                
+                    <label for="vehicle" class="form-label">Vehicle</label>
+                    <input type="text" class="form-control" name="vehicle" id="vehicle" formControlName="vehicle" [readonly]="isReadonly">
+                    <span *ngIf="hasErrorsAndTouched('vehicle')" class="form-text text-danger">
+                        <!-- mensaje de error -->
+                        {{getFieldError('vehicle')}}
+                    </span>
+                </div>                        
+    
+            </div>
+                    
+            <button type="submit" class="btn btn-primary mb-3">Save</button>
+
+            <button type="button" class="btn btn-secondary ms-3 mb-3" [routerLink]="['/rents']">Cancel</button>
+        </form>
+    </ng-template>
+</div>

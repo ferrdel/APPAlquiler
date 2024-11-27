@@ -1,0 +1,19 @@
+<div class="card">    
+    <div class="card-body">
+        <h5 class="card-title">{{car.brand}} {{car.model}}</h5>
+        
+        <div class="card-img-top-container">
+            <img [src]="car.image ? car.image : 'assets/car_default.bmp'" class="card-img-top" alt="img_{{car.brand}}_{{car.model}}">      
+        </div>            
+        <p class="fw-bold">${{car.price}} / <span class="fw-normal text-color-icon">day</span></p>    
+        <ul class="list-group d-flex flex-xl-row justify-content-around">
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/combustible.svg" alt="combustible" class="icon"> {{car.gasolineConsumption}} L</li>
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/transmision.svg" alt="transmision" class="icon"> {{car.transmission}}</li>
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/capacity.svg" alt="capacity" class="icon"> {{car.passengerCapacity}}</li>
+        </ul>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary me-3 mt-3" data-bs-toggle="modal" data-bs-target="#carDetails" (click)="emitAutomovil(car)">More Info</button>
+        <button class="btn btn-secondary mt-3" (click)="selectCar()">Rent Now</button>
+    </div>    
+</div>

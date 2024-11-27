@@ -4,6 +4,7 @@ using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Interfaces;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutType(int id, [FromBody] TypeMotorcycleDto typeMotorcycleDto)
         {
             if (id != typeMotorcycleDto.Id)
@@ -71,6 +73,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostTypeMotorcycle([FromBody] TypeMotorcycleDto typeMotorcycleDto)
         {
             try
@@ -95,6 +98,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         //Metodo eliminar, cambiando a false el estado de la marca
         [HttpDelete("{id}", Name = "DeleteTypeMotorcycle")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteType(int id)
         {
             var typeMot = await _typeMotorcycleService.GetTypeMotorcycleAsync(id);
@@ -111,6 +115,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateModel(int id)
         {
             var typeMot = await _typeMotorcycleService.GetTypeMotorcycleAsync(id);

@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="card border border-0">    
+            <div class="card-body">
+                <h5 class="card-title">{{car.brand}} {{car.model}}</h5>
+                
+                <div class="card-img-top-container">
+                    <img [src]="car.image ? car.image : 'assets/car_default.bmp'" class="card-img-top" alt="img_{{car.brand}}_{{car.model}}">      
+                </div>
+                <p>{{car.description}}</p>            
+                <p class="fw-bold">${{car.price}} / <span class="fw-normal text-color-icon">day</span></p>                                    
+            </div>    
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <form class="mt-3" [formGroup]="miFormulario" (ngSubmit)="onSubmit()">                            
+
+            <!--entrega-->
+            <div class="col col-sm-8 mt-3 mb-5">                    
+                <div class="mb-3">
+                    <div class="d-inline p-2 rounded-circle text-bg-dark"><i class="bi bi-arrow-right"></i></div>
+                    <div class="d-inline p-2 fw-bold">From</div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>                
+                        <input type="text" class="form-control" id="pickUpDate" name="pickUpDate" formControlName="pickUpDate">                                                   
+                    </div>                                            
+                </div>
+                        
+                <div class="mb-3">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="bi bi-clock"></i></div>
+                        <input type="text" class="form-control" id="pickUpTime" name="pickUpTime" formControlName="pickUpTime">                        
+                    </div>                                                
+                </div>                    
+            </div>
+        
+            <!--devolucion-->        
+            <div class="col col-sm-8 mt-3 mb-4">                                 
+                <div class="mb-3">
+                    <div class="d-inline p-2 rounded-circle text-bg-dark"><i class="bi bi-arrow-left"></i></div>
+                    <div class="d-inline p-2 fw-bold">Until</div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>
+                        <input type="text" class="form-control" id="returnDate" name="returnDate" formControlName="returnDate">                            
+                    </div>                                            
+                </div>
+            
+                <div class="mb-3">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="bi bi-clock"></i></div>
+                        <input type="text" class="form-control" id="returnTime" name="returnTime" formControlName="returnTime">                                                
+                    </div>                                                
+                </div>                    
+            </div>
+        
+            <!--cantidad de dias y precio final-->
+            <div>
+                <p><span class="fw-bold">Days: </span> <span>{{daysRent}}</span></p>        
+                <h3><span class="fw-bold">Final Price:</span><span> ${{priceRent}}</span></h3>                    
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-3">Rent</button>
+
+            <button type="button" class="btn btn-secondary ms-3 mb-3" [routerLink]="['/rent/date']">Cancel</button>
+        </form>
+        
+    </div>
+</div>
+
+
+
+
+

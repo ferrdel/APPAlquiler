@@ -1,0 +1,81 @@
+<div class="row bg-dark">
+    <!--izquierda-->
+    <div class="col col-lg-7 bg-dark text-white pt-3">                    
+        <img src="https://lorient.com.ar/assets/img/home-img.webp" alt="">                
+        <h2 class="fs-1 fw-bold">Vehicle rental in Corrientes.</h2>
+        <h3>We have a vehicle for every need.</h3>
+    </div>
+
+    <!--derecha-->
+    <div class="col col-lg-5 ">
+        <div class="text-white p-3">            
+            <form class="rounded bg-warning p-2" [formGroup]="miFormulario" (ngSubmit)="onSubmit()">                
+                <h2 class="fw-bold">Rent Now</h2>
+                <!--entrega-->
+                <div class="col col-sm-6 mt-3 mb-5">                    
+                    <div class="mb-3">
+                        <div class="d-inline p-2 rounded-circle text-bg-dark"><i class="bi bi-arrow-right"></i></div>
+                        <div class="d-inline p-2 fw-bold  text-uppercase">Pickup Date and Time</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>
+                            <input type="date" class="form-control" id="pickUpDate" name="pickUpDate" formControlName="pickUpDate">                                                   
+                        </div>                                
+                        <span *ngIf="hasErrorsAndTouched('pickUpDate')" class="form-text text-danger d-block">
+                            <!-- mensaje de error -->
+                            {{getFieldError('pickUpDate')}}
+                        </span>                        
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-clock"></i></div>
+                            <input type="time" class="form-control" id="pickUpTime" name="pickUpTime" formControlName="pickUpTime">                        
+                        </div>                                    
+                        <span *ngIf="hasErrorsAndTouched('pickUpTime')" class="form-text text-danger d-block">
+                            <!-- mensaje de error -->
+                            {{getFieldError('pickUpTime')}}
+                        </span>                        
+                    </div>                    
+                </div>
+        
+                <!--devolucion-->        
+                <div class="col col-sm-6 mt-3 mb-4">                                 
+                    <div class="mb-3">
+                        <div class="d-inline p-2 rounded-circle text-bg-dark"><i class="bi bi-arrow-left"></i></div>
+                        <div class="d-inline p-2 fw-bold text-uppercase">Return Date and Time</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>
+                            <input type="date" class="form-control" id="returnDate" name="returnDate" formControlName="returnDate">                            
+                        </div>                                
+                        <span *ngIf="hasErrorsAndTouched('returnDate')" class="form-text text-danger d-block">
+                            <!-- mensaje de error -->
+                            {{getFieldError('returnDate')}}
+                        </span>                    
+                    </div>
+                
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-clock"></i></div>
+                            <input type="time" class="form-control" id="returnTime" name="returnTime" formControlName="returnTime">                                                
+                        </div>                                    
+                        <span *ngIf="hasErrorsAndTouched('returnTime')" class="form-text text-danger d-block">
+                            <!-- mensaje de error -->
+                            {{getFieldError('returnTime')}}
+                        </span>                        
+                    </div>                    
+                </div>
+                        
+                <button type="submit" class="btn btn-primary text-uppercase fw-bold">Search Vehicle</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+

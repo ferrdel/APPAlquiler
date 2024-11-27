@@ -53,3 +53,7 @@
 .card .btn {
 	margin-top: auto; /* Empuja el botón hacia la parte inferior de la tarjeta */
 }
+
+.img-bg-logo{
+	z-index: -1;
+}
