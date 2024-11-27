@@ -51,7 +51,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
                 Abs = motorcycle.Abs,
                 Cilindrada = motorcycle.Cilindrada,
-                TypeMotorcycle = Enum.GetName(motorcycle.TypeMotorcycle.Name)                       //verificar
+                TypeMotorcycle = motorcycle.TypeMotorcycle.Name                       //verificar
             });
             return Ok(motorcycleDetails);
         }
