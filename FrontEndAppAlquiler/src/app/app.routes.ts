@@ -9,6 +9,8 @@ import { DateRentComponent } from './features/user/rent/date-rent/date-rent.comp
 import { CarListComponent } from './features/user/rent/car-list/car-list.component';
 import { RentComponent } from './features/user/rent/rent/rent.component';
 import { roleGuard } from './core/guards/role.guard';
+import { ListRentComponent } from './features/admin/rent/list-rent/list-rent.component';
+import { EditRentComponent } from './features/admin/rent/edit-rent/edit-rent.component';
 
 export const routes: Routes = [
     {
@@ -32,6 +34,16 @@ export const routes: Routes = [
             { path:'', component: ListCarComponent },
             { path:'add', component: AddCarComponent },
             { path:'edit/:id', component: AddCarComponent },            
+        ]        
+    },
+
+    {
+        path: 'rents',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'},
+        children: [
+            { path:'', component: ListRentComponent },            
+            { path:'edit/:id', component: EditRentComponent },            
         ]        
     },
     

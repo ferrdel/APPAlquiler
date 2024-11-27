@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rent } from '../models/rent';
 import { catchError, Observable, throwError } from 'rxjs';
+import { RentDetail } from '../models/rentDetail';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class RentService {
       );
   }
 
-  updateRent( rent: Rent ): Observable<string> {
+  updateRent( rent: RentDetail ): Observable<string> {
     if ( !rent.id ) throw Error('Rent id is required');
 
     return this.httpClient.put<string>(`${ this.urlBase }/rents/${ rent.id }`, rent )    
@@ -82,6 +83,24 @@ export class RentService {
         })        
       );
   }    
+
+  getAllRents():Observable<RentDetail[]>{                
+    return this.httpClient.get<RentDetail[]>(`${ this.urlBase }/rents`)
+      .pipe(        
+        catchError(error => {                    
+          return throwError(() => error.error);
+        })        
+      );
+  } 
+
+  getRentById(id:number):Observable<RentDetail>{                
+    return this.httpClient.get<RentDetail>(`${ this.urlBase }/rents/${id}`)
+      .pipe(        
+        catchError(error => {                    
+          return throwError(() => error.error);
+        })        
+      );
+  } 
 
   
 }

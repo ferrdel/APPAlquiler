@@ -11,6 +11,8 @@ export class Rent {
         public state: RentState,
         public userId: number,
         public vehicle: TypeVehicle,
-        public vehicleId: number
+        public vehicleId: number,
+
+        public totAmount: number
     ){}
 }
