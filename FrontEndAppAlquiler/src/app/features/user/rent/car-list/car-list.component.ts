@@ -8,12 +8,11 @@ import { CarService } from '../../../../core/services/car.service';
 import { State } from '../../../../core/models/enums/state.enum';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { SessionStorageManageService } from '../../../../core/services/session-storage-manage.service';
-import { RentBreadcrumbComponent } from '../../../../shared/components/rent-breadcrumb/rent-breadcrumb.component';
 
 @Component({
   selector: 'app-car-list',
   standalone: true,
-  imports: [NgFor, CarDetailsComponent, NgIf, LoadingSpinnerComponent, RentBreadcrumbComponent],
+  imports: [NgFor, CarDetailsComponent, NgIf, LoadingSpinnerComponent],
   templateUrl: './car-list.component.html',
   styleUrl: './car-list.component.css'
 })
