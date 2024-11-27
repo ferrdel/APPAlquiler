@@ -8,13 +8,13 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavbarComponent } from "../../shared/components/navbar/navbar.component";
 import { FooterComponent } from "../../shared/components/footer/footer.component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'login',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule, NavbarComponent, FooterComponent],
+	imports: [ReactiveFormsModule, CommonModule, FooterComponent],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.css',
 })
@@ -26,7 +26,8 @@ export class LoginComponent {
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private toastr: ToastrService
 	) {}
 
 	ngOnInit() {
@@ -42,6 +43,7 @@ export class LoginComponent {
 			console.log('Form Valid');
 			this.authService.login(this.loginForm.value).subscribe(
 				() => {
+					this.toastr.success('Login Success')
 					console.log('Login Success');
 					this.router.navigate([
 						this.route.snapshot.queryParams['returnUrl'] || '/home',
