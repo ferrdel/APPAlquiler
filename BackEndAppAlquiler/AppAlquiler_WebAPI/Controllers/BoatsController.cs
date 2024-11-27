@@ -11,6 +11,7 @@ using AppAlquiler_WebAPI.Infrastructure.Dto;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -106,6 +107,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // PUT: api/Boats/5
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutBoat(int id,[FromBody] BoatDto boatDto)
         {
             if (id != boatDto.Id)
@@ -158,6 +160,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // POST: api/Boats
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostBoat([FromBody ]BoatDto boatDto)
         {
             //Verificacion de que existe el modelo
@@ -207,6 +210,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // DELETE: api/Boats/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteBoat(int id)
         {
             var boat = await _boatService.GetBoatAsync(id);
@@ -221,6 +225,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateBoat(int id)
         {
             var boat = await _boatService.GetBoatAsync(id);

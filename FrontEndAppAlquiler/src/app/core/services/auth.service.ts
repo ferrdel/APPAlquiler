@@ -18,8 +18,9 @@ export class AuthService {
 		return this.http.post(`${this.baseUrl}/login`, credentials).pipe(
 			tap((response: any) => {
 				localStorage.setItem('authToken', response.token);
-				localStorage.setItem('roles', response.roles);
-				const decodedToken = this.decodeToken(response.token);
+				const decodedToken: any = this.decodeToken(response.token);
+				const userRole = decodedToken.role;
+				localStorage.setItem('roles', userRole);
 				this.currentUserSubject.next(decodedToken);
 			}),
 			catchError((error) => {
@@ -47,7 +48,6 @@ export class AuthService {
 
 	getRoles() {
 		let roles = localStorage.getItem('roles');
-		console.log(roles);
 		return roles || '';
 	}
 

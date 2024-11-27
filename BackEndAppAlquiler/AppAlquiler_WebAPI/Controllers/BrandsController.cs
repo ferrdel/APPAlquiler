@@ -3,6 +3,7 @@ using AppAlquiler_BusinessLayer.Services;
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         //modificar brand
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutBrand(int id, [FromBody] BrandDto brandDto)
         {
             if (id != brandDto.Id)
@@ -73,6 +75,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostBrand([FromBody] BrandDto brandDto)
         {
             try
@@ -99,6 +102,7 @@ namespace AppAlquiler_WebAPI.Controllers
         //Metodo eliminar, cambiando a false el estado de la marca
 
         [HttpDelete("{id}", Name = "DeleteBrand")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteBrand(int id)
         {
             var brand = await _brandService.GetBrandAsync(id);
@@ -115,6 +119,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateBrand(int id)
         {
             var brand = await _brandService.GetBrandAsync(id);

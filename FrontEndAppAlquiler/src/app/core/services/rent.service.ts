@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rent } from '../models/rent';
 import { catchError, Observable, throwError } from 'rxjs';
+import { RentDetail } from '../models/rentDetail';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,16 @@ export class RentService {
 
   createRent( rent: Rent ): Observable<void> {
     console.log("rent en service: " + rent);
-    return this.httpClient.post<void>(`${ this.urlBase}/rents`, rent )    
+
+    // Recuperar el token del localStorage o sessionStorage
+    const token = localStorage.getItem('authToken');
+
+    // Crear el encabezado con el token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`  // El valor del token debe ir en formato "Bearer <token>"
+    });
+
+    return this.httpClient.post<void>(`${ this.urlBase}/rents`, rent, { headers } )    
       .pipe(
         catchError(error => {      
           console.error(error)   ;
@@ -34,7 +44,7 @@ export class RentService {
       );
   }
 
-  updateRent( rent: Rent ): Observable<string> {
+  updateRent( rent: RentDetail ): Observable<string> {
     if ( !rent.id ) throw Error('Rent id is required');
 
     return this.httpClient.put<string>(`${ this.urlBase }/rents/${ rent.id }`, rent )    
@@ -54,15 +64,43 @@ export class RentService {
       })        
     );
   }
+  
+    myRents():Observable<Rent[]>{    
+    // Recuperar el token del localStorage o sessionStorage
+    const token = localStorage.getItem('authToken');
 
-  myRents(userId: number):Observable<Rent[]>{    
-    return this.httpClient.get<Rent[]>(`${ this.urlBase }/rents/UserRents/${userId}`)
+    // Crear el encabezado con el token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`  // El valor del token debe ir en formato "Bearer <token>"
+    });
+
+    // Realizar la solicitud GET pasando el encabezado
+        
+    return this.httpClient.get<Rent[]>(`${ this.urlBase }/rents/MyRents`, { headers })
       .pipe(        
         catchError(error => {                    
           return throwError(() => error.error);
         })        
       );
-  }
+  }    
+
+  getAllRents():Observable<RentDetail[]>{                
+    return this.httpClient.get<RentDetail[]>(`${ this.urlBase }/rents`)
+      .pipe(        
+        catchError(error => {                    
+          return throwError(() => error.error);
+        })        
+      );
+  } 
+
+  getRentById(id:number):Observable<RentDetail>{                
+    return this.httpClient.get<RentDetail>(`${ this.urlBase }/rents/${id}`)
+      .pipe(        
+        catchError(error => {                    
+          return throwError(() => error.error);
+        })        
+      );
+  } 
 
   
 }

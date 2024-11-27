@@ -39,6 +39,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
+                    TotAmount = r.TotAmount,
 
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
@@ -99,6 +100,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     ReturnTime = r.ReturnTime,
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
+                    TotAmount = r.TotAmount,
 
                     UserDNI = r.User.DNI,
                     UserFirstName = r.User.FirstName,
@@ -123,7 +125,6 @@ namespace AppAlquiler_BusinessLayer.Services
             {
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }
-            var userName = _currentUserService.UserName;
 
             var rents = await _context.Rents.Where(o => o.UserId == userId)
                 .Select(r => new MyRentDto
@@ -136,6 +137,7 @@ namespace AppAlquiler_BusinessLayer.Services
                     State = r.State.ToString(),
                     Vehicle = r.Vehicle.ToString(),
                     VehicleId = r.VehicleId,
+                    TotAmount = r.TotAmount
                 })
                 .ToListAsync();
 
@@ -148,7 +150,65 @@ namespace AppAlquiler_BusinessLayer.Services
             return rent;
         }
 
-        public async Task<float> GetVehicleByIdAsync(string vehicle, int id)
+        public async Task<bool> UpdateRentAsync(Rent rent)
+        {
+            try
+            {
+                _context.Rents.Update(rent);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> PlaceRentAsync(RentDto rentDto)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                float price = GetVehicleByIdAsync(rentDto.Vehicle, rentDto.VehicleId);
+                var userId = (int)_currentUserService.UserId;
+                if (userId == null)
+                {
+                    throw new UnauthorizedAccessException("User is not authenticated.");
+                }
+                var rent = new Rent
+                {
+
+                    PickUpDate = rentDto.PickUpDate,
+                    ReturnDate = rentDto.ReturnDate,
+                    PickUpTime = rentDto.PickUpTime,
+                    ReturnTime = rentDto.ReturnTime,
+                    State = Enum.Parse<RentState>(rentDto.State),          //Se puede definir automaticamente como Pendiente
+                    Vehicle = Enum.Parse<TypeVehicle>(rentDto.Vehicle),
+                    TotAmount = CalculateDifferenceDays(rentDto.ReturnDate, rentDto.PickUpDate) * price,
+
+                    VehicleId = rentDto.VehicleId,
+                    UserId = userId
+                };
+
+                await _context.Rents.AddAsync(rent);
+                await _context.SaveChangesAsync();
+
+
+                await UpdateStateVehicleAsync(rentDto.Vehicle, rentDto.VehicleId);
+                
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+        private float GetVehicleByIdAsync(string vehicle, int id)
         {
             float price = 0;
             switch (vehicle.ToLower())
@@ -180,31 +240,58 @@ namespace AppAlquiler_BusinessLayer.Services
             return price;
         }
 
-        public async Task<bool> UpdateRentAsync(Rent rent)
+        private float CalculateDifferenceDays(DateOnly pickUpDate, DateOnly returnDate)
         {
-            try
-            {
-                _context.Rents.Update(rent);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            int difference = (pickUpDate.DayNumber - returnDate.DayNumber);     //Devuelve la diferencia de dias
+            return difference;
         }
 
-        public async Task<bool> PlaceRentAsync(Rent rent)
+        private async Task UpdateStateVehicleAsync(string vehicle, int id)
         {
-            try
+            switch (vehicle.ToLower())
             {
-                await _context.Rents.AddAsync(rent);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
+                case "bike":
+                    var bike = _context.Bikes.FindAsync(id).Result; // Encuentra la bicicleta por ID
+                    if (bike != null)
+                    {
+                        if (bike.State == State.alquilado) throw new Exception("Bike is already rented");
+                        bike.State = State.alquilado;
+                        _context.Bikes.Update(bike);
+                    }
+                    else throw new Exception("Bike not found");
+                    break;
+                case "boat":
+                    var boat = _context.Boats.FindAsync(id).Result; // Encuentra el barco por ID
+                    if (boat != null)
+                    {
+                        if (boat.State == State.alquilado) throw new Exception("Boat is already rented");
+                        boat.State = State.alquilado;
+                        _context.Boats.Update(boat);
+                    }
+                    else throw new Exception("Boat not found");
+                    break;
+                case "motorcycle":
+                    var motorcycle = _context.Motorcycles.FindAsync(id).Result; // Encuentra la motocicleta por ID
+                    if (motorcycle != null)
+                    {
+                        if (motorcycle.State == State.alquilado) throw new Exception("Motorcycle is already rented");
+                        motorcycle.State = State.alquilado;
+                        _context.Motorcycles.Update(motorcycle);
+                    }
+                    else throw new Exception("Motorcycle not found");
+                    break;
+                case "car":
+                    var car = _context.Cars.FindAsync(id).Result; // Encuentra el auto por ID
+                    if (car != null)
+                    {
+                        if (car.State == State.alquilado) throw new Exception("Car is already rented");
+                        car.State = State.alquilado;
+                        _context.Cars.Update(car);
+                    }
+                    else throw new Exception("Car not found");
+                    break;
+                default:
+                    throw new ArgumentException("Vehicle type not recognized");
             }
         }
     }

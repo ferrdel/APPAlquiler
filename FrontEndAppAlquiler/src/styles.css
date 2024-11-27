@@ -24,6 +24,18 @@
     z-index: 2; /* Asegura que esté encima del logo de fondo */
 }
 
+
+/*estilos propios*/
+.icon {
+    width: 20px;
+    height: auto;
+}  
+
+.text-color-icon{
+color: #90A3BF;
+
+}
+
 /*para toast*/
 /* based on angular-toastr css https://github.com/Foxandxss/angular-toastr/blob/cb508fe6801d6b288d3afc525bb40fee1b101650/dist/angular-toastr.css */
 

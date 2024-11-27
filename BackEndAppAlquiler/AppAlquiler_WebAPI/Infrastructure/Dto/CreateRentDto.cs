@@ -10,12 +10,6 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
         public DateOnly ReturnDate { get; set; } //fecha devolucionre
         public TimeOnly PickUpTime { get; set; } // hra retiro
         public TimeOnly ReturnTime { get; set; } //hra devolucion
-        private string _state { get; set; } // pending, confirmed, rejected
-        public string State
-        {
-            get { return _state; }
-            set { _state = value.ToLower(); }           //Pasamos a minusculas todas las letras, para evitar errores por una letra con mayuscula
-        }
         private string _vehicle { get; set; }       //bike, boat, car, motorcycle
         public string Vehicle
         {
@@ -25,6 +19,5 @@ namespace AppAlquiler_WebAPI.Infrastructure.Dto
 
         //RelationShips
         public int VehicleId { get; set; }
-        public int UserId { get; set; }
     }
 }

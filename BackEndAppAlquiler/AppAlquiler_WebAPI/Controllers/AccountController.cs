@@ -2,6 +2,7 @@
 using AppAlquiler_DataAccessLayer.Data;
 using AppAlquiler_DataAccessLayer.Models;
 using AppAlquiler_WebAPI.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,6 @@ namespace AppAlquiler_WebAPI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
-        //Verificar
         private readonly AlquilerDbContext _context;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, AlquilerDbContext context)
@@ -104,6 +104,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         }
         [HttpGet]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             // Acceder al claim nameid

@@ -12,6 +12,7 @@ using AppAlquiler_WebAPI.Infrastructure.Dto;
 using AppAlquiler_BusinessLayer.Interfaces;
 using AppAlquiler_BusinessLayer.Services;
 using System.Drawing.Drawing2D;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppAlquiler_WebAPI.Controllers
 {
@@ -93,6 +94,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // PUT: api/Motorcycles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutMotorcycle(int id, MotorcycleDto motorcycleDto)
         {
             if (id != motorcycleDto.Id)
@@ -145,6 +147,7 @@ namespace AppAlquiler_WebAPI.Controllers
         // POST: api/Motorcycles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostMotorcycle([FromBody]MotorcycleDto motorcycleDto)
         {
             //Verificacion de que existe el modelo
@@ -195,6 +198,7 @@ namespace AppAlquiler_WebAPI.Controllers
 
         // DELETE: api/Motorcycles/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteMotorcycle(int id)
         {
             var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);
@@ -209,6 +213,7 @@ namespace AppAlquiler_WebAPI.Controllers
         }
 
         [HttpPatch("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ActivateMotorcycle(int id)
         {
             var motorcycle = await _motorcycleService.GetMotorcycleAsync(id);

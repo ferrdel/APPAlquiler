@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -16,7 +16,9 @@ export class NavbarComponent implements OnInit {
 	currentUser: { unique_name?: string, role?:string, nameid?:number } | null = null;
 	private authSubscription: Subscription = new Subscription();
 
-	constructor(private authService: AuthService) {}
+	constructor(private authService: AuthService,
+		private router: Router
+	) {}
 
 	ngOnInit(): void {
 		// Suscribirse al observable currentUser$
@@ -33,6 +35,7 @@ export class NavbarComponent implements OnInit {
 		this.authService.logout();
 		this.isAuthenticated = false;
 		this.currentUser = null;
+		this.router.navigate(['/home']);
 	}
 
 	ngOnDestroy(): void {
