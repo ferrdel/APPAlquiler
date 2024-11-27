@@ -1,0 +1,113 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+	<div class="container">
+		<!-- Extremo izquierdo -->
+		<div class="d-flex align-items-center">
+			<a routerLink="/home" class="navbar-brand text-primary">
+				<img src="assets/logo.svg" alt="Logo" /> RentAR
+			</a>
+		</div>
+
+		<!-- Botón para el menú desplegable en pantallas pequeñas -->
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent"
+			aria-expanded="false"
+			aria-label="Toggle navigation"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<!-- Contenido colapsable -->
+		<div
+			class="collapse navbar-collapse justify-content-between"
+			id="navbarSupportedContent"
+		>
+			<!-- Centro -->
+			<ul class="navbar-nav mx-auto align-items-center mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a
+						class="nav-link"
+						routerLink="/home"
+						routerLinkActive="active"
+						ariaCurrentWhenActive="page"
+						>Home</a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">About</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" routerLink="/" fragment="how-it-works"
+						>How it work</a
+					>
+				</li>
+			</ul>
+
+			<!-- Extremo derecho -->
+			<div class="d-flex">
+				<ul class="navbar-nav mx-auto align-items-center mb-2 mb-lg-0">
+					<!-- Si no está autenticado, muestra los botones de login y signup -->
+					<li *ngIf="!isAuthenticated" class="nav-item">
+						<a
+							class="nav-link"
+							routerLink="/login"
+							routerLinkActive="active"
+							ariaCurrentWhenActive="page"
+							>Sign In</a
+						>
+					</li>
+					<li *ngIf="!isAuthenticated" class="nav-item">
+						<button
+							class="btn btn-primary ms-1"
+							routerLink="/signup"
+							type="button"
+						>
+							Sign Up
+						</button>
+					</li>
+
+					<!-- Si está autenticado, muestra el nombre de usuario y el dropdown -->
+					<div *ngIf="isAuthenticated" class="dropdown">
+						<button
+							class="btn btn-primary dropdown-toggle"
+							type="button"
+							id="userMenu"
+							data-bs-toggle="dropdown"
+							aria-expanded="false"
+						>
+							{{ currentUser?.unique_name || 'User' }}
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="userMenu">
+							<!--AGREGADO-->							
+							<ng-container [ngSwitch]="currentUser?.role">
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/cars">Cars</a>
+								</li>								
+
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/rents">Rents</a>
+								</li>								
+
+								<li *ngSwitchCase="'USER'">
+									<a class="dropdown-item" routerLink="/rent">Rents</a>
+								</li>
+								<!-- Agregar más casos si es necesario -->
+								<li *ngSwitchDefault>
+									<a class="dropdown-item" href="">Default Page</a>
+								</li>
+							</ng-container>
+														
+							<hr>
+							<li>
+								<button class="dropdown-item" (click)="logout()">Logout</button>
+							</li>
+						</ul>
+					</div>
+				</ul>
+			</div>
+		</div>
+	</div>
+</nav>
