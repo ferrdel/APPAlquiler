@@ -38,6 +38,40 @@ export class SessionStorageManageService {
         console.error("Error al obtener o parsear el dato de sessionStorage:", error);	
         return null;	
     }	
-}	
+  }	
+
+  removeFromSessionStorage(key:string){
+    try {
+      // Verificar si la clave existe antes de eliminar
+      if (sessionStorage.getItem(key) !== null) {
+        sessionStorage.removeItem(key);
+        console.log(`El item con la clave '${key}' ha sido eliminado.`);
+      } else {
+        console.log(`No se encontró el item con la clave '${key}' en sessionStorage.`);
+      }
+    } catch (e) {
+      console.error('Error al intentar eliminar el item de sessionStorage:', e);
+    }
+  }
+
+  getFromLocalStorage(key: string) {	
+    try {	
+        // Obtener el dato desde sessionStorage	
+        const storedData = localStorage.getItem(key);	
+	
+        // Si no existe el dato, devolver null o un valor por defecto	
+        if (storedData === null) {	
+            console.log("No se encontró el dato en localStorage.");	
+            return null;	
+        }	
+	
+        // Intentar convertir la cadena JSON a un objeto	
+        return JSON.parse(storedData);	
+    } catch (error) {	
+        // Manejo de errores si el contenido no es un JSON válido	
+        console.error("Error al obtener o parsear el dato de sessionStorage:", error);	
+        return null;	
+    }	
+  }	
 
 }

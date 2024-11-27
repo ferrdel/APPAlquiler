@@ -1,0 +1,90 @@
+<!-- spinner-->
+<shared-loading-spinner *ngIf="isLoading; else showList"></shared-loading-spinner>
+
+<ng-template #showList>
+    <div *ngIf="automovilList.length !== 0; else noCars">
+
+        <div class="container">
+            <h2>Select Vehicle</h2>
+            <hr>            
+            <div class="row mt-3">
+                <div  class="col-12 col-sm-6 col-lg-4 mb-4" *ngFor="let auto of automovilList">
+                    <car-details [car]="auto" (carDetailEvent)="getCarDetail($event)" ></car-details>
+                </div>                
+            </div>
+        </div>
+        
+        
+        <!-- Modal -->
+        <div class="modal fade" id="carDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{autoDetail?.brand}} {{autoDetail?.model}}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+        
+                    <div class="modal-body">
+                        <!-- TEXTO 
+                        <h5 class="card-title">Toyota Corolla</h5>
+                        -->
+                        <p>Id: {{autoDetail?.id}}</p>
+                        <img [src]="autoDetail?.image ? autoDetail?.image : 'assets/car_default.bmp'" class="card-img-top" alt="toyota_corolla">      
+                        <p>{{autoDetail?.description}}</p>
+                        <p><span class="text-color-icon">Price:</span><span class="fw-semibold"> ${{autoDetail?.price}}.00 / </span><span class="fw-normal text-color-icon">day</span></p>  
+                        
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Brand:</span><span class="fw-semibold"> {{autoDetail?.brand}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Model:</span><span class="fw-semibold"> {{autoDetail?.model}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Gasoline Consumption:</span><span class="fw-semibold"> {{autoDetail?.gasolineConsumption}} L</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Transmision:</span><span class="fw-semibold"> {{autoDetail?.transmission}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Luggage Capacity:</span><span class="fw-semibold"> {{autoDetail?.luggageCapacity}} L</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Passenger Capacity:</span><span class="fw-semibold"> {{autoDetail?.passengerCapacity}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Fuel:</span><span class="fw-semibold"> {{autoDetail?.fuel}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">State:</span><span class="fw-semibold"> {{ getEstadoTexto(autoDetail?.state) }}</span></p></div>                            
+                        </div>                        
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Number Doors:</span><span class="fw-semibold"> {{autoDetail?.numberDoors}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Air Conditioning:</span><span class="fw-semibold"> {{autoDetail?.airConditioning ? 'Yes' : 'No'}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Airbag:</span><span class="fw-semibold"> {{autoDetail?.airbag ? 'Yes' : 'No'}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">ABS:</span><span class="fw-semibold"> {{autoDetail?.abs ? 'Yes' : 'No'}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Sound:</span><span class="fw-semibold"> {{autoDetail?.sound}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Engine Liters:</span><span class="fw-semibold"> {{autoDetail?.engineLiters}}</span></p></div>                            
+                        </div>                        
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="selectCar()">Rent Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <ng-template #noCars>
+        <div class="alert alert-primary d-flex align-items-center mt-3" role="alert">        
+            <div>
+                <i class="bi bi-info-circle-fill"></i> No cars available!
+            </div>
+        </div>
+    </ng-template>
+
+</ng-template>
