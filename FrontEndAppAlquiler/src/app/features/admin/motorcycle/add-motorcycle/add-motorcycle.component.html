@@ -4,7 +4,7 @@
     <shared-loading-spinner *ngIf="isLoading;else showForm"></shared-loading-spinner>
 
     <ng-template #showForm>
-        <h2>Motocicletas</h2>
+        <h2>Motorcycle</h2>
         <hr>
         
         <form class="mt-3 col-md-6" [formGroup]="miFormulario" (ngSubmit)="onSubmit()">                
@@ -20,7 +20,7 @@
             
             <!--DESCRIPTION-->
             <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
+                <label for="descripcion" class="form-label">Description</label>
                 <textarea class="form-control" name="descripcion" id="descripcion" formControlName="description"></textarea>        
                 <span *ngIf="hasErrorsAndTouched('description')" class="form-text text-danger">
                     <!-- mensaje de error -->
@@ -30,7 +30,7 @@
 
             <!--IMAGE-->
             <div class="mb-3">
-                <label for="image" class="form-label">Imagen</label>
+                <label for="image" class="form-label">Image</label>
                 <input type="text" class="form-control" name="image" id="image" formControlName="image">
                 <span *ngIf="hasErrorsAndTouched('image')" class="form-text text-danger">
                     <!-- mensaje de error -->
@@ -40,7 +40,7 @@
         
             <!--STATE-->    
             <div class="mb-3">
-                <label for="estado" class="form-label">Estado</label>        
+                <label for="estado" class="form-label">State</label>        
                 <select class="form-select" aria-label="Default select example" formControlName="state" id="state">            
                     <option value="">-- Seleccione Estado --</option>
                     <option *ngFor="let estado of estados"  [value]="estado[0]">{{estado[1]}}</option>            
@@ -53,7 +53,7 @@
                                 
             <!--BRAND-->
             <div class="mb-3">
-                <label for="marca" class="form-label">Marca</label>        
+                <label for="marca" class="form-label">Brand</label>        
                 <select class="form-select" aria-label="Default select example" formControlName="brandId" id="marca" (change)="onOptionChange()">            
                     <option value="">-- Seleccione Marca --</option>
                     <option *ngFor="let marca of marcas"  value="{{marca.id}}">{{marca.name}}</option>            
@@ -66,7 +66,7 @@
 
             <!--MODEL-->
             <div class="mb-3" *ngIf="showModels">
-                <label for="modelo" class="form-label">Modelo</label>        
+                <label for="modelo" class="form-label">Model</label>        
                 <select class="form-select" aria-label="Default select example" formControlName="modelId" id="modelo">            
                     <option value="">-- Seleccione Modelo --</option>
                     <option *ngFor="let modelo of modelos"  value="{{modelo.id}}">{{modelo.name}}</option>            
@@ -99,7 +99,7 @@
 
             <!--TYPO DE MOTOS--> 
             <div class="mb-3">
-                <label for="tipo" class="form-label">Tipo de Motocicleta</label>        
+                <label for="tipo" class="form-label">Type Motorcycle</label>        
                 <select class="form-select" aria-label="Default select example" formControlName="typeMotorcycleId" id="tipo" (change)="onOptionChange()">            
                     <option value="">-- Seleccione Marca --</option>
                     <option *ngFor="let tipo of typeMotos"  value="{{tipo.id}}">{{tipo.name}}</option>            
@@ -113,7 +113,7 @@
                                                     
             <!--PRICE-->
             <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
+                <label for="precio" class="form-label">Price</label>
                 <input type="number" class="form-control" id="precio" min="1" formControlName="price">                     
                 <span *ngIf="hasErrorsAndTouched('price')" class="form-text text-danger">
                     <!-- mensaje de error -->
@@ -122,10 +122,9 @@
             </div>
             
                 
-            <button type="submit" class="btn btn-primary mb-3">Guardar</button>
+            <button type="submit" class="btn btn-primary mb-3">Submit</button>
 
-            <button type="button" class="btn btn-secondary ms-3 mb-3" [routerLink]="['/']">Cancelar</button>
+            <button type="button" class="btn btn-secondary ms-3 mb-3" [routerLink]="['/']">Cancel</button>
         </form>
     </ng-template>
-
 </div>
