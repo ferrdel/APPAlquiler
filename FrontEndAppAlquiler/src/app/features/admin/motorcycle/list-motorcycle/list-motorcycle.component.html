@@ -1,0 +1,105 @@
+<div class="container my-3">
+    <div>
+        <h2>Motorcycles</h2>
+        <hr>
+        <button class="btn btn-success text-white text-shadow" [routerLink]="['/motorcycles/add']"> Add Motorcycle</button>
+    </div>
+    
+    <!-- spinner-->
+    <shared-loading-spinner *ngIf="isLoading; else showList"></shared-loading-spinner>
+    
+    <ng-template #showList>
+        <div *ngIf="motorcycleList.length !== 0; else noMotos">
+            <div class="my-4 table-responsive">        
+                <table class="table table-hover">
+                    <thead>
+                        <tr>                    
+                            <th scope="col">#</th>
+                            <th scope="col">Description</th>      
+                            <th scope="col">Brand</th>      
+                            <th scope="col">Model</th>
+                            <th scope="col">Active</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr *ngFor="let moto of motorcycleList">                    
+                            <td>{{moto.id}}</td>
+                            <td>{{moto.description}}</td>                                    
+                            <td>{{moto.brandId}} {{moto.brand}}</td>
+                            <td>{{moto.modelId}} {{moto.model}}</td>
+                            <td>{{moto.active?'Yes':'No'}}</td>
+                                                
+                            <td><button class="btn btn-outline-warning text-shadow" [routerLink]="['/motorcycles/edit', moto.id]">Edit</button></td>                
+                                                
+                            <td>
+                                <!-- Button trigger modal eliminar-->
+                                <button type="button" [disabled]="!moto.active" class="btn btn-outline-danger text-shadow" data-bs-toggle="modal" data-bs-target="#eliminarModal" (click)="callModal(moto.id)">Disable</button>
+                            </td>
+        
+                            <td>
+                                <!-- Button trigger modal habilitar-->
+                                <button type="button" [disabled]="moto.active"  class="btn btn-outline-info text-shadow" data-bs-toggle="modal" data-bs-target="#habilitarModal" (click)="callModal(moto.id)">Enable</button>
+                            </td>
+                        </tr>    
+                    </tbody>
+                </table>
+            </div>    
+        
+            <!-- MODAL ELIMINAR -->
+            <div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">            
+                        <div class="modal-header bg-dark text-white">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm</h1>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <div class="modal-body">
+                            Do you want to disable the motorcycle with id: {{idEliminar}}?
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="onDelete()">Disable</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- MODAL HABILITAR -->
+            <div class="modal fade" id="habilitarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">            
+                        <div class="modal-header bg-dark text-white">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm</h1>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <div class="modal-body">
+                            Do you want to enable the motorcycle with id: {{idEliminar}}?
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="onEnable()">Enable</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <ng-template #noMotos>
+            <div class="alert alert-primary d-flex align-items-center mt-3" role="alert">        
+                <div>
+                    <i class="bi bi-info-circle-fill"></i> No motorcycles added!
+                </div>
+            </div>
+        </ng-template>
+        
+    </ng-template>                
+</div>
+

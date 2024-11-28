@@ -1,0 +1,20 @@
+<div class="card">    
+    <div class="card-body">
+        <h5 class="card-title">{{moto.brand}} {{moto.model}}</h5>
+        
+        <div class="card-img-top-container">
+            <img [src]="moto.image ? moto.image : 'assets/motorcycle_default.jpg'" class="card-img-top" alt="img_{{moto.brand}}_{{moto.model}}">      
+        </div>            
+        <p class="fw-bold">${{moto.price}} / <span class="fw-normal text-color-icon">day</span></p>    
+        <ul class="list-group d-flex flex-xl-row justify-content-around">
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/combustible.svg" alt="combustible" class="icon"> {{moto.gasolineConsumption}} L</li>
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/transmision.svg" alt="transmision" class="icon"> Cilindrada {{moto.cilindrada}}</li>
+            <li class="list-group-item border border-0 text-color-icon"> <img src="assets/capacity.svg" alt="capacity" class="icon"> {{moto.passengerCapacity}}</li>
+        </ul>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary me-3 mt-3" data-bs-toggle="modal" data-bs-target="#motoDetails" (click)="emitMotorcycle(moto)">More Info</button>
+        <button class="btn btn-secondary mt-3" (click)="selectMotorcycle()">Rent Now</button>
+    </div>    
+</div>
+

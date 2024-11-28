@@ -31,8 +31,19 @@
                             <td>{{rent.pickUpDate}}</td>                                    
                             <td>{{rent.pickUpTime}}</td>
                             <td>{{rent.returnDate}}</td>
-                            <td>{{rent.returnTime}}</td>  
-                            <td class="text-capitalize">{{rent.state}}</td>                                                                                  
+                            <td>{{rent.returnTime}}</td>    
+                            <td>
+                                <span
+                                    class="text-capitalize text-black badge rounded-pill"
+                                    [ngClass]="{
+                                        'bg-warning-subtle': rent.state === RentState.pending.toLowerCase(),
+                                        'bg-danger-subtle': rent.state === RentState.rejected.toLowerCase(),
+                                        'bg-success-subtle': rent.state === RentState.confirmed.toLowerCase()
+                                    }"
+                                >
+                                    {{ rent.state }}
+                                </span>
+                            </td>                                                                               
                             <td class="text-capitalize">{{rent.vehicle}}</td>                                                                                  
                             <td class="text-capitalize">{{rent.userFirstName}} {{rent.userLastName}}</td>                                                                                  
                             <td>${{rent.totAmount}}</td>  
@@ -55,4 +66,3 @@
         
     </ng-template>                
 </div>
-

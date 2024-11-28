@@ -4,9 +4,7 @@
 <ng-template #showList>
     <div *ngIf="automovilList.length !== 0; else noCars">
 
-        <div class="container">
-            <h2>Select Vehicle</h2>
-            <hr>            
+        <div class="container">            
             <div class="row mt-3">
                 <div  class="col-12 col-sm-6 col-lg-4 mb-4" *ngFor="let auto of automovilList">
                     <car-details [car]="auto" (carDetailEvent)="getCarDetail($event)" ></car-details>
