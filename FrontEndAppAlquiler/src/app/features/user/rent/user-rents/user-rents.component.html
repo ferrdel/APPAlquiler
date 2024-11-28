@@ -1,98 +1,173 @@
 <div>
-    <h2>My Rents</h2>
-    <hr>
-    <button class="btn btn-success text-white text-shadow" [routerLink]="['/rent/date']">Rent Vehicle</button>
+	<h2>My Rents</h2>
+	<hr />
+	<button
+		class="btn btn-success text-white text-shadow"
+		[routerLink]="['/rent/date']"
+	>
+		Rent Vehicle
+	</button>
 </div>
 
 <!-- spinner-->
-<shared-loading-spinner *ngIf="isLoading; else showList"></shared-loading-spinner>
+<shared-loading-spinner
+	*ngIf="isLoading; else showList"
+></shared-loading-spinner>
 
 <ng-template #showList>
-    <div *ngIf="rentList.length !== 0; else noRents">
-        <div class="my-4 table-responsive">        
-            <table class="table table-hover">
-                <thead>
-                    <tr>                    
-                        <th scope="col">#</th>
-                        <th scope="col">Pickup Date</th>      
-                        <th scope="col">Pick Time</th>      
-                        <th scope="col">Return Date</th>
-                        <th scope="col">Return time</th>                                              
-                        <th scope="col">Amount</th>    
-                        <th scope="col">State</th>    
-                        <th scope="col">Vehicle</th>  
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr *ngFor="let rent of rentList">                    
-                        <td>{{rent.id}}</td>
-                        <td>{{rent.pickUpDate}}</td>                                    
-                        <td>{{rent.pickUpTime}}</td>
-                        <td>{{rent.returnDate}}</td>
-                        <td>{{rent.returnTime}}</td>                                                                                                                
-                        <td>${{rent.totAmount}}</td>    
-                        <td class="text-capitalize">{{rent.state}}</td>    
-                        <td>
-                            <!-- Button trigger modal vehicle resume-->
-                            <button type="button"  class="btn btn-primary text-shadow" data-bs-toggle="modal" data-bs-target="#vehicleResumeModal" (click)="callModal(rent.vehicleId, rent.vehicle)">Details</button>
-                        </td>                            
-                    </tr>    
-                </tbody>
-            </table>
-        </div>    
-    
-        <!-- MODAL Vehicle resume -->
-        <div class="modal fade" id="vehicleResumeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">            
-                    <div class="modal-header bg-dark text-white">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Vehicle details</h1>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+	<div *ngIf="rentList.length !== 0; else noRents">
+		<div class="my-4 table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Pickup Date</th>
+						<th scope="col">Pick Time</th>
+						<th scope="col">Return Date</th>
+						<th scope="col">Return time</th>
+						<th scope="col">Amount</th>
+						<th scope="col">State</th>
+						<th scope="col">Vehicle</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					<tr *ngFor="let rent of rentList">
+						<td>{{ rent.id }}</td>
+						<td>{{ rent.pickUpDate }}</td>
+						<td>{{ rent.pickUpTime }}</td>
+						<td>{{ rent.returnDate }}</td>
+						<td>{{ rent.returnTime }}</td>
+						<td>${{ rent.totAmount }}</td>
+						<td>
+							<span
+								class="text-capitalize text-black badge rounded-pill"
+								[ngClass]="{
+									'bg-warning-subtle': rent.state === RentState.pending.toLowerCase(),
+									'bg-danger-subtle': rent.state === RentState.rejected.toLowerCase(),
+									'bg-success-subtle': rent.state === RentState.confirmed.toLowerCase()
+								}"
+							>
+								{{ rent.state }}
+							</span>
+						</td>
+						<td>
+							<!-- Button trigger modal vehicle resume-->
+							<button
+								type="button"
+								class="btn btn-primary text-shadow"
+								data-bs-toggle="modal"
+								data-bs-target="#vehicleResumeModal"
+								(click)="callModal(rent.vehicleId, rent.vehicle)"
+							>
+								Details
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-                    <div class="modal-body">
-                        <img [src]="vehicleResume?.image ? vehicleResume?.image : 'assets/car_default.bmp'" alt="{{this.vehicleResume?.brand}}_{{this.vehicleResume?.model}}" class="img-fluid">
-                        {{this.vehicleResume?.description}}
-                    </div>
-                    
-                    <div class="modal-footer">                        
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<!-- MODAL Vehicle resume -->
+		<div
+			class="modal fade"
+			id="vehicleResumeModal"
+			tabindex="-1"
+			aria-labelledby="exampleModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-dark text-white">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">
+							Vehicle details
+						</h1>
+						<button
+							type="button"
+							class="btn-close btn-close-white"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
 
-        <!-- MODAL HABILITAR -->
-        <div class="modal fade" id="habilitarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">            
-                    <div class="modal-header bg-dark text-white">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmación</h1>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+					<div class="modal-body">
+						<img
+							[src]="
+								vehicleResume?.image
+									? vehicleResume?.image
+									: 'assets/car_default.bmp'
+							"
+							alt="{{ this.vehicleResume?.brand }}_{{
+								this.vehicleResume?.model
+							}}"
+							class="img-fluid"
+						/>
+						{{ this.vehicleResume?.description }}
+					</div>
 
-                    <div class="modal-body">
-                        ¿Desea habilitar el auto con id: ?
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Habilitar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-        
-    <ng-template #noRents>
-        <div class="alert alert-primary d-flex align-items-center mt-3" role="alert">        
-            <div>
-                <i class="bi bi-info-circle-fill"></i> No rents added!
-            </div>
-        </div>
-    </ng-template>
-    
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-primary"
+							data-bs-dismiss="modal"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- MODAL HABILITAR -->
+		<div
+			class="modal fade"
+			id="habilitarModal"
+			tabindex="-1"
+			aria-labelledby="exampleModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-dark text-white">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">
+							Confirmación
+						</h1>
+						<button
+							type="button"
+							class="btn-close btn-close-white"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
+
+					<div class="modal-body">¿Desea habilitar el auto con id: ?</div>
+
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-secondary"
+							data-bs-dismiss="modal"
+						>
+							Cancelar
+						</button>
+						<button
+							type="button"
+							class="btn btn-primary"
+							data-bs-dismiss="modal"
+						>
+							Habilitar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ng-template #noRents>
+		<div
+			class="alert alert-primary d-flex align-items-center mt-3"
+			role="alert"
+		>
+			<div><i class="bi bi-info-circle-fill"></i> No rents added!</div>
+		</div>
+	</ng-template>
 </ng-template>
-
-
-
