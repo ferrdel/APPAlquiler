@@ -1,0 +1,37 @@
+<div class="container mt-3">
+    <h2>Select Vehicle</h2>
+    <hr>            
+
+    <div class="d-flex justify-content-center">
+        <div class="mx-3">
+            <input type="radio" class="btn-check" name="vehicleSelect" id="rbcars" [(ngModel)]="selectedTypeVehicle" value="Car" autocomplete="off">
+            <label class="btn btn-outline-primary" for="rbcars">Cars</label>
+        </div>
+        
+        <div class="mx-3">
+            <input type="radio" class="btn-check" name="vehicleSelect" id="rbmotos" [(ngModel)]="selectedTypeVehicle" value="Motorcycle" autocomplete="off">
+            <label class="btn btn-outline-primary" for="rbmotos">Motorcycle</label>
+        </div>
+    
+        <div class="mx-3">
+            <input type="radio" class="btn-check" name="vehicleSelect" id="rbbikes" [(ngModel)]="selectedTypeVehicle" value="Bike" autocomplete="off">
+            <label class="btn btn-outline-primary" for="rbbikes">Bikes</label>
+        </div>        
+    
+        <div class="mx-3">
+            <input type="radio" class="btn-check" name="vehicleSelect" id="rbboats" [(ngModel)]="selectedTypeVehicle" value="Boat" autocomplete="off">
+            <label class="btn btn-outline-primary" for="rbboats">Boats</label>
+        </div>
+    
+    </div>
+    
+    <!-- Usando ngSwitch -->
+    <div [ngSwitch]="selectedTypeVehicle">  
+      <app-car-list *ngSwitchCase="typeVehicle.car"></app-car-list>
+      <div *ngSwitchCase="typeVehicle.bike">Selecciono bici</div>
+      <app-motorcycles-list *ngSwitchCase="typeVehicle.motorcycle">Selecciono moto</app-motorcycles-list>
+      <div *ngSwitchCase="typeVehicle.boat">Selecciono bote</div>
+    
+      <div *ngSwitchDefault>Seleccione una opción</div>
+    </div>    
+</div>

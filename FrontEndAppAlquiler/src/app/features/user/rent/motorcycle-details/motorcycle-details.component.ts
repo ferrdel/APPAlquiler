@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Car } from '../../../../core/models/car';
+import { Motorcycle } from '../../../../core/models/motorcycle';
 import { Router } from '@angular/router';
 import { SessionStorageManageService } from '../../../../core/services/session-storage-manage.service';
 import { VehicleStorage } from '../../../../core/models/vehicleStorage';
@@ -7,18 +7,18 @@ import { TypeVehicle } from '../../../../core/models/enums/type-vehicle.enum';
 import { Vehicle } from '../../../../core/models/vehicle';
 
 @Component({
-  selector: 'car-details',
+  selector: 'app-motorcycle-details',
   standalone: true,
   imports: [],
-  templateUrl: './car-details.component.html',
-  styleUrl: './car-details.component.css'
+  templateUrl: './motorcycle-details.component.html',
+  styleUrl: './motorcycle-details.component.css'
 })
-export class CarDetailsComponent {
+export class MotorcycleDetailsComponent {
   @Input()
-  public car!: Car;
+  public moto!: Motorcycle;
 
   @Output()
-  public carDetailEvent:EventEmitter<Car> = new EventEmitter();
+  public motoDetailEvent:EventEmitter<Motorcycle> = new EventEmitter();
   
 
   constructor( 
@@ -26,13 +26,13 @@ export class CarDetailsComponent {
     private sessionStorage: SessionStorageManageService
   ){}
 
-  public emitAutomovil(carDetail: Car):void{    
-    this.carDetailEvent.emit(carDetail);
+  public emitMotorcycle(motoDetail: Motorcycle):void{    
+    this.motoDetailEvent.emit(motoDetail);
   }
 
-  public selectCar(){
-    let vehicle: VehicleStorage = { typeVehicle: TypeVehicle.car, vehicle: this.car as Vehicle};    
-    this.sessionStorage.saveToSessionStorage('vehicleRent', vehicle);    
+  public selectMotorcycle(){
+    let vehicle: VehicleStorage = { typeVehicle: TypeVehicle.motorcycle, vehicle: this.moto as Vehicle};    
+    this.sessionStorage.saveToSessionStorage('vehicleRent', vehicle);
     this.router.navigate(['/rent/resume']); 
   }
 }

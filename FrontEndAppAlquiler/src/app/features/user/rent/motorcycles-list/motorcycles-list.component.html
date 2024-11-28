@@ -1,0 +1,74 @@
+<!-- spinner-->
+<shared-loading-spinner *ngIf="isLoading; else showList"></shared-loading-spinner>
+
+<ng-template #showList>
+    <div *ngIf="motorcycleList.length !== 0; else noMotos">
+
+        <div class="container">            
+            <div class="row mt-3">
+                <div  class="col-12 col-sm-6 col-lg-4 mb-4" *ngFor="let motorcycle of motorcycleList">
+                    <app-motorcycle-details [moto]="motorcycle" (motoDetailEvent)="getMotoDetail($event)" ></app-motorcycle-details>
+                </div>                
+            </div>
+        </div>
+        
+        
+        <!-- Modal -->
+        <div class="modal fade" id="motoDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{motoDetail?.brand}} {{motoDetail?.model}}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+        
+                    <div class="modal-body">
+                        <!-- TEXTO 
+                        <h5 class="card-title">Toyota Corolla</h5>
+                        -->
+                        <p>Id: {{motoDetail?.id}}</p>
+                        <img [src]="motoDetail?.image ? motoDetail?.image : 'assets/motorcycle_default.jpg'" class="card-img-top" alt="{{motoDetail?.brand}}_{{motoDetail?.model}}">      
+                        <p>{{motoDetail?.description}}</p>
+                        <p><span class="text-color-icon">Price:</span><span class="fw-semibold"> ${{motoDetail?.price}}.00 / </span><span class="fw-normal text-color-icon">day</span></p>  
+                        
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Brand:</span><span class="fw-semibold"> {{motoDetail?.brand}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Model:</span><span class="fw-semibold"> {{motoDetail?.model}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Gasoline Consumption:</span><span class="fw-semibold"> {{motoDetail?.gasolineConsumption}} L</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Cilindrada:</span><span class="fw-semibold"> {{motoDetail?.cilindrada}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Luggage Capacity:</span><span class="fw-semibold"> {{motoDetail?.luggageCapacity}} L</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">Passenger Capacity:</span><span class="fw-semibold"> {{motoDetail?.passengerCapacity}}</span></p></div>                            
+                        </div>            
+            
+                        <div class="row">
+                            <div class="col-6"><p><span class="text-color-icon">Fuel:</span><span class="fw-semibold"> {{motoDetail?.fuel}}</span></p></div>                            
+                            <div class="col-6"><p><span class="text-color-icon">State:</span><span class="fw-semibold"> {{ getEstadoTexto(motoDetail?.state) }}</span></p></div>                            
+                        </div>                        
+            
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="selectMoto()">Rent Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <ng-template #noMotos>
+        <div class="alert alert-primary d-flex align-items-center mt-3" role="alert">        
+            <div>
+                <i class="bi bi-info-circle-fill"></i> No motorcycles available!
+            </div>
+        </div>
+    </ng-template>
+
+</ng-template>

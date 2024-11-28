@@ -7,6 +7,7 @@ import { Rent } from '../../../../core/models/rent';
 import { RentService } from '../../../../core/services/rent.service';
 import { CarService } from '../../../../core/services/car.service';
 import { RouterModule } from '@angular/router';
+import { MotorcycleService } from '../../../../core/services/motorcycle.service';
 import { RentState } from '../../../../core/models/enums/rent-state.enum';
 
 @Component({
@@ -33,6 +34,7 @@ export class UserRentsComponent {
     private rentService: RentService,
     private toastr: ToastrService, //para mensajes      
     private carService: CarService,
+    private motorcycleService: MotorcycleService
   ){}
   
   //Agregado para cargar tareas cuando se instancia el componente
@@ -72,6 +74,19 @@ export class UserRentsComponent {
         
         this.loadingVehicle = true;
         break;
+
+        case 'motorcycle':
+          this.motorcycleService.getMotoById(vehiculoId).subscribe(
+            (response) => {                  
+              this.vehicleResume = response;                        
+            },
+            (error) => {            
+              this.toastr.error(error, 'An error has occurred');    
+            }
+          );
+          
+          this.loadingVehicle = true;
+          break;
     
       default:
         console.log('no se encontró tipo de vehiculo');

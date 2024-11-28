@@ -111,7 +111,7 @@ CargaMarcasModelos(){
 
             //sino encontro dato, redirijo al home
             if ( !myCar ) {
-              return this.router.navigateByUrl('/');
+              return this.router.navigateByUrl('/motorcycles');
             }
 
             //reinicio form con los datos traidos del servidor
@@ -127,7 +127,7 @@ CargaMarcasModelos(){
           },
           (error) => {          
             this.toastr.error(error, 'Se ha producido un error');            
-            return this.router.navigateByUrl('/');
+            return this.router.navigateByUrl('/motorcycles');
           }
       );
     },
@@ -272,7 +272,7 @@ onSubmit():void {
         .subscribe( 
           (response ) => {          
             this.toastr.success('Se actualizó con éxito', `Información`);
-            this.router.navigate(['/']); // Navega a la ruta principal 
+            this.router.navigate(['/motorcycles']); // Navega a la ruta principal 
           }
           ,(error) => {                    
             this.toastr.error(error.message , 'Se ha producido un error');        
@@ -289,7 +289,7 @@ onSubmit():void {
         auto => {
           // Si la operación es exitosa
           this.toastr.success('Se agregó Motocicleta con éxito', 'Información');
-          this.router.navigate(['/']); // Navega a la ruta principal
+          this.router.navigate(['/motorcycles']); // Navega a la ruta principal
         },
         error => {
           // Si ocurre un error

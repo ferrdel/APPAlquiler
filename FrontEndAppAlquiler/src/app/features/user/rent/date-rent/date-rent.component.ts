@@ -59,41 +59,7 @@ export class DateRentComponent {
     }
 
     this.sessionStorage.saveToSessionStorage('dateRent', rentDate);
-    this.router.navigate(['/rent/car']); 
-  }
-
-
-  //BORRAR??
-  descomponerFechaHora(){
-    // Crear un objeto Date a partir del string    
-    const dateObj = new Date(this.miFormulario.get('pickUpDate')?.value + "T00:00:00Z");
-
-    // Crear un objeto con year, month, y day
-    const dateComponents = {      
-      year: dateObj.getUTCFullYear(),        // Año en UTC
-      month: dateObj.getUTCMonth() + 1,      // Mes en UTC (se suma 1 porque los meses en JavaScript son 0-indexados)
-      day: dateObj.getUTCDate(),             // Día del mes en UTC
-      dayOfWeek: dateObj.getUTCDay()         // Día de la semana en UTC (0 es domingo, 1 es lunes, ...)    
-    };
-
-    // Mostrar el objeto resultante
-    console.log(dateComponents);
-
-    // La hora en formato "HH:MM"
-    const timeString = this.miFormulario.get('pickUpTime')?.value;
-
-    // Crear un objeto Date usando una fecha arbitraria (por ejemplo, "1970-01-01") y la hora y minutos
-    const timeObj = new Date(`1970-01-01T${timeString}:00Z`);
-
-    // Obtener las partes de la hora
-    const hour = timeObj.getUTCHours();
-    const minute = timeObj.getUTCMinutes();
-
-    // Mostrar el resultado
-    console.log({
-      hour: hour,
-      minute: minute
-    });
+    this.router.navigate(['/rent/vehicle']); 
   }
 
   getReturnDate(){

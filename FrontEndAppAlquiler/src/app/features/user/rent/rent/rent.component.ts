@@ -3,13 +3,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { Route, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Car } from '../../../../core/models/car';
 import { DateRent } from '../../../../core/models/dateRent';
 import { SessionStorageManageService } from '../../../../core/services/session-storage-manage.service';
 import { RentService } from '../../../../core/services/rent.service';
 import { TypeVehicle } from '../../../../core/models/enums/type-vehicle.enum';
 import { RentState } from '../../../../core/models/enums/rent-state.enum';
 import { Rent } from '../../../../core/models/rent';
+import { VehicleStorage } from '../../../../core/models/vehicleStorage';
 
 
 @Component({
@@ -21,7 +21,7 @@ import { Rent } from '../../../../core/models/rent';
 })
 export class RentComponent implements OnInit{
   //public userId!:number;
-  public car!: Car;
+  public vehicleStorage!: VehicleStorage;
   public dateRent?: DateRent;
   public daysRent!: number;
   public priceRent!: number;
@@ -46,16 +46,17 @@ export class RentComponent implements OnInit{
       return;
     }
     
-    this.car = this.sessionManage.getFromSessionStorage('carRent');
-    if(!this.car){
-      this.router.navigate(['/rent/car']);
+    this.vehicleStorage = this.sessionManage.getFromSessionStorage('vehicleRent');
+    console.log(this.vehicleStorage);
+    if(!this.vehicleStorage){
+      this.router.navigate(['/rent/vehicle']);
       this.toastr.warning("Select a vehicle", 'Warning');  
       return;
     }
           
     //this.userId = this.sessionManage.getFromLocalStorage('userId');
     this.daysRent = this.calcularDiferenciaEnDias(this.dateRent.pickUpDate, this.dateRent.returnDate);
-    this.priceRent = this.car.price * this.daysRent;
+    this.priceRent = this.vehicleStorage.vehicle.price * this.daysRent;    
 
     this.miFormulario = this.fb.group({
       id: [,],
@@ -65,8 +66,8 @@ export class RentComponent implements OnInit{
       returnDate: [this.dateRent.returnDate, Validators.required],
       returnTime: [this.dateRent.returnTime, Validators.required],
 
-      vehicle: [TypeVehicle.car, Validators.required],
-      vehicleId: [this.car.id, Validators.required],
+      vehicle: [ this.vehicleStorage.typeVehicle, Validators.required],
+      vehicleId: [this.vehicleStorage.vehicle.id, Validators.required],
       state: [RentState.pending, Validators.required],
       //userId: [this.userId, Validators.required]
     });
@@ -81,12 +82,12 @@ export class RentComponent implements OnInit{
       return;
     }
     
-    console.log("Rent a guardar: " + this.currentRent);
+    console.log(this.currentRent);
     this.rentService.createRent( this.currentRent )
       .subscribe(              
         response => {
           // Si la operación es exitosa
-          this.sessionManage.removeFromSessionStorage('carRent');
+          this.sessionManage.removeFromSessionStorage('vehicleRent');
           this.sessionManage.removeFromSessionStorage('dateRent');
 
           this.toastr.success('Rent added successfully', 'Information');
