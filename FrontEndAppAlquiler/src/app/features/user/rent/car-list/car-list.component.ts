@@ -8,6 +8,9 @@ import { CarService } from '../../../../core/services/car.service';
 import { State } from '../../../../core/models/enums/state.enum';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { SessionStorageManageService } from '../../../../core/services/session-storage-manage.service';
+import { VehicleStorage } from '../../../../core/models/vehicleStorage';
+import { TypeVehicle } from '../../../../core/models/enums/type-vehicle.enum';
+import { Vehicle } from '../../../../core/models/vehicle';
 
 @Component({
   selector: 'app-car-list',
@@ -49,16 +52,7 @@ getAll(){
       //filtro por estado activo y disponible      
       this.automovilList = data.filter( car => car.active && car.state.toUpperCase() == State.disponible.toUpperCase());   
             
-      this.isLoading = false;          
-            
-      //Sino hay marcas redirijo al listado
-      if(this.automovilList.length < 1)
-        {
-          this.toastr.warning("Primero debe agregar autos", 'Información');
-          //this.router.navigateByUrl('/');
-          return;
-        }
-
+      this.isLoading = false;                            
     },
     (error) => {                  
       this.toastr.error(error, 'Se ha producido un error');    
@@ -93,7 +87,8 @@ getEstadoTexto(estado: string | undefined): string {
 }
 
 public selectCar(){
-    this.storageManage.saveToSessionStorage('carRent', this.autoDetail);
+    let vehicle: VehicleStorage = { typeVehicle: TypeVehicle.motorcycle, vehicle: this.autoDetail as Vehicle};        
+    this.storageManage.saveToSessionStorage('vehicleRent', vehicle);
     this.router.navigate(['/rent/resume']);   
 }
 

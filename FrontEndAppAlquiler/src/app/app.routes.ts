@@ -16,6 +16,8 @@ import { RentComponent } from './features/user/rent/rent/rent.component';
 import { roleGuard } from './core/guards/role.guard';
 import { ListRentComponent } from './features/admin/rent/list-rent/list-rent.component';
 import { EditRentComponent } from './features/admin/rent/edit-rent/edit-rent.component';
+import { ListMotorcycleComponent } from './features/admin/motorcycle/list-motorcycle/list-motorcycle.component';
+import { VehicleSelectComponent } from './features/user/rent/vehicle-select/vehicle-select.component';
 
 
 export const routes: Routes = [
@@ -58,7 +60,7 @@ export const routes: Routes = [
         path: 'boats',
         canActivateChild: [roleGuard],
         data: {expectedRole: 'ADMIN'},
-         children: [
+        children: [
             { path:'', component: ListCarComponent },
             { path:'addBoat', component: AddBoatsComponent },
             { path:'editBoat/:id', component: AddBoatsComponent },            
@@ -69,9 +71,9 @@ export const routes: Routes = [
         canActivateChild: [roleGuard],
         data: {expectedRole: 'ADMIN'},
         children: [
-            { path:'', component: ListCarComponent },
-            { path:'addMoto', component: AddMotorcycleComponent },
-            { path:'editMoto/:id', component: AddMotorcycleComponent },            
+            { path:'', component: ListMotorcycleComponent },
+            { path:'add', component: AddMotorcycleComponent },
+            { path:'edit/:id', component: AddMotorcycleComponent },            
         ]        
     },
 
@@ -93,7 +95,7 @@ export const routes: Routes = [
         children: [
             { path:'', component: UserRentsComponent },
             { path:'date', component: DateRentComponent },
-            { path:'car', component: CarListComponent },
+            { path:'vehicle', component: VehicleSelectComponent },            
             { path:'resume', component: RentComponent },            
         ]        
     }
