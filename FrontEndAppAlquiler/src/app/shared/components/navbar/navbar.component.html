@@ -40,7 +40,7 @@
 					<a class="nav-link" href="#">About</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" routerLink="/" fragment="how-it-works"
+					<a class="nav-link" routerLink="" fragment="how-it-works"
 						>How it work</a
 					>
 				</li>
@@ -85,7 +85,19 @@
 							<ng-container [ngSwitch]="currentUser?.role">
 								<li *ngSwitchCase="'ADMIN'">
 									<a class="dropdown-item" routerLink="/cars">Cars</a>
-								</li>								
+								</li>
+								
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/motorcycles">Motorcycles</a>
+								</li>
+								
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/bikes/addBike">Bikes</a>
+								</li>
+
+								<li *ngSwitchCase="'ADMIN'">
+									<a class="dropdown-item" routerLink="/boats/addBoat">Boats</a>
+								</li>
 
 								<li *ngSwitchCase="'ADMIN'">
 									<a class="dropdown-item" routerLink="/rents">Rents</a>

@@ -2,13 +2,13 @@
     <div class="col-12 col-md-6">
         <div class="card border border-0">    
             <div class="card-body">
-                <h5 class="card-title">{{car.brand}} {{car.model}}</h5>
+                <h5 class="card-title">{{vehicleStorage.vehicle.brand}} {{vehicleStorage.vehicle.model}}</h5>
                 
                 <div class="card-img-top-container">
-                    <img [src]="car.image ? car.image : 'assets/car_default.bmp'" class="card-img-top" alt="img_{{car.brand}}_{{car.model}}">      
+                    <img [src]="vehicleStorage.vehicle.image ? vehicleStorage.vehicle.image : 'assets/car_default.bmp'" class="card-img-top" alt="img_{{vehicleStorage.vehicle.brand}}_{{vehicleStorage.vehicle.model}}">      
                 </div>
-                <p>{{car.description}}</p>            
-                <p class="fw-bold">${{car.price}} / <span class="fw-normal text-color-icon">day</span></p>                                    
+                <p>{{vehicleStorage.vehicle.description}}</p>            
+                <p class="fw-bold">${{vehicleStorage.vehicle.price}} / <span class="fw-normal text-color-icon">day</span></p>                                    
             </div>    
         </div>
     </div>
@@ -26,14 +26,14 @@
                 <div class="mb-3">
                     <div class="input-group">
                         <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>                
-                        <input type="text" class="form-control" id="pickUpDate" name="pickUpDate" formControlName="pickUpDate">                                                   
+                        <input type="text" class="form-control" id="pickUpDate" name="pickUpDate" formControlName="pickUpDate" readonly>                                                   
                     </div>                                            
                 </div>
                         
                 <div class="mb-3">
                     <div class="input-group">
                         <div class="input-group-text"><i class="bi bi-clock"></i></div>
-                        <input type="text" class="form-control" id="pickUpTime" name="pickUpTime" formControlName="pickUpTime">                        
+                        <input type="text" class="form-control" id="pickUpTime" name="pickUpTime" formControlName="pickUpTime" readonly>                        
                     </div>                                                
                 </div>                    
             </div>
@@ -48,14 +48,14 @@
                 <div class="mb-3">
                     <div class="input-group">
                         <div class="input-group-text"><i class="bi bi-calendar-date"></i></div>
-                        <input type="text" class="form-control" id="returnDate" name="returnDate" formControlName="returnDate">                            
+                        <input type="text" class="form-control" id="returnDate" name="returnDate" formControlName="returnDate"readonly>                            
                     </div>                                            
                 </div>
             
                 <div class="mb-3">
                     <div class="input-group">
                         <div class="input-group-text"><i class="bi bi-clock"></i></div>
-                        <input type="text" class="form-control" id="returnTime" name="returnTime" formControlName="returnTime">                                                
+                        <input type="text" class="form-control" id="returnTime" name="returnTime" formControlName="returnTime" readonly>                                                
                     </div>                                                
                 </div>                    
             </div>

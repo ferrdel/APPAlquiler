@@ -33,16 +33,16 @@
                             <td>{{auto.modelId}} {{auto.model}}</td>
                             <td>{{auto.active?'Yes':'No'}}</td>
                                                 
-                            <td><button class="btn btn-warning text-white text-shadow" [routerLink]="['/cars/edit', auto.id]">Edit</button></td>                
+                            <td><button class="btn btn-outline-warning text-shadow text-shadow" [routerLink]="['/cars/edit', auto.id]">Edit</button></td>                
                                                 
                             <td>
                                 <!-- Button trigger modal eliminar-->
-                                <button type="button" [disabled]="!auto.active" class="btn btn-danger text-shadow" data-bs-toggle="modal" data-bs-target="#eliminarModal" (click)="callModal(auto.id)">Disable</button>
+                                <button type="button" [disabled]="!auto.active" class="btn btn-outline-danger text-shadow" data-bs-toggle="modal" data-bs-target="#eliminarModal" (click)="callModal(auto.id)">Disable</button>
                             </td>
         
                             <td>
                                 <!-- Button trigger modal habilitar-->
-                                <button type="button" [disabled]="auto.active"  class="btn btn-info text-shadow" data-bs-toggle="modal" data-bs-target="#habilitarModal" (click)="callModal(auto.id)">Enable</button>
+                                <button type="button" [disabled]="auto.active"  class="btn btn-outline-info text-shadow" data-bs-toggle="modal" data-bs-target="#habilitarModal" (click)="callModal(auto.id)">Enable</button>                                
                             </td>
                         </tr>    
                     </tbody>

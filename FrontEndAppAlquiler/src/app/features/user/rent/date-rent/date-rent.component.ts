@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -13,7 +13,7 @@ import { DateRent } from '../../../../core/models/dateRent';
   templateUrl: './date-rent.component.html',
   styleUrl: './date-rent.component.css'
 })
-export class DateRentComponent {
+export class DateRentComponent implements OnInit {
 
   miFormulario!: FormGroup;
   
@@ -31,6 +31,34 @@ export class DateRentComponent {
 
       returnDate: [this.getReturnDate(), Validators.required],            
       returnTime: ['09:00', Validators.required],      
+    });
+  }
+
+  ngOnInit(): void {
+    // Suscribir al cambio del campo 'fechaInicio'
+    this.miFormulario.get('pickUpDate')?.valueChanges.subscribe((fechaInicio: string) => {
+      if (fechaInicio) {
+        // Convertir la fecha seleccionada a un objeto Date
+        const fecha = new Date(fechaInicio);
+
+        // Verifica si la fecha es válida
+        if (isNaN(fecha.getTime())) {
+          console.error('Fecha inválida:', fechaInicio);
+          return; // Si la fecha es inválida, no continúa
+        }
+
+        // Sumar un día a la fecha
+        fecha.setDate(fecha.getDate() + 2);
+
+        // Formatear la nueva fecha para que sea compatible con el formato 'YYYY-MM-DD'
+        const year = fecha.getFullYear();
+        const month = String(fecha.getMonth() + 1).padStart(2, '0');
+        const day = String(fecha.getDate()).padStart(2, '0');
+        const nuevaFecha = `${year}-${month}-${day}`;
+
+        // Establecer la nueva fecha en el campo 'fechaFin'
+        this.miFormulario.get('returnDate')?.setValue(nuevaFecha, { emitEvent: false });
+      }
     });
   }
 
@@ -59,41 +87,7 @@ export class DateRentComponent {
     }
 
     this.sessionStorage.saveToSessionStorage('dateRent', rentDate);
-    this.router.navigate(['/rent/car']); 
-  }
-
-
-  //BORRAR??
-  descomponerFechaHora(){
-    // Crear un objeto Date a partir del string    
-    const dateObj = new Date(this.miFormulario.get('pickUpDate')?.value + "T00:00:00Z");
-
-    // Crear un objeto con year, month, y day
-    const dateComponents = {      
-      year: dateObj.getUTCFullYear(),        // Año en UTC
-      month: dateObj.getUTCMonth() + 1,      // Mes en UTC (se suma 1 porque los meses en JavaScript son 0-indexados)
-      day: dateObj.getUTCDate(),             // Día del mes en UTC
-      dayOfWeek: dateObj.getUTCDay()         // Día de la semana en UTC (0 es domingo, 1 es lunes, ...)    
-    };
-
-    // Mostrar el objeto resultante
-    console.log(dateComponents);
-
-    // La hora en formato "HH:MM"
-    const timeString = this.miFormulario.get('pickUpTime')?.value;
-
-    // Crear un objeto Date usando una fecha arbitraria (por ejemplo, "1970-01-01") y la hora y minutos
-    const timeObj = new Date(`1970-01-01T${timeString}:00Z`);
-
-    // Obtener las partes de la hora
-    const hour = timeObj.getUTCHours();
-    const minute = timeObj.getUTCMinutes();
-
-    // Mostrar el resultado
-    console.log({
-      hour: hour,
-      minute: minute
-    });
+    this.router.navigate(['/rent/vehicle']); 
   }
 
   getReturnDate(){

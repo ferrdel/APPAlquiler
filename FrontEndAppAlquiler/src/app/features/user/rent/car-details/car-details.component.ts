@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Car } from '../../../../core/models/car';
 import { Router } from '@angular/router';
 import { SessionStorageManageService } from '../../../../core/services/session-storage-manage.service';
+import { VehicleStorage } from '../../../../core/models/vehicleStorage';
+import { TypeVehicle } from '../../../../core/models/enums/type-vehicle.enum';
+import { Vehicle } from '../../../../core/models/vehicle';
 
 @Component({
   selector: 'car-details',
@@ -28,7 +31,8 @@ export class CarDetailsComponent {
   }
 
   public selectCar(){
-    this.sessionStorage.saveToSessionStorage('carRent', this.car);
+    let vehicle: VehicleStorage = { typeVehicle: TypeVehicle.car, vehicle: this.car as Vehicle};    
+    this.sessionStorage.saveToSessionStorage('vehicleRent', vehicle);    
     this.router.navigate(['/rent/resume']); 
   }
 }

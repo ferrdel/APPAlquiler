@@ -4,6 +4,11 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ListCarComponent } from './features/admin/cars/list-car/list-car.component';
 import { AddCarComponent } from './features/admin/cars/add-car/add-car.component';
+
+import { AddBikeComponent } from './features/admin/bikes/add-bike/add-bike.component';
+import { AddBoatsComponent } from './features/admin/boats/add-boats/add-boats.component';
+import { AddMotorcycleComponent } from './features/admin/motorcycle/add-motorcycle/add-motorcycle.component';
+
 import { UserRentsComponent } from './features/user/rent/user-rents/user-rents.component';
 import { DateRentComponent } from './features/user/rent/date-rent/date-rent.component';
 import { CarListComponent } from './features/user/rent/car-list/car-list.component';
@@ -11,6 +16,9 @@ import { RentComponent } from './features/user/rent/rent/rent.component';
 import { roleGuard } from './core/guards/role.guard';
 import { ListRentComponent } from './features/admin/rent/list-rent/list-rent.component';
 import { EditRentComponent } from './features/admin/rent/edit-rent/edit-rent.component';
+import { ListMotorcycleComponent } from './features/admin/motorcycle/list-motorcycle/list-motorcycle.component';
+import { VehicleSelectComponent } from './features/user/rent/vehicle-select/vehicle-select.component';
+
 
 export const routes: Routes = [
     {
@@ -38,6 +46,39 @@ export const routes: Routes = [
     },
 
     {
+        path: 'bikes',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'}, 
+        children: [
+            { path:'', component: ListCarComponent },
+            { path:'addBike', component: AddBikeComponent },
+            { path:'editBike/:id', component: AddBikeComponent },            
+        ]        
+    },
+
+    {
+        path: 'boats',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'},
+        children: [
+            { path:'', component: ListCarComponent },
+            { path:'addBoat', component: AddBoatsComponent },
+            { path:'editBoat/:id', component: AddBoatsComponent },            
+        ]        
+    },
+    {
+        path: 'motorcycles',
+        canActivateChild: [roleGuard],
+        data: {expectedRole: 'ADMIN'},
+        children: [
+            { path:'', component: ListMotorcycleComponent },
+            { path:'add', component: AddMotorcycleComponent },
+            { path:'edit/:id', component: AddMotorcycleComponent },            
+        ]        
+    },
+
+
+    {
         path: 'rents',
         canActivateChild: [roleGuard],
         data: {expectedRole: 'ADMIN'},
@@ -54,7 +95,7 @@ export const routes: Routes = [
         children: [
             { path:'', component: UserRentsComponent },
             { path:'date', component: DateRentComponent },
-            { path:'car', component: CarListComponent },
+            { path:'vehicle', component: VehicleSelectComponent },            
             { path:'resume', component: RentComponent },            
         ]        
     }
